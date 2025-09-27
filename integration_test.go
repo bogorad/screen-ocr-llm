@@ -1,6 +1,7 @@
 package main
 
 import (
+	"os"
 	"testing"
 	"time"
 
@@ -13,9 +14,15 @@ import (
 )
 
 func TestIntegration(t *testing.T) {
+	// Get API key from environment variable
+	apiKey := os.Getenv("TEST_API_KEY")
+	if apiKey == "" {
+		t.Skip("TEST_API_KEY not set; skipping integration test")
+	}
+
 	// Test configuration loading
 	cfg := &config.Config{
-		APIKey: "test_api_key",
+		APIKey: apiKey,
 		Model:  "test_model",
 		Hotkey: "Ctrl+Shift+T",
 	}

@@ -1,6 +1,7 @@
 package ocr
 
 import (
+	"os"
 	"testing"
 
 	"screen-ocr-llm/llm"
@@ -8,9 +9,15 @@ import (
 )
 
 func TestRecognize(t *testing.T) {
+	// Get API key from environment variable
+	apiKey := os.Getenv("TEST_API_KEY")
+	if apiKey == "" {
+		apiKey = "mock_key_for_error_testing" // Safe mock for error testing
+	}
+
 	// Initialize LLM with test config
 	llm.Init(&llm.Config{
-		APIKey: "test_api_key",
+		APIKey: apiKey,
 		Model:  "test_model",
 	})
 
@@ -32,9 +39,15 @@ func TestRecognize(t *testing.T) {
 }
 
 func TestRecognizeImage(t *testing.T) {
+	// Get API key from environment variable
+	apiKey := os.Getenv("TEST_API_KEY")
+	if apiKey == "" {
+		apiKey = "mock_key_for_error_testing" // Safe mock for error testing
+	}
+
 	// Initialize LLM with test config
 	llm.Init(&llm.Config{
-		APIKey: "test_api_key",
+		APIKey: apiKey,
 		Model:  "test_model",
 	})
 

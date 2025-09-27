@@ -13,6 +13,7 @@ type Config struct {
 	Model             string
 	EnableFileLogging bool
 	Hotkey            string
+	Providers         []string
 }
 
 func Load() (*Config, error) {
@@ -33,11 +34,23 @@ func Load() (*Config, error) {
 		}
 	}
 
+	// Parse providers from comma-separated string
+	var providers []string
+	if providersStr := os.Getenv("PROVIDERS"); providersStr != "" {
+		// Split by comma and trim whitespace
+		for _, provider := range strings.Split(providersStr, ",") {
+			if trimmed := strings.TrimSpace(provider); trimmed != "" {
+				providers = append(providers, trimmed)
+			}
+		}
+	}
+
 	cfg := &Config{
 		APIKey:            os.Getenv("OPENROUTER_API_KEY"),
 		Model:             os.Getenv("MODEL"),
 		EnableFileLogging: strings.ToLower(os.Getenv("ENABLE_FILE_LOGGING")) == "true",
-		Hotkey:            getEnvWithDefault("HOTKEY", "Ctrl+Alt+F12"),
+		Hotkey:            getEnvWithDefault("HOTKEY", "Ctrl+Alt+Q"),
+		Providers:         providers,
 	}
 
 	return cfg, nil

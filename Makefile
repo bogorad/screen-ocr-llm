@@ -10,7 +10,8 @@ build:
 
 # Build for Windows
 build-windows:
-	GOOS=windows GOARCH=amd64 go build -o $(BINARY_NAME).exe $(MAIN_PATH)
+	# Build as a Windows GUI subsystem binary to hide the console window
+	GOOS=windows GOARCH=amd64 go build -ldflags "-H=windowsgui" -o $(BINARY_NAME).exe $(MAIN_PATH)
 
 # Build for macOS (Intel) - requires macOS or cross-compilation setup
 build-macos:

@@ -11,13 +11,24 @@ import (
 
 // Embed the icon file directly into the binary
 //go:embed icon.ico
-var iconData []byte
+var embeddedIconData []byte
+
+// loadEmbeddedIconData returns a copy of the icon data that can be garbage collected
+func loadEmbeddedIconData() []byte {
+	// Return a copy so the original embedded data can potentially be GC'd
+	// (though in practice, embedded data is usually kept in read-only memory)
+	iconCopy := make([]byte, len(embeddedIconData))
+	copy(iconCopy, embeddedIconData)
+	return iconCopy
+}
 
 // Tray represents a system tray icon
 type Tray interface {
 	Run()
 	Destroy()
 }
+var systrayReady bool
+
 
 // Config holds tray icon configuration
 type Config struct {
@@ -25,6 +36,11 @@ type Config struct {
 	Tooltip string
 	OnExit  func()
 }
+
+var aboutExtra string
+
+// SetAboutExtra sets extra text to append in the About dialog (e.g., port info).
+func SetAboutExtra(extra string) { aboutExtra = extra }
 
 // SysTray implements the Tray interface using getlantern/systray
 type SysTray struct {
@@ -53,13 +69,16 @@ func (t *SysTray) Run() {
 func (t *SysTray) onReady() {
 	log.Printf("Systray ready, setting up icon and menu")
 
-	// Use embedded icon data
+	// Use embedded icon data (get a copy that can be GC'd after use)
+	iconData := loadEmbeddedIconData()
 	log.Printf("Using embedded icon, size: %d bytes", len(iconData))
 	systray.SetIcon(iconData)
 	log.Printf("Embedded icon set successfully")
+	// iconData can now be garbage collected after systray.SetIcon copies it
 
 	systray.SetTitle("Screen OCR")
 	systray.SetTooltip(t.config.Tooltip)
+	systrayReady = true
 
 	// Create menu items
 	mAbout := systray.AddMenuItem("About Screen OCR", "About this application")
@@ -101,6 +120,12 @@ func (t *SysTray) Destroy() {
 	systray.Quit()
 	t.cancel()
 }
+// UpdateTooltip updates the tray tooltip if systray is ready; otherwise no-op.
+func UpdateTooltip(tt string) {
+	if !systrayReady { return }
+	systray.SetTooltip(tt)
+}
+
 
 // getIconData returns the icon data for the tray icon
 // Based on the new SVG design with gray background and improved visibility
@@ -193,13 +218,21 @@ func showAboutDialog() {
 
 A powerful screen text extraction tool using AI vision models.
 
+Usage Modes:
+• Interactive: Run without arguments for system tray mode
+• --run-once: Single OCR capture → clipboard → silent exit
+• --run-once-std: Single OCR capture → stdout → exit
+
 Features:
 • Press Ctrl+Alt+Q to capture screen regions
 • Automatic text extraction using OCR
 • Text copied to clipboard automatically
 • System tray integration
-
-Built with Go and OpenRouter AI models.`
+• Provider routing support (PROVIDERS= in .env)`
+	if aboutExtra != "" {
+		message += "\n\n" + aboutExtra
+	}
+	message += "\n\nBuilt with Go and OpenRouter AI models."
 
 	if runtime.GOOS == "windows" {
 		showWindowsMessageBox("About Screen OCR", message)

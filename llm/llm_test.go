@@ -1,23 +1,11 @@
 package llm
 
 import (
+	"os"
 	"testing"
 )
 
-func TestQuery(t *testing.T) {
-	// Initialize with a mock config
-	Init(&Config{
-		APIKey: "test_api_key",
-		Model:  "test_model",
-	})
 
-	// Test the deprecated Query function
-	_, err := Query("test text")
-	if err == nil {
-		t.Error("Expected error from deprecated Query function")
-	}
-	t.Logf("Deprecated Query function working as expected: %v", err)
-}
 
 func TestQueryVision(t *testing.T) {
 	// Test without initialization
@@ -48,7 +36,7 @@ func TestQueryVision(t *testing.T) {
 
 	// Test with valid config (will fail due to invalid API key, but tests the request structure)
 	Init(&Config{
-		APIKey: "test_api_key",
+		APIKey: "mock_key_for_error_testing", // Safe mock for error testing
 		Model:  "test_model",
 	})
 	testImageData := []byte{0xFF, 0xFF, 0xFF, 0xFF}

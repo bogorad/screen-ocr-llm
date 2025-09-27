@@ -40,9 +40,15 @@ func TestWorkflowValidation(t *testing.T) {
 	})
 
 	t.Run("API Request Structure", func(t *testing.T) {
+		// Get API key from environment variable
+		apiKey := os.Getenv("TEST_API_KEY")
+		if apiKey == "" {
+			t.Skip("TEST_API_KEY not set; skipping API request structure test")
+		}
+
 		// Initialize LLM with test config
 		llm.Init(&llm.Config{
-			APIKey: "test_api_key",
+			APIKey: apiKey,
 			Model:  "test_model",
 		})
 

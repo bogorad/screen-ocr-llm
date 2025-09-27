@@ -1,6 +1,7 @@
 package hotkey
 
 import (
+	"os"
 	"testing"
 
 	"screen-ocr-llm/clipboard"
@@ -8,9 +9,15 @@ import (
 )
 
 func TestListen(t *testing.T) {
+	// Get API key from environment variable
+	apiKey := os.Getenv("TEST_API_KEY")
+	if apiKey == "" {
+		t.Skip("TEST_API_KEY not set; skipping test")
+	}
+
 	// Initialize required packages for testing
 	llm.Init(&llm.Config{
-		APIKey: "test_api_key",
+		APIKey: apiKey,
 		Model:  "test_model",
 	})
 

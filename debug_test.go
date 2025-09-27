@@ -19,7 +19,12 @@ func TestRealWorkflow(t *testing.T) {
 	}
 
 	t.Logf("Loaded configuration:")
-	t.Logf("  API Key: %s...%s", cfg.APIKey[:10], cfg.APIKey[len(cfg.APIKey)-4:])
+	// Log API key safely (prevent credential leakage and log injection)
+	if len(cfg.APIKey) >= 8 {
+		t.Logf("  API Key: %s...%s", cfg.APIKey[:4], cfg.APIKey[len(cfg.APIKey)-4:])
+	} else {
+		t.Logf("  API Key: [REDACTED]")
+	}
 	t.Logf("  Model: %s", cfg.Model)
 	t.Logf("  File Logging: %v", cfg.EnableFileLogging)
 

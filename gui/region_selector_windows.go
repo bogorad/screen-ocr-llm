@@ -156,6 +156,16 @@ func captureScreen(width, height int) (*image.RGBA, error) {
 
 // workingWndProc handles window messages for the working overlay
 func workingWndProc(hwnd win.HWND, msg uint32, wParam, lParam uintptr) uintptr {
+	// Log all messages for debugging
+	if msg != win.WM_PAINT && msg != win.WM_NCHITTEST && msg != win.WM_SETCURSOR {
+		log.Printf("Window message: 0x%x (wParam=%d, lParam=%d)", msg, wParam, lParam)
+	}
+
+	// Special logging for mouse events
+	if msg == win.WM_LBUTTONDOWN || msg == win.WM_LBUTTONUP || msg == win.WM_RBUTTONDOWN {
+		log.Printf("MOUSE EVENT: 0x%x at (%d, %d)", msg, win.LOWORD(uint32(lParam)), win.HIWORD(uint32(lParam)))
+	}
+
 	switch msg {
 	case win.WM_LBUTTONDOWN:
 		x := int32(win.LOWORD(uint32(lParam)))
@@ -319,16 +329,29 @@ func drawScreenBackground(hdc win.HDC) {
 	oldBitmap := win.SelectObject(memDC, win.HGDIOBJ(hBitmap))
 	defer win.SelectObject(memDC, oldBitmap)
 
-	// Copy image data to bitmap (convert RGBA to BGRA)
-	bitmapData := (*[1 << 30]byte)(pBits)[:width*height*4:width*height*4]
+	// Copy image data to bitmap (convert RGBA to BGRA) with bounds checking
+	// Calculate the proper stride (DWORD-aligned row size)
+	stride := (((int32(width)*32 + 31) &^ 31) / 8)
+
 	for y := 0; y < height; y++ {
+		// Calculate safe row pointer with bounds checking
+		rowOffset := uintptr(y) * uintptr(stride)
+
+		// Get safe pointer to current row
+		rowPtr := (*[1 << 29]byte)(unsafe.Pointer(uintptr(pBits) + rowOffset))
+
 		for x := 0; x < width; x++ {
+			pixelOffset := x * 4
+			// Ensure we don't exceed the row width (width * 4 bytes per pixel)
+			if pixelOffset+3 >= width*4 {
+				break // Safety check for row bounds
+			}
+
 			r, g, b, a := screenImage.At(x, y).RGBA()
-			offset := (y*width + x) * 4
-			bitmapData[offset] = byte(b >> 8)   // B
-			bitmapData[offset+1] = byte(g >> 8) // G
-			bitmapData[offset+2] = byte(r >> 8) // R
-			bitmapData[offset+3] = byte(a >> 8) // A
+			rowPtr[pixelOffset] = byte(b >> 8)     // B
+			rowPtr[pixelOffset+1] = byte(g >> 8)   // G
+			rowPtr[pixelOffset+2] = byte(r >> 8)   // R
+			rowPtr[pixelOffset+3] = byte(a >> 8)   // A
 		}
 	}
 

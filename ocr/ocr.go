@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"os"
 
 	"screen-ocr-llm/llm"
 	"screen-ocr-llm/screenshot"
@@ -23,12 +24,14 @@ func Recognize(region screenshot.Region) (string, error) {
 		return "", err
 	}
 
-	// DEBUG: Save the captured image to see what we're actually processing
-	debugFilename := fmt.Sprintf("debug_captured_region_%dx%d.png", region.Width, region.Height)
-	if err := ioutil.WriteFile(debugFilename, imageData, 0644); err != nil {
-		log.Printf("Warning: Could not save debug image: %v", err)
-	} else {
-		log.Printf("DEBUG: Saved captured region to %s (size: %d bytes)", debugFilename, len(imageData))
+	// DEBUG: Save the captured image only if debug mode is enabled
+	if os.Getenv("OCR_DEBUG_SAVE_IMAGES") == "true" {
+		debugFilename := fmt.Sprintf("debug_captured_region_%dx%d.png", region.Width, region.Height)
+		if err := ioutil.WriteFile(debugFilename, imageData, 0600); err != nil { // More restrictive permissions
+			log.Printf("Warning: Could not save debug image: %v", err)
+		} else {
+			log.Printf("DEBUG: Saved captured region to %s (size: %d bytes)", debugFilename, len(imageData))
+		}
 	}
 
 	// Send to OpenRouter vision model for OCR

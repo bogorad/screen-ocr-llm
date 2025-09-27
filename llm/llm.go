@@ -10,8 +10,9 @@ import (
 )
 
 type Config struct {
-	APIKey string
-	Model  string
+	APIKey    string
+	Model     string
+	Providers []string
 }
 
 var config *Config
@@ -36,11 +37,18 @@ type ImageURL struct {
 	URL string `json:"url"`
 }
 
+type ProviderPreferences struct {
+	Order          []string `json:"order,omitempty"`
+	Quantizations  []string `json:"quantizations,omitempty"`
+	AllowFallbacks *bool    `json:"allow_fallbacks,omitempty"`
+}
+
 type ChatRequest struct {
-	Model       string    `json:"model"`
-	Messages    []Message `json:"messages"`
-	Temperature float64   `json:"temperature"`
-	MaxTokens   int       `json:"max_tokens"`
+	Model       string               `json:"model"`
+	Messages    []Message            `json:"messages"`
+	Temperature float64              `json:"temperature"`
+	MaxTokens   int                  `json:"max_tokens"`
+	Provider    *ProviderPreferences `json:"provider,omitempty"`
 }
 
 type ChatResponse struct {
@@ -67,6 +75,21 @@ const (
 	maxRetries    = 3
 	initialDelay  = 1 * time.Second
 )
+
+// getProviderPreferences returns provider preferences based on config
+func getProviderPreferences() *ProviderPreferences {
+	if config == nil || len(config.Providers) == 0 {
+		// No providers specified, use default OpenRouter routing
+		return nil
+	}
+
+	// Use the providers exactly as specified by the user
+	allowFallbacks := false
+	return &ProviderPreferences{
+		Order:          config.Providers,
+		AllowFallbacks: &allowFallbacks,
+	}
+}
 
 // QueryVision sends an image to OpenRouter vision model for OCR
 func QueryVision(imageData []byte) (string, error) {
@@ -112,6 +135,7 @@ func QueryVision(imageData []byte) (string, error) {
 		},
 		Temperature: 0.1,
 		MaxTokens:   2000,
+		Provider:    getProviderPreferences(),
 	}
 
 	// Retry logic with exponential backoff
@@ -205,7 +229,4 @@ func cleanExtractedText(text string) string {
 	return text
 }
 
-// Query is kept for backward compatibility but will be deprecated
-func Query(text string) (string, error) {
-	return "", fmt.Errorf("text-based query deprecated - use QueryVision for OCR functionality")
-}
+
