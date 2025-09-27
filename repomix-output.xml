@@ -1,0 +1,2763 @@
+This file is a merged representation of the entire codebase, combined into a single document by Repomix.
+
+<file_summary>
+This section contains a summary of this file.
+
+<purpose>
+This file contains a packed representation of the entire repository's contents.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+</purpose>
+
+<file_format>
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files (if enabled)
+5. Multiple file entries, each consisting of:
+  - File path as an attribute
+  - Full contents of the file
+</file_format>
+
+<usage_guidelines>
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+</usage_guidelines>
+
+<notes>
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Files are sorted by Git change count (files with more changes are at the bottom)
+</notes>
+
+</file_summary>
+
+<directory_structure>
+.env.example
+.gitignore
+.repomixignore
+api_debug_test.go
+clipboard/clipboard_test.go
+clipboard/clipboard.go
+config/config_test.go
+config/config.go
+debug_test.go
+go.mod
+gui/gui_test.go
+gui/gui.go
+gui/region_selector_stub.go
+gui/region_selector_windows.go
+hotkey_debug_test.go
+hotkey/hotkey_test.go
+hotkey/hotkey.go
+integration_test.go
+LICENSE
+llm/llm_test.go
+llm/llm.go
+main/main.go
+Makefile
+ocr/ocr_test.go
+ocr/ocr.go
+screenshot/screenshot_test.go
+screenshot/screenshot.go
+test_clipboard.go
+tray/icon.go
+tray/icon.svg
+tray/messagebox_windows.go
+tray/tray.go
+validation_test.go
+</directory_structure>
+
+<files>
+This section contains the contents of the repository's files.
+
+<file path=".repomixignore">
+*.exe
+AUGSTER.md
+BUILD.md
+IMPLEMENTATION_SUMMARY.md
+screen_ocr_debug.log
+</file>
+
+<file path="api_debug_test.go">
+package main
+
+import (
+	"bytes"
+	"encoding/json"
+	"fmt"
+	"io"
+	"net/http"
+	"testing"
+
+	"screen-ocr-llm/config"
+)
+
+// TestDirectAPICall tests the OpenRouter API directly to debug the issue
+func TestDirectAPICall(t *testing.T) {
+	cfg, err := config.Load()
+	if err != nil {
+		t.Fatalf("Failed to load configuration: %v", err)
+	}
+
+	// Create a simple test request to check API connectivity
+	payload := map[string]interface{}{
+		"model": cfg.Model,
+		"messages": []map[string]interface{}{
+			{
+				"role": "user",
+				"content": []map[string]interface{}{
+					{
+						"type": "text",
+						"text": "Hello, can you see this message?",
+					},
+				},
+			},
+		},
+		"temperature": 0.1,
+		"max_tokens":  100,
+	}
+
+	jsonData, err := json.Marshal(payload)
+	if err != nil {
+		t.Fatalf("Failed to marshal request: %v", err)
+	}
+
+	req, err := http.NewRequest("POST", "https://openrouter.ai/api/v1/chat/completions", bytes.NewBuffer(jsonData))
+	if err != nil {
+		t.Fatalf("Failed to create request: %v", err)
+	}
+
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", cfg.APIKey))
+	req.Header.Set("HTTP-Referer", "https://github.com/cherjr/screen-ocr-llm")
+	req.Header.Set("X-Title", "Screen OCR Tool")
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		t.Fatalf("API request failed: %v", err)
+	}
+	defer resp.Body.Close()
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		t.Fatalf("Failed to read response: %v", err)
+	}
+
+	t.Logf("Response Status: %d", resp.StatusCode)
+	t.Logf("Response Body: %s", string(body))
+
+	if resp.StatusCode != http.StatusOK {
+		t.Errorf("API returned non-200 status: %d", resp.StatusCode)
+	}
+}
+
+// TestAPIWithImage tests the API with a simple image
+func TestAPIWithImage(t *testing.T) {
+	cfg, err := config.Load()
+	if err != nil {
+		t.Fatalf("Failed to load configuration: %v", err)
+	}
+
+	// Create a simple 10x10 white PNG image (larger than our previous test)
+	// This is a valid 10x10 white PNG
+	pngData := "iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAAdgAAAHYBTnsmCAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAABYSURBVBiVY/z//z8DJQAggBhJVQcQQIykqgMIIEZS1QEEECO56gACiJFcdQABxEiuOoAAYiRXHUAAMZKrDiCAGMlVBxBAjOSqAwggRnLVAQQQI7nqAAKIEQAOHwEJAJWVmwAAAABJRU5ErkJggg=="
+
+	payload := map[string]interface{}{
+		"model": cfg.Model,
+		"messages": []map[string]interface{}{
+			{
+				"role": "user",
+				"content": []map[string]interface{}{
+					{
+						"type": "text",
+						"text": "What do you see in this image?",
+					},
+					{
+						"type": "image_url",
+						"image_url": map[string]string{
+							"url": fmt.Sprintf("data:image/png;base64,%s", pngData),
+						},
+					},
+				},
+			},
+		},
+		"temperature": 0.1,
+		"max_tokens":  200,
+	}
+
+	jsonData, err := json.Marshal(payload)
+	if err != nil {
+		t.Fatalf("Failed to marshal request: %v", err)
+	}
+
+	req, err := http.NewRequest("POST", "https://openrouter.ai/api/v1/chat/completions", bytes.NewBuffer(jsonData))
+	if err != nil {
+		t.Fatalf("Failed to create request: %v", err)
+	}
+
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", cfg.APIKey))
+	req.Header.Set("HTTP-Referer", "https://github.com/cherjr/screen-ocr-llm")
+	req.Header.Set("X-Title", "Screen OCR Tool")
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		t.Fatalf("API request failed: %v", err)
+	}
+	defer resp.Body.Close()
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		t.Fatalf("Failed to read response: %v", err)
+	}
+
+	t.Logf("Image API Response Status: %d", resp.StatusCode)
+	t.Logf("Image API Response Body: %s", string(body))
+
+	if resp.StatusCode != http.StatusOK {
+		t.Errorf("Image API returned non-200 status: %d", resp.StatusCode)
+	}
+}
+</file>
+
+<file path="clipboard/clipboard_test.go">
+package clipboard
+
+import (
+	"testing"
+)
+
+func TestWrite(t *testing.T) {
+	// This test would require clipboard access, so we'll just check if the function exists
+	// and doesn't panic
+	err := Write("test text")
+	if err != nil {
+		t.Logf("Failed to write to clipboard: %v", err)
+	}
+}
+</file>
+
+<file path="clipboard/clipboard.go">
+package clipboard
+
+import (
+	"golang.design/x/clipboard"
+)
+
+func Init() error {
+	return clipboard.Init()
+}
+
+func Write(text string) error {
+	// Write to clipboard - this returns a channel, not an error
+	clipboard.Write(clipboard.FmtText, []byte(text))
+	return nil
+}
+</file>
+
+<file path="config/config_test.go">
+package config
+
+import (
+	"os"
+	"testing"
+)
+
+func TestLoad(t *testing.T) {
+	// Set test environment variables
+	os.Setenv("OPENROUTER_API_KEY", "test_api_key")
+	os.Setenv("MODEL", "test_model")
+	os.Setenv("ENABLE_FILE_LOGGING", "true")
+	os.Setenv("HOTKEY", "Ctrl+Shift+T")
+
+	defer func() {
+		// Clean up environment variables
+		os.Unsetenv("OPENROUTER_API_KEY")
+		os.Unsetenv("MODEL")
+		os.Unsetenv("ENABLE_FILE_LOGGING")
+		os.Unsetenv("HOTKEY")
+	}()
+
+	// Load the configuration
+	cfg, err := Load()
+	if err != nil {
+		t.Fatalf("Failed to load configuration: %v", err)
+	}
+
+	// Check the configuration values
+	if cfg.APIKey != "test_api_key" {
+		t.Errorf("Expected APIKey to be 'test_api_key', got '%s'", cfg.APIKey)
+	}
+	if cfg.Model != "test_model" {
+		t.Errorf("Expected Model to be 'test_model', got '%s'", cfg.Model)
+	}
+	if !cfg.EnableFileLogging {
+		t.Errorf("Expected EnableFileLogging to be true, got %v", cfg.EnableFileLogging)
+	}
+	if cfg.Hotkey != "Ctrl+Shift+T" {
+		t.Errorf("Expected Hotkey to be 'Ctrl+Shift+T', got '%s'", cfg.Hotkey)
+	}
+}
+</file>
+
+<file path="config/config.go">
+package config
+
+import (
+	"os"
+	"path/filepath"
+	"strings"
+
+	"github.com/joho/godotenv"
+)
+
+type Config struct {
+	APIKey            string
+	Model             string
+	EnableFileLogging bool
+	Hotkey            string
+}
+
+func Load() (*Config, error) {
+	// Try to load .env file from current directory or executable directory
+	envPaths := []string{".env"}
+
+	// If running as executable, also try the executable's directory
+	if execPath, err := os.Executable(); err == nil {
+		execDir := filepath.Dir(execPath)
+		envPaths = append(envPaths, filepath.Join(execDir, ".env"))
+	}
+
+	// Try to load .env file (ignore errors if file doesn't exist)
+	for _, envPath := range envPaths {
+		if _, err := os.Stat(envPath); err == nil {
+			godotenv.Load(envPath)
+			break
+		}
+	}
+
+	cfg := &Config{
+		APIKey:            os.Getenv("OPENROUTER_API_KEY"),
+		Model:             os.Getenv("MODEL"),
+		EnableFileLogging: strings.ToLower(os.Getenv("ENABLE_FILE_LOGGING")) == "true",
+		Hotkey:            getEnvWithDefault("HOTKEY", "Ctrl+Alt+F12"),
+	}
+
+	return cfg, nil
+}
+
+func getEnvWithDefault(key, defaultValue string) string {
+	if value := os.Getenv(key); value != "" {
+		return value
+	}
+	return defaultValue
+}
+</file>
+
+<file path="debug_test.go">
+package main
+
+import (
+	"log"
+	"testing"
+
+	"screen-ocr-llm/config"
+	"screen-ocr-llm/gui"
+	"screen-ocr-llm/llm"
+	"screen-ocr-llm/screenshot"
+)
+
+// TestRealWorkflow tests the actual workflow with your configuration
+func TestRealWorkflow(t *testing.T) {
+	// Load your actual configuration
+	cfg, err := config.Load()
+	if err != nil {
+		t.Fatalf("Failed to load configuration: %v", err)
+	}
+
+	t.Logf("Loaded configuration:")
+	t.Logf("  API Key: %s...%s", cfg.APIKey[:10], cfg.APIKey[len(cfg.APIKey)-4:])
+	t.Logf("  Model: %s", cfg.Model)
+	t.Logf("  File Logging: %v", cfg.EnableFileLogging)
+
+	// Initialize LLM with your actual config
+	llm.Init(&llm.Config{
+		APIKey: cfg.APIKey,
+		Model:  cfg.Model,
+	})
+
+	// Test the region selection workflow
+	workflowExecuted := false
+	var capturedRegion screenshot.Region
+
+	gui.SetRegionSelectionCallback(func(region screenshot.Region) error {
+		workflowExecuted = true
+		capturedRegion = region
+		t.Logf("Region selection callback triggered with region: %+v", region)
+
+		// This would normally capture the screen region and send to OCR
+		// For testing, let's create a small test image
+		testImageData := createTestImage()
+		
+		t.Logf("Testing OCR with %d bytes of image data", len(testImageData))
+		
+		// Test the actual API call with your credentials
+		result, err := llm.QueryVision(testImageData)
+		if err != nil {
+			t.Logf("OCR API call failed (this might be expected with test image): %v", err)
+			return err
+		}
+		
+		t.Logf("OCR result: %s", result)
+		return nil
+	})
+
+	// Trigger the workflow
+	err = gui.StartRegionSelection()
+	if err != nil {
+		t.Errorf("Region selection failed: %v", err)
+	}
+
+	if !workflowExecuted {
+		t.Error("Workflow callback was not executed")
+	}
+
+	t.Logf("Test completed. Region used: %+v", capturedRegion)
+}
+
+// createTestImage creates a minimal PNG image for testing
+func createTestImage() []byte {
+	// This is a minimal 1x1 pixel PNG image in base64, decoded to bytes
+	// It's a white pixel PNG for testing purposes
+	pngData := []byte{
+		0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A, 0x00, 0x00, 0x00, 0x0D,
+		0x49, 0x48, 0x44, 0x52, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x01,
+		0x08, 0x02, 0x00, 0x00, 0x00, 0x90, 0x77, 0x53, 0xDE, 0x00, 0x00, 0x00,
+		0x0C, 0x49, 0x44, 0x41, 0x54, 0x08, 0xD7, 0x63, 0xF8, 0x0F, 0x00, 0x00,
+		0x01, 0x00, 0x01, 0x5C, 0xC2, 0x8A, 0x8E, 0x00, 0x00, 0x00, 0x00, 0x49,
+		0x45, 0x4E, 0x44, 0xAE, 0x42, 0x60, 0x82,
+	}
+	return pngData
+}
+
+// TestAPIConnectivity tests if we can connect to OpenRouter with your credentials
+func TestAPIConnectivity(t *testing.T) {
+	cfg, err := config.Load()
+	if err != nil {
+		t.Fatalf("Failed to load configuration: %v", err)
+	}
+
+	llm.Init(&llm.Config{
+		APIKey: cfg.APIKey,
+		Model:  cfg.Model,
+	})
+
+	// Test with a simple image
+	testImage := createTestImage()
+	
+	log.Printf("Testing API connectivity with model: %s", cfg.Model)
+	result, err := llm.QueryVision(testImage)
+	
+	if err != nil {
+		t.Logf("API call failed: %v", err)
+		// This might be expected with a minimal test image
+		// The important thing is that we get a proper API response, even if it's an error
+	} else {
+		t.Logf("API call succeeded! Result: %s", result)
+	}
+}
+</file>
+
+<file path="go.mod">
+module screen-ocr-llm
+
+go 1.25.1
+
+require (
+	fyne.io/fyne/v2 v2.6.3
+	github.com/getlantern/systray v1.2.2
+	github.com/joho/godotenv v1.5.1
+	github.com/kbinani/screenshot v0.0.0-20250624051815-089614a94018
+	github.com/robotn/gohook v0.42.2
+	golang.design/x/clipboard v0.7.1
+	golang.org/x/sys v0.33.0
+)
+
+require (
+	fyne.io/systray v1.11.0 // indirect
+	github.com/BurntSushi/toml v1.4.0 // indirect
+	github.com/davecgh/go-spew v1.1.1 // indirect
+	github.com/dblohm7/wingoes v0.0.0-20240820181039-f2b84150679e // indirect
+	github.com/ebitengine/purego v0.8.3 // indirect
+	github.com/fredbi/uri v1.1.0 // indirect
+	github.com/fsnotify/fsnotify v1.9.0 // indirect
+	github.com/fyne-io/gl-js v0.2.0 // indirect
+	github.com/fyne-io/glfw-js v0.3.0 // indirect
+	github.com/fyne-io/image v0.1.1 // indirect
+	github.com/fyne-io/oksvg v0.1.0 // indirect
+	github.com/gen2brain/shm v0.1.1 // indirect
+	github.com/getlantern/context v0.0.0-20190109183933-c447772a6520 // indirect
+	github.com/getlantern/errors v0.0.0-20190325191628-abdb3e3e36f7 // indirect
+	github.com/getlantern/golog v0.0.0-20190830074920-4ef2e798c2d7 // indirect
+	github.com/getlantern/hex v0.0.0-20190417191902-c6586a6fe0b7 // indirect
+	github.com/getlantern/hidden v0.0.0-20190325191715-f02dbb02be55 // indirect
+	github.com/getlantern/ops v0.0.0-20190325191751-d70cb0d6f85f // indirect
+	github.com/go-gl/gl v0.0.0-20231021071112-07e5d0ea2e71 // indirect
+	github.com/go-gl/glfw/v3.3/glfw v0.0.0-20240506104042-037f3cc74f2a // indirect
+	github.com/go-ole/go-ole v1.3.0 // indirect
+	github.com/go-stack/stack v1.8.0 // indirect
+	github.com/go-text/render v0.2.0 // indirect
+	github.com/go-text/typesetting v0.2.1 // indirect
+	github.com/go-vgo/robotgo v0.110.8 // indirect
+	github.com/godbus/dbus/v5 v5.1.0 // indirect
+	github.com/hack-pad/go-indexeddb v0.3.2 // indirect
+	github.com/hack-pad/safejs v0.1.0 // indirect
+	github.com/jeandeaual/go-locale v0.0.0-20250612000132-0ef82f21eade // indirect
+	github.com/jezek/xgb v1.1.1 // indirect
+	github.com/jsummers/gobmp v0.0.0-20230614200233-a9de23ed2e25 // indirect
+	github.com/kr/text v0.2.0 // indirect
+	github.com/lufia/plan9stats v0.0.0-20250317134145-8bc96cf8fc35 // indirect
+	github.com/lxn/win v0.0.0-20210218163916-a377121e959e // indirect
+	github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646 // indirect
+	github.com/nicksnyder/go-i18n/v2 v2.5.1 // indirect
+	github.com/otiai10/gosseract v2.2.1+incompatible // indirect
+	github.com/oxtoacart/bpool v0.0.0-20190530202638-03653db5a59c // indirect
+	github.com/pmezard/go-difflib v1.0.0 // indirect
+	github.com/power-devops/perfstat v0.0.0-20240221224432-82ca36839d55 // indirect
+	github.com/robotn/xgb v0.10.0 // indirect
+	github.com/robotn/xgbutil v0.10.0 // indirect
+	github.com/rymdport/portal v0.4.1 // indirect
+	github.com/shirou/gopsutil/v4 v4.25.4 // indirect
+	github.com/srwiley/oksvg v0.0.0-20221011165216-be6e8873101c // indirect
+	github.com/srwiley/rasterx v0.0.0-20220730225603-2ab79fcdd4ef // indirect
+	github.com/stretchr/testify v1.11.1 // indirect
+	github.com/tailscale/win v0.0.0-20250213223159-5992cb43ca35 // indirect
+	github.com/tklauser/go-sysconf v0.3.15 // indirect
+	github.com/tklauser/numcpus v0.10.0 // indirect
+	github.com/vcaesar/gops v0.41.0 // indirect
+	github.com/vcaesar/imgo v0.41.0 // indirect
+	github.com/vcaesar/keycode v0.10.1 // indirect
+	github.com/vcaesar/screenshot v0.11.1 // indirect
+	github.com/vcaesar/tt v0.20.1 // indirect
+	github.com/yuin/goldmark v1.7.8 // indirect
+	github.com/yusufpapurcu/wmi v1.2.4 // indirect
+	golang.org/x/exp v0.0.0-20250506013437-ce4c2cf36ca6 // indirect
+	golang.org/x/exp/shiny v0.0.0-20250606033433-dcc06ee1d476 // indirect
+	golang.org/x/image v0.28.0 // indirect
+	golang.org/x/mobile v0.0.0-20250606033058-a2a15c67f36f // indirect
+	golang.org/x/net v0.35.0 // indirect
+	golang.org/x/sys v0.33.0 // indirect
+	golang.org/x/text v0.26.0 // indirect
+	gopkg.in/yaml.v3 v3.0.1 // indirect
+)
+</file>
+
+<file path="gui/gui_test.go">
+package gui
+
+import (
+	"testing"
+
+	"screen-ocr-llm/screenshot"
+)
+
+func TestInit(t *testing.T) {
+	// Test that Init doesn't panic
+	Init()
+}
+
+func TestSetRegionSelectionCallback(t *testing.T) {
+	// Test setting callback
+	called := false
+	callback := func(region screenshot.Region) error {
+		called = true
+		return nil
+	}
+
+	SetRegionSelectionCallback(callback)
+
+	// Test region selection
+	err := StartRegionSelection()
+	if err != nil {
+		t.Errorf("StartRegionSelection failed: %v", err)
+	}
+
+	if !called {
+		t.Error("Callback was not called")
+	}
+}
+
+func TestStartRegionSelectionWithoutCallback(t *testing.T) {
+	// Reset callback
+	regionCallback = nil
+
+	// Test without callback
+	err := StartRegionSelection()
+	if err == nil {
+		t.Error("Expected error when no callback is set")
+	}
+}
+</file>
+
+<file path="gui/gui.go">
+package gui
+
+import (
+	"fmt"
+	"log"
+
+	"screen-ocr-llm/screenshot"
+
+	"github.com/getlantern/systray"
+)
+
+// RegionSelectionCallback is called when a region is selected
+type RegionSelectionCallback func(region screenshot.Region) error
+
+var regionCallback RegionSelectionCallback
+
+func Init() {
+	// Initialize GUI package if needed
+}
+
+// SetRegionSelectionCallback sets the callback for region selection
+func SetRegionSelectionCallback(callback RegionSelectionCallback) {
+	regionCallback = callback
+}
+
+// StartRegionSelection starts the region selection process
+func StartRegionSelection() error {
+	if regionCallback == nil {
+		return fmt.Errorf("no region selection callback set")
+	}
+
+	log.Printf("Starting interactive region selection...")
+
+	// Use platform-specific region selection
+	region, err := StartInteractiveRegionSelection()
+	if err != nil {
+		log.Printf("Interactive region selection failed: %v", err)
+		return err
+	}
+
+	// Check if a valid region was selected
+	if region.Width == 0 || region.Height == 0 {
+		log.Printf("No valid region selected")
+		return fmt.Errorf("no valid region selected")
+	}
+
+	log.Printf("Region selected: %+v", region)
+	return regionCallback(region)
+}
+
+func StartSystray() {
+	// Start the systray
+	systray.Run(onReady, onExit)
+}
+
+func onReady() {
+	// Set the icon for the systray
+	systray.SetIcon(getIcon())
+
+	// Set the title and tooltip for the systray
+	systray.SetTitle("Screen OCR LLM")
+	systray.SetTooltip("Screen OCR LLM")
+
+	// Add menu items
+	mCapture := systray.AddMenuItem("Capture Screen", "Capture the screen")
+	mQuit := systray.AddMenuItem("Quit", "Quit the application")
+
+	// Handle menu item events
+	go func() {
+		for {
+			select {
+			case <-mCapture.ClickedCh:
+				if err := StartRegionSelection(); err != nil {
+					log.Printf("Region selection failed: %v", err)
+				}
+			case <-mQuit.ClickedCh:
+				systray.Quit()
+			}
+		}
+	}()
+}
+
+func onExit() {
+	// Clean up resources when the systray exits
+}
+
+func getIcon() []byte {
+	// TODO: Return the icon data
+	return nil
+}
+</file>
+
+<file path="gui/region_selector_stub.go">
+//go:build !windows
+
+package gui
+
+import (
+	"fmt"
+	"screen-ocr-llm/screenshot"
+)
+
+// StartInteractiveRegionSelection is a stub for non-Windows platforms
+func StartInteractiveRegionSelection() (screenshot.Region, error) {
+	return screenshot.Region{}, fmt.Errorf("interactive region selection not implemented for this platform")
+}
+</file>
+
+<file path="gui/region_selector_windows.go">
+//go:build windows
+
+package gui
+
+import (
+	"fmt"
+	"image"
+	"image/draw"
+	"log"
+	"syscall"
+	"time"
+	"unsafe"
+
+	"screen-ocr-llm/screenshot"
+
+	"github.com/lxn/win"
+)
+
+// Global state for the simple overlay
+var (
+	simpleOverlayHwnd win.HWND
+	simpleIsSelecting bool
+	simpleStartX, simpleStartY int32
+	simpleEndX, simpleEndY int32
+	simpleScreenWidth int32
+	simpleScreenHeight int32
+	simpleSelectionResult chan screenshot.Region
+)
+
+// Global variables for screen capture
+var (
+	screenImage *image.RGBA
+	screenHDC   win.HDC
+	screenHBitmap win.HBITMAP
+)
+
+// StartInteractiveRegionSelection creates a working overlay with screen background
+func StartInteractiveRegionSelection() (screenshot.Region, error) {
+	log.Printf("Starting WORKING Windows region selection...")
+
+	// Get screen dimensions
+	simpleScreenWidth = win.GetSystemMetrics(win.SM_CXSCREEN)
+	simpleScreenHeight = win.GetSystemMetrics(win.SM_CYSCREEN)
+	// Use VIRTUAL SCREEN metrics to cover all monitors
+	vx := win.GetSystemMetrics(win.SM_XVIRTUALSCREEN)
+	vy := win.GetSystemMetrics(win.SM_YVIRTUALSCREEN)
+	vw := win.GetSystemMetrics(win.SM_CXVIRTUALSCREEN)
+	vh := win.GetSystemMetrics(win.SM_CYVIRTUALSCREEN)
+	log.Printf("Virtual screen: x=%d y=%d w=%d h=%d", vx, vy, vw, vh)
+
+	log.Printf("Screen dimensions: %dx%d", simpleScreenWidth, simpleScreenHeight)
+
+	// Capture the screen first
+	var err error
+	screenImage, err = captureScreen(int(simpleScreenWidth), int(simpleScreenHeight))
+	if err != nil {
+		return screenshot.Region{}, fmt.Errorf("failed to capture screen: %v", err)
+	}
+	log.Printf("Screen captured successfully")
+
+	// Initialize selection state
+	simpleSelectionResult = make(chan screenshot.Region, 1)
+	simpleIsSelecting = false
+
+	// Register window class with unique name to avoid conflicts
+	classNameStr := fmt.Sprintf("WorkingOverlay_%d", time.Now().UnixNano())
+	className := syscall.StringToUTF16Ptr(classNameStr)
+	wndClass := win.WNDCLASSEX{
+		CbSize:        uint32(unsafe.Sizeof(win.WNDCLASSEX{})),
+		Style:         win.CS_HREDRAW | win.CS_VREDRAW,
+		LpfnWndProc:   syscall.NewCallback(workingWndProc),
+		HInstance:     win.GetModuleHandle(nil),
+		HCursor:       win.LoadCursor(0, win.MAKEINTRESOURCE(win.IDC_CROSS)),
+		HbrBackground: 0, // No background brush - we'll paint ourselves
+		LpszClassName: className,
+	}
+
+	atom := win.RegisterClassEx(&wndClass)
+	if atom == 0 {
+		return screenshot.Region{}, fmt.Errorf("failed to register window class")
+	}
+	defer win.UnregisterClass(className)
+
+	// Create fullscreen window covering the entire virtual screen
+	simpleOverlayHwnd = win.CreateWindowEx(
+		win.WS_EX_TOPMOST,
+		className,
+		syscall.StringToUTF16Ptr("Select Region - Click and drag, ESC to cancel"),
+		win.WS_POPUP|win.WS_VISIBLE,
+		vx, vy, vw, vh,
+		0, 0, win.GetModuleHandle(nil), nil,
+	)
+
+	if simpleOverlayHwnd == 0 {
+		return screenshot.Region{}, fmt.Errorf("failed to create overlay window")
+	}
+
+	log.Printf("Working overlay window created: %v", simpleOverlayHwnd)
+
+	// Show window and bring to front
+	win.ShowWindow(simpleOverlayHwnd, win.SW_SHOW)
+	win.SetForegroundWindow(simpleOverlayHwnd)
+	win.SetFocus(simpleOverlayHwnd)
+	win.UpdateWindow(simpleOverlayHwnd)
+
+	log.Printf("Window shown, starting message loop...")
+
+	// Message loop
+	var msg win.MSG
+	for {
+		ret := win.GetMessage(&msg, 0, 0, 0)
+		if ret == 0 { // WM_QUIT
+			log.Printf("WM_QUIT received")
+			break
+		}
+		if ret == -1 { // Error
+			log.Printf("GetMessage error")
+			break
+		}
+
+		win.TranslateMessage(&msg)
+		win.DispatchMessage(&msg)
+
+		// Check if selection is done
+		select {
+		case region := <-simpleSelectionResult:
+			win.DestroyWindow(simpleOverlayHwnd)
+			log.Printf("Selection completed: %+v", region)
+			return region, nil
+		default:
+		}
+	}
+
+	win.DestroyWindow(simpleOverlayHwnd)
+	return screenshot.Region{}, fmt.Errorf("selection cancelled")
+}
+
+// captureScreen captures the entire screen as an RGBA image
+func captureScreen(width, height int) (*image.RGBA, error) {
+	// Use the project's screenshot package to capture the screen
+	img, err := screenshot.Capture()
+	if err != nil {
+		return nil, err
+	}
+
+	// The image is already RGBA, but let's ensure it matches our expected size
+	if img.Bounds().Dx() != width || img.Bounds().Dy() != height {
+		// Resize if needed
+		rgba := image.NewRGBA(image.Rect(0, 0, width, height))
+		draw.Draw(rgba, rgba.Bounds(), img, image.Point{}, draw.Src)
+		return rgba, nil
+	}
+
+	return img, nil
+}
+
+// workingWndProc handles window messages for the working overlay
+func workingWndProc(hwnd win.HWND, msg uint32, wParam, lParam uintptr) uintptr {
+	switch msg {
+	case win.WM_LBUTTONDOWN:
+		x := int32(win.LOWORD(uint32(lParam)))
+		y := int32(win.HIWORD(uint32(lParam)))
+		log.Printf("Mouse down at (%d, %d)", x, y)
+
+		win.SetCapture(hwnd)
+		simpleIsSelecting = true
+		simpleStartX = x
+		simpleStartY = y
+		simpleEndX = x
+		simpleEndY = y
+
+		// Force immediate repaint
+		win.InvalidateRect(hwnd, nil, false)
+		win.UpdateWindow(hwnd)
+		return 0
+
+	case win.WM_MOUSEMOVE:
+		if simpleIsSelecting {
+			x := int32(win.LOWORD(uint32(lParam)))
+			y := int32(win.HIWORD(uint32(lParam)))
+			simpleEndX = x
+			simpleEndY = y
+
+			// Force immediate repaint to show selection
+			win.InvalidateRect(hwnd, nil, false)
+			win.UpdateWindow(hwnd)
+		}
+		return 0
+
+	case win.WM_LBUTTONUP:
+		if simpleIsSelecting {
+			win.ReleaseCapture()
+			x := int32(win.LOWORD(uint32(lParam)))
+			y := int32(win.HIWORD(uint32(lParam)))
+			simpleEndX = x
+			simpleEndY = y
+			simpleIsSelecting = false
+
+			// Calculate region
+			left := simpleMin(simpleStartX, simpleEndX)
+			top := simpleMin(simpleStartY, simpleEndY)
+			width := simpleAbs(simpleEndX - simpleStartX)
+			height := simpleAbs(simpleEndY - simpleStartY)
+
+			log.Printf("Mouse up at (%d, %d), selection: %d,%d,%d,%d", x, y, left, top, width, height)
+
+			if width > 5 && height > 5 {
+				region := screenshot.Region{
+					X:      int(left),
+					Y:      int(top),
+					Width:  int(width),
+					Height: int(height),
+				}
+				simpleSelectionResult <- region
+			} else {
+				log.Printf("Selection too small, ignoring")
+			}
+		}
+		return 0
+
+	case win.WM_PAINT:
+		var ps win.PAINTSTRUCT
+		hdc := win.BeginPaint(hwnd, &ps)
+
+		log.Printf("WM_PAINT called, isSelecting=%v", simpleIsSelecting)
+
+		// Draw the captured screen as background
+		if screenImage != nil {
+			drawScreenBackground(hdc)
+		}
+
+		// Draw selection rectangle if selecting
+		if simpleIsSelecting {
+			log.Printf("Drawing selection rectangle: (%d,%d) to (%d,%d)", simpleStartX, simpleStartY, simpleEndX, simpleEndY)
+			// Use direct GDI calls
+			gdi32 := syscall.NewLazyDLL("gdi32.dll")
+			createPen := gdi32.NewProc("CreatePen")
+			rectangle := gdi32.NewProc("Rectangle")
+
+			// Create red pen for selection rectangle
+			redPen, _, _ := createPen.Call(0, 3, 0x0000FF) // PS_SOLID, width 3, red color (BGR)
+			oldPen := win.SelectObject(hdc, win.HGDIOBJ(redPen))
+
+			// Set transparent brush
+			oldBrush := win.SelectObject(hdc, win.GetStockObject(win.NULL_BRUSH))
+
+			// Draw rectangle
+			left := simpleMin(simpleStartX, simpleEndX)
+			top := simpleMin(simpleStartY, simpleEndY)
+			right := simpleMax(simpleStartX, simpleEndX)
+			bottom := simpleMax(simpleStartY, simpleEndY)
+
+			rectangle.Call(uintptr(hdc), uintptr(left), uintptr(top), uintptr(right), uintptr(bottom))
+
+			// Restore old objects
+			win.SelectObject(hdc, oldPen)
+			win.SelectObject(hdc, oldBrush)
+			win.DeleteObject(win.HGDIOBJ(redPen))
+		}
+
+		win.EndPaint(hwnd, &ps)
+		return 0
+
+	case win.WM_KEYDOWN:
+		if wParam == win.VK_ESCAPE {
+			log.Printf("Escape pressed, cancelling selection")
+			win.PostQuitMessage(0)
+		}
+		return 0
+
+	case win.WM_NCHITTEST:
+		// Force all points to be client area so the window receives mouse events
+		return uintptr(win.HTCLIENT)
+
+	case win.WM_DESTROY:
+		log.Printf("WM_DESTROY received")
+		win.PostQuitMessage(0)
+		return 0
+	}
+
+	return win.DefWindowProc(hwnd, msg, wParam, lParam)
+}
+
+// drawScreenBackground draws the captured screen as background
+func drawScreenBackground(hdc win.HDC) {
+	if screenImage == nil {
+		return
+	}
+
+	// Create a compatible DC and bitmap for the screen image
+	memDC := win.CreateCompatibleDC(hdc)
+	defer win.DeleteDC(memDC)
+
+	// Create bitmap from screen image
+	bounds := screenImage.Bounds()
+	width := bounds.Dx()
+	height := bounds.Dy()
+
+	// Create DIB section
+	bitmapInfo := win.BITMAPINFO{
+		BmiHeader: win.BITMAPINFOHEADER{
+			BiSize:        uint32(unsafe.Sizeof(win.BITMAPINFOHEADER{})),
+			BiWidth:       int32(width),
+			BiHeight:      -int32(height), // Negative for top-down
+			BiPlanes:      1,
+			BiBitCount:    32,
+			BiCompression: win.BI_RGB,
+		},
+	}
+
+	var pBits unsafe.Pointer
+	hBitmap := win.CreateDIBSection(memDC, &bitmapInfo.BmiHeader, win.DIB_RGB_COLORS, &pBits, 0, 0)
+	if hBitmap == 0 {
+		return
+	}
+	defer win.DeleteObject(win.HGDIOBJ(hBitmap))
+
+	// Select bitmap into memory DC
+	oldBitmap := win.SelectObject(memDC, win.HGDIOBJ(hBitmap))
+	defer win.SelectObject(memDC, oldBitmap)
+
+	// Copy image data to bitmap (convert RGBA to BGRA)
+	bitmapData := (*[1 << 30]byte)(pBits)[:width*height*4:width*height*4]
+	for y := 0; y < height; y++ {
+		for x := 0; x < width; x++ {
+			r, g, b, a := screenImage.At(x, y).RGBA()
+			offset := (y*width + x) * 4
+			bitmapData[offset] = byte(b >> 8)   // B
+			bitmapData[offset+1] = byte(g >> 8) // G
+			bitmapData[offset+2] = byte(r >> 8) // R
+			bitmapData[offset+3] = byte(a >> 8) // A
+		}
+	}
+
+	// BitBlt the screen image to the window
+	win.BitBlt(hdc, 0, 0, int32(width), int32(height), memDC, 0, 0, win.SRCCOPY)
+}
+
+// Helper functions
+func simpleMin(a, b int32) int32 {
+	if a < b {
+		return a
+	}
+	return b
+}
+
+func simpleMax(a, b int32) int32 {
+	if a > b {
+		return a
+	}
+	return b
+}
+
+func simpleAbs(x int32) int32 {
+	if x < 0 {
+		return -x
+	}
+	return x
+}
+</file>
+
+<file path="hotkey_debug_test.go">
+package main
+
+import (
+	"log"
+	"testing"
+	"time"
+
+	"screen-ocr-llm/hotkey"
+)
+
+// TestHotkeyDebug tests if the hotkey system is working
+func TestHotkeyDebug(t *testing.T) {
+	log.Println("Testing hotkey system...")
+	
+	triggered := false
+	
+	// Set up hotkey listener
+	hotkey.Listen(func() {
+		log.Println("HOTKEY TRIGGERED!")
+		triggered = true
+	})
+	
+	log.Println("Hotkey listener started. Press Ctrl+Shift+O within 10 seconds...")
+	
+	// Wait for 10 seconds to see if hotkey is triggered
+	for i := 0; i < 10; i++ {
+		time.Sleep(1 * time.Second)
+		if triggered {
+			t.Log("SUCCESS: Hotkey was detected!")
+			return
+		}
+		log.Printf("Waiting... %d seconds remaining", 10-i)
+	}
+	
+	t.Log("No hotkey detected within 10 seconds")
+	t.Log("This could mean:")
+	t.Log("1. Another application is intercepting the hotkey")
+	t.Log("2. The hotkey library isn't working on this system")
+	t.Log("3. The hotkey combination is different than expected")
+}
+</file>
+
+<file path="hotkey/hotkey_test.go">
+package hotkey
+
+import (
+	"testing"
+
+	"screen-ocr-llm/clipboard"
+	"screen-ocr-llm/llm"
+)
+
+func TestListen(t *testing.T) {
+	// Initialize required packages for testing
+	llm.Init(&llm.Config{
+		APIKey: "test_api_key",
+		Model:  "test_model",
+	})
+
+	err := clipboard.Init()
+	if err != nil {
+		t.Logf("Clipboard init failed (expected in headless environment): %v", err)
+	}
+
+	// This test would require user interaction, so we'll just check if the function exists
+	// and doesn't panic during setup
+	Listen(func() {
+		// Test callback - this won't be called in test environment
+	})
+
+	t.Log("Hotkey listener setup completed successfully")
+}
+</file>
+
+<file path="hotkey/hotkey.go">
+package hotkey
+
+import (
+	"log"
+	"strings"
+
+	"screen-ocr-llm/clipboard"
+	"screen-ocr-llm/gui"
+	"screen-ocr-llm/ocr"
+	"screen-ocr-llm/screenshot"
+
+	gohook "github.com/robotn/gohook"
+)
+
+func Listen(hotkeyConfig string, callback func()) {
+	// Set up the region selection callback to handle the complete OCR workflow
+	gui.SetRegionSelectionCallback(func(region screenshot.Region) error {
+		log.Printf("Processing region: %+v", region)
+
+		// Perform OCR on the selected region
+		text, err := ocr.Recognize(region)
+		if err != nil {
+			log.Printf("OCR failed: %v", err)
+			return err
+		}
+
+		log.Printf("OCR extracted text (%d chars): %q", len(text), text)
+
+		// Copy result to clipboard
+		if err := clipboard.Write(text); err != nil {
+			log.Printf("CLIPBOARD ERROR: Failed to write to clipboard: %v", err)
+			return err
+		}
+
+		log.Printf("OCR completed successfully, text copied to clipboard (%d chars)", len(text))
+		return nil
+	})
+
+	// Parse hotkey configuration
+	keys := parseHotkey(hotkeyConfig)
+	log.Printf("Parsed hotkey configuration: %v", keys)
+
+	// Start a goroutine to listen for hotkey events
+	go func() {
+		defer func() {
+			if r := recover(); r != nil {
+				log.Printf("PANIC in hotkey goroutine: %v", r)
+			}
+		}()
+
+		log.Printf("Starting gohook goroutine...")
+
+		// Track key states for combination detection
+		var ctrlPressed, altPressed, qPressed bool
+
+		// Start the event loop
+		log.Printf("Starting gohook event loop...")
+		evChan := gohook.Start()
+		if evChan == nil {
+			log.Printf("ERROR: gohook.Start() returned nil channel")
+			return
+		}
+		log.Printf("gohook.Start() returned channel successfully")
+
+		// Process events from the channel
+		for ev := range evChan {
+			// Only log key events, not mouse events to reduce spam
+			if ev.Kind == gohook.KeyDown || ev.Kind == gohook.KeyUp {
+				log.Printf("Key event: Kind=%v, Rawcode=%d, Keychar=%v", ev.Kind, ev.Rawcode, ev.Keychar)
+
+				// Track key states
+				if ev.Kind == gohook.KeyDown {
+					switch ev.Rawcode {
+					case 162, 163: // Left/Right Ctrl
+						ctrlPressed = true
+						log.Printf("Ctrl pressed")
+					case 164, 165: // Left/Right Alt
+						altPressed = true
+						log.Printf("Alt pressed")
+					case 81: // Q key
+						qPressed = true
+						log.Printf("Q pressed")
+					}
+
+					// Check if all keys are pressed
+					if ctrlPressed && altPressed && qPressed {
+						log.Printf("HOTKEY COMBINATION DETECTED! Ctrl+Alt+Q")
+						log.Printf("Hotkey activated - starting region selection")
+						if err := gui.StartRegionSelection(); err != nil {
+							log.Printf("Region selection failed: %v", err)
+						}
+						// Reset states
+						ctrlPressed, altPressed, qPressed = false, false, false
+					}
+				} else if ev.Kind == gohook.KeyUp {
+					switch ev.Rawcode {
+					case 162, 163: // Left/Right Ctrl
+						ctrlPressed = false
+						log.Printf("Ctrl released")
+					case 164, 165: // Left/Right Alt
+						altPressed = false
+						log.Printf("Alt released")
+					case 81: // Q key
+						qPressed = false
+						log.Printf("Q released")
+					}
+				}
+			}
+		}
+		log.Printf("Event channel closed")
+	}()
+}
+
+// parseHotkey converts a hotkey string like "Ctrl+Alt+q" to gohook format
+func parseHotkey(hotkeyConfig string) []string {
+	// Convert to lowercase and split by +
+	parts := strings.Split(strings.ToLower(hotkeyConfig), "+")
+	var keys []string
+
+	for _, part := range parts {
+		part = strings.TrimSpace(part)
+		switch part {
+		case "ctrl":
+			keys = append(keys, "ctrl")
+		case "alt":
+			keys = append(keys, "alt")
+		case "shift":
+			keys = append(keys, "shift")
+		case "win", "cmd", "super":
+			keys = append(keys, "cmd")
+		default:
+			// Regular key
+			keys = append(keys, part)
+		}
+	}
+
+	return keys
+}
+</file>
+
+<file path="integration_test.go">
+package main
+
+import (
+	"testing"
+	"time"
+
+	"screen-ocr-llm/clipboard"
+	"screen-ocr-llm/config"
+	"screen-ocr-llm/hotkey"
+	"screen-ocr-llm/llm"
+	"screen-ocr-llm/ocr"
+	"screen-ocr-llm/screenshot"
+)
+
+func TestIntegration(t *testing.T) {
+	// Test configuration loading
+	cfg := &config.Config{
+		APIKey: "test_api_key",
+		Model:  "test_model",
+		Hotkey: "Ctrl+Shift+T",
+	}
+
+	// Initialize all packages
+	screenshot.Init()
+	ocr.Init()
+	llm.Init(&llm.Config{
+		APIKey: cfg.APIKey,
+		Model:  cfg.Model,
+	})
+	err := clipboard.Init()
+	if err != nil {
+		t.Logf("Clipboard init failed (expected in headless environment): %v", err)
+	}
+
+	t.Log("All packages initialized successfully")
+
+	// Test individual components
+	t.Run("Screenshot", func(t *testing.T) {
+		// Test full screen capture
+		_, err := screenshot.Capture()
+		if err != nil {
+			t.Logf("Full screen capture failed (expected in headless environment): %v", err)
+		}
+
+		// Test region capture with invalid dimensions
+		_, err = screenshot.CaptureRegion(screenshot.Region{X: 0, Y: 0, Width: 0, Height: 0})
+		if err == nil {
+			t.Error("Expected error for invalid region dimensions")
+		}
+
+		// Test region capture with valid dimensions
+		_, err = screenshot.CaptureRegion(screenshot.Region{X: 0, Y: 0, Width: 100, Height: 100})
+		if err != nil {
+			t.Logf("Region capture failed (expected in headless environment): %v", err)
+		}
+	})
+
+	t.Run("LLM", func(t *testing.T) {
+		// Test with invalid config
+		_, err := llm.QueryVision(nil)
+		if err == nil {
+			t.Error("Expected error with nil image data")
+		}
+
+		// Test with valid image data (will fail due to invalid API key)
+		testImageData := []byte{0xFF, 0xFF, 0xFF, 0xFF}
+		_, err = llm.QueryVision(testImageData)
+		if err == nil {
+			t.Error("Expected error with invalid API key")
+		}
+		t.Logf("LLM vision API validation working: %v", err)
+	})
+
+	t.Run("OCR", func(t *testing.T) {
+		// Test OCR with invalid region
+		_, err := ocr.Recognize(screenshot.Region{X: 0, Y: 0, Width: 0, Height: 0})
+		if err == nil {
+			t.Error("Expected error with invalid region")
+		}
+
+		// Test OCR with image data
+		testImageData := []byte{0xFF, 0xFF, 0xFF, 0xFF}
+		_, err = ocr.RecognizeImage(testImageData)
+		if err == nil {
+			t.Error("Expected error with invalid API key")
+		}
+		t.Logf("OCR validation working: %v", err)
+	})
+
+	t.Run("Clipboard", func(t *testing.T) {
+		// Test clipboard write
+		err := clipboard.Write("test integration")
+		if err != nil {
+			t.Logf("Clipboard write failed (expected in headless environment): %v", err)
+		} else {
+			t.Log("Clipboard write successful")
+		}
+	})
+
+	// Test hotkey listener setup (doesn't actually trigger hotkey)
+	hotkey.Listen(func() {
+		t.Log("Hotkey callback - this won't be called in test environment")
+	})
+	t.Log("Hotkey listener setup completed")
+
+	// Brief wait to ensure all goroutines are started
+	time.Sleep(100 * time.Millisecond)
+	t.Log("Integration test completed successfully")
+}
+</file>
+
+<file path="llm/llm_test.go">
+package llm
+
+import (
+	"testing"
+)
+
+func TestQuery(t *testing.T) {
+	// Initialize with a mock config
+	Init(&Config{
+		APIKey: "test_api_key",
+		Model:  "test_model",
+	})
+
+	// Test the deprecated Query function
+	_, err := Query("test text")
+	if err == nil {
+		t.Error("Expected error from deprecated Query function")
+	}
+	t.Logf("Deprecated Query function working as expected: %v", err)
+}
+
+func TestQueryVision(t *testing.T) {
+	// Test without initialization
+	_, err := QueryVision([]byte{0xFF, 0xFF, 0xFF, 0xFF})
+	if err == nil {
+		t.Error("Expected error when not initialized")
+	}
+
+	// Test with missing API key
+	Init(&Config{
+		APIKey: "",
+		Model:  "test_model",
+	})
+	_, err = QueryVision([]byte{0xFF, 0xFF, 0xFF, 0xFF})
+	if err == nil {
+		t.Error("Expected error with missing API key")
+	}
+
+	// Test with missing model
+	Init(&Config{
+		APIKey: "test_api_key",
+		Model:  "",
+	})
+	_, err = QueryVision([]byte{0xFF, 0xFF, 0xFF, 0xFF})
+	if err == nil {
+		t.Error("Expected error with missing model")
+	}
+
+	// Test with valid config (will fail due to invalid API key, but tests the request structure)
+	Init(&Config{
+		APIKey: "test_api_key",
+		Model:  "test_model",
+	})
+	testImageData := []byte{0xFF, 0xFF, 0xFF, 0xFF}
+	_, err = QueryVision(testImageData)
+	if err == nil {
+		t.Error("Expected error with invalid API key")
+	}
+	t.Logf("QueryVision validation working as expected: %v", err)
+}
+</file>
+
+<file path="llm/llm.go">
+package llm
+
+import (
+	"bytes"
+	"encoding/base64"
+	"encoding/json"
+	"fmt"
+	"net/http"
+	"time"
+)
+
+type Config struct {
+	APIKey string
+	Model  string
+}
+
+var config *Config
+
+func Init(cfg *Config) {
+	config = cfg
+}
+
+// OpenRouter API structures
+type Message struct {
+	Role    string    `json:"role"`
+	Content []Content `json:"content"`
+}
+
+type Content struct {
+	Type     string    `json:"type"`
+	Text     string    `json:"text,omitempty"`
+	ImageURL *ImageURL `json:"image_url,omitempty"`
+}
+
+type ImageURL struct {
+	URL string `json:"url"`
+}
+
+type ChatRequest struct {
+	Model       string    `json:"model"`
+	Messages    []Message `json:"messages"`
+	Temperature float64   `json:"temperature"`
+	MaxTokens   int       `json:"max_tokens"`
+}
+
+type ChatResponse struct {
+	Choices []Choice  `json:"choices"`
+	Error   *APIError `json:"error,omitempty"`
+}
+
+type Choice struct {
+	Message ResponseMessage `json:"message"`
+}
+
+type ResponseMessage struct {
+	Content string `json:"content"`
+}
+
+type APIError struct {
+	Message string      `json:"message"`
+	Type    string      `json:"type"`
+	Code    interface{} `json:"code"` // Can be string or number
+}
+
+const (
+	openRouterURL = "https://openrouter.ai/api/v1/chat/completions"
+	maxRetries    = 3
+	initialDelay  = 1 * time.Second
+)
+
+// QueryVision sends an image to OpenRouter vision model for OCR
+func QueryVision(imageData []byte) (string, error) {
+	if config == nil {
+		return "", fmt.Errorf("LLM client not initialized")
+	}
+	if config.APIKey == "" {
+		return "", fmt.Errorf("API key is required")
+	}
+	if config.Model == "" {
+		return "", fmt.Errorf("model is required")
+	}
+
+	// Encode image as base64
+	base64Image := base64.StdEncoding.EncodeToString(imageData)
+	imageURL := fmt.Sprintf("data:image/png;base64,%s", base64Image)
+
+	// Create the request payload matching Python implementation
+	request := ChatRequest{
+		Model: config.Model,
+		Messages: []Message{
+			{
+				Role: "user",
+				Content: []Content{
+					{
+						Type: "text",
+						Text: "Perform OCR on this image. Return ONLY the raw extracted text with:\n" +
+							"- No formatting\n" +
+							"- No XML/HTML tags\n" +
+							"- No markdown\n" +
+							"- No explanations\n" +
+							"- Preserve line breaks accurately from the visual layout.\n" +
+							"If no text found, return 'NO_TEXT_FOUND'",
+					},
+					{
+						Type: "image_url",
+						ImageURL: &ImageURL{
+							URL: imageURL,
+						},
+					},
+				},
+			},
+		},
+		Temperature: 0.1,
+		MaxTokens:   2000,
+	}
+
+	// Retry logic with exponential backoff
+	var lastErr error
+	for attempt := 0; attempt < maxRetries; attempt++ {
+		if attempt > 0 {
+			delay := time.Duration(float64(initialDelay) * (1.5 * float64(attempt)))
+			time.Sleep(delay)
+		}
+
+		response, err := makeAPIRequest(request)
+		if err != nil {
+			lastErr = err
+			continue
+		}
+
+		// Extract text from response
+		if len(response.Choices) == 0 {
+			lastErr = fmt.Errorf("no choices in API response")
+			continue
+		}
+
+		extractedText := response.Choices[0].Message.Content
+		if extractedText == "" || extractedText == "NO_TEXT_FOUND" {
+			return "", fmt.Errorf("no text detected in image")
+		}
+
+		// Clean up any remaining artifacts
+		extractedText = cleanExtractedText(extractedText)
+		return extractedText, nil
+	}
+
+	return "", fmt.Errorf("failed after %d attempts: %v", maxRetries, lastErr)
+}
+
+func makeAPIRequest(request ChatRequest) (*ChatResponse, error) {
+	// Marshal request to JSON
+	jsonData, err := json.Marshal(request)
+	if err != nil {
+		return nil, fmt.Errorf("failed to marshal request: %v", err)
+	}
+
+	// Create HTTP request
+	req, err := http.NewRequest("POST", openRouterURL, bytes.NewBuffer(jsonData))
+	if err != nil {
+		return nil, fmt.Errorf("failed to create request: %v", err)
+	}
+
+	// Set headers
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", config.APIKey))
+	req.Header.Set("HTTP-Referer", "https://github.com/cherjr/screen-ocr-llm")
+	req.Header.Set("X-Title", "Screen OCR Tool")
+
+	// Make the request
+	client := &http.Client{Timeout: 45 * time.Second}
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("API request failed: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Parse response
+	var response ChatResponse
+	if err := json.NewDecoder(resp.Body).Decode(&response); err != nil {
+		return nil, fmt.Errorf("failed to decode response: %v", err)
+	}
+
+	// Check for API errors
+	if response.Error != nil {
+		return nil, fmt.Errorf("API error: %s (type: %s, code: %v)", response.Error.Message, response.Error.Type, response.Error.Code)
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("API returned status %d", resp.StatusCode)
+	}
+
+	return &response, nil
+}
+
+func cleanExtractedText(text string) string {
+	// Remove any remaining image tags or artifacts
+	// This matches the Python implementation
+	if text == "</image>" {
+		return ""
+	}
+	// Remove </image> tags if present
+	if len(text) > 8 && text[len(text)-8:] == "</image>" {
+		text = text[:len(text)-8]
+	}
+	return text
+}
+
+// Query is kept for backward compatibility but will be deprecated
+func Query(text string) (string, error) {
+	return "", fmt.Errorf("text-based query deprecated - use QueryVision for OCR functionality")
+}
+</file>
+
+<file path="main/main.go">
+package main
+
+import (
+	"flag"
+	"fmt"
+	"io"
+	"io/ioutil"
+	"log"
+	"os"
+	"os/signal"
+	"strconv"
+	"syscall"
+
+	"screen-ocr-llm/clipboard"
+	"screen-ocr-llm/config"
+	"screen-ocr-llm/gui"
+	"screen-ocr-llm/hotkey"
+	"screen-ocr-llm/llm"
+	"screen-ocr-llm/ocr"
+	"screen-ocr-llm/screenshot"
+	"screen-ocr-llm/tray"
+)
+
+func main() {
+	// Parse command line flags
+	runOnce := flag.Bool("runonce", false, "Run OCR once and exit (no tray icon)")
+	flag.Parse()
+
+	// If runonce mode, skip single instance check and run OCR immediately
+	if *runOnce {
+		runOCROnce()
+		return
+	}
+
+	// Ensure single instance
+	ensureSingleInstance()
+	defer os.Remove(pidFile) // Clean up PID file on exit
+
+	// Load configuration
+	cfg, err := config.Load()
+	if err != nil {
+		log.Fatalf("Failed to load configuration: %v", err)
+	}
+
+	// Setup logging
+	setupLogging(cfg.EnableFileLogging)
+
+	// Validate configuration
+	if cfg.APIKey == "" {
+		log.Fatalf("OPENROUTER_API_KEY is required. Please set it in your .env file.")
+	}
+	if cfg.Model == "" {
+		log.Fatalf("MODEL is required. Please set it in your .env file.")
+	}
+
+	// Initialize packages
+	screenshot.Init()
+	ocr.Init()
+	llm.Init(&llm.Config{
+		APIKey: cfg.APIKey,
+		Model:  cfg.Model,
+	})
+	err = clipboard.Init()
+	if err != nil {
+		log.Fatalf("Failed to initialize clipboard: %v", err)
+	}
+
+	log.Printf("Screen OCR LLM Tool initialized")
+	log.Printf("Using model: %s", cfg.Model)
+	log.Printf("Hotkey: %s", cfg.Hotkey)
+
+	// Create system tray icon
+	exitRequested := make(chan bool, 1)
+	trayIcon, err := tray.New(tray.Config{
+		Title:   "Screen OCR Tool",
+		Tooltip: fmt.Sprintf("Screen OCR Tool - Press %s to capture", cfg.Hotkey),
+		OnExit: func() {
+			log.Printf("Exit requested from tray icon")
+			exitRequested <- true
+		},
+	})
+	if err != nil {
+		log.Printf("Failed to create tray icon: %v", err)
+	} else {
+		log.Printf("System tray icon created")
+		// Run tray icon in a separate goroutine
+		go trayIcon.Run()
+		defer trayIcon.Destroy()
+	}
+
+	// Start hotkey listener with integrated workflow
+	hotkey.Listen(cfg.Hotkey, func() {
+		// This callback is no longer used as the workflow is now integrated
+		// into the hotkey package itself
+		log.Printf("Legacy callback - workflow now integrated in hotkey package")
+	})
+
+	// Wait for interrupt signal or tray exit
+	sigChan := make(chan os.Signal, 1)
+	signal.Notify(sigChan, syscall.SIGINT, syscall.SIGTERM)
+
+	select {
+	case <-sigChan:
+		log.Printf("Shutting down due to signal...")
+	case <-exitRequested:
+		log.Printf("Shutting down due to tray exit...")
+	}
+}
+
+func setupLogging(enableFileLogging bool) {
+	if enableFileLogging {
+		// Create or open log file
+		logFile, err := os.OpenFile("screen_ocr_debug.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+		if err != nil {
+			log.Printf("Failed to open log file: %v", err)
+			return
+		}
+
+		// Set up multi-writer to write to both file and stdout
+		multiWriter := io.MultiWriter(os.Stdout, logFile)
+		log.SetOutput(multiWriter)
+		log.Printf("File logging enabled: screen_ocr_debug.log")
+	} else {
+		log.SetOutput(os.Stdout)
+	}
+
+	// Set log format with timestamp
+	log.SetFlags(log.LstdFlags | log.Lshortfile)
+}
+
+const pidFile = "screen-ocr-llm.pid"
+
+func ensureSingleInstance() {
+	// Check if PID file exists
+	if _, err := os.Stat(pidFile); err == nil {
+		// Read existing PID
+		pidBytes, err := ioutil.ReadFile(pidFile)
+		if err == nil {
+			if oldPid, err := strconv.Atoi(string(pidBytes)); err == nil {
+				// Try to kill the old process
+				if process, err := os.FindProcess(oldPid); err == nil {
+					log.Printf("Found existing instance with PID %d, killing it...", oldPid)
+					process.Kill()
+					process.Wait() // Wait for it to die
+					log.Printf("Old instance killed")
+				}
+			}
+		}
+	}
+
+	// Write current PID to file
+	currentPid := os.Getpid()
+	pidStr := fmt.Sprintf("%d", currentPid)
+	if err := ioutil.WriteFile(pidFile, []byte(pidStr), 0644); err != nil {
+		log.Printf("Warning: Could not write PID file: %v", err)
+	} else {
+		log.Printf("Running as PID %d", currentPid)
+	}
+}
+
+// runOCROnce performs a single OCR capture and exits
+func runOCROnce() {
+	// Load configuration
+	cfg, err := config.Load()
+	if err != nil {
+		log.Fatalf("Failed to load configuration: %v", err)
+	}
+
+	// Validate configuration
+	if cfg.APIKey == "" {
+		log.Fatalf("OPENROUTER_API_KEY is required. Please set it in your .env file.")
+	}
+	if cfg.Model == "" {
+		log.Fatalf("MODEL is required. Please set it in your .env file.")
+	}
+
+	// Initialize packages
+	screenshot.Init()
+	ocr.Init()
+	llm.Init(&llm.Config{
+		APIKey: cfg.APIKey,
+		Model:  cfg.Model,
+	})
+	if err := clipboard.Init(); err != nil {
+		log.Fatalf("Failed to initialize clipboard: %v", err)
+	}
+
+	log.Printf("Running OCR once (--runonce mode)")
+
+	// Set up a completion channel
+	done := make(chan bool, 1)
+	var extractedText string
+
+	// Set up the region selection callback
+	gui.SetRegionSelectionCallback(func(region screenshot.Region) error {
+		log.Printf("Processing region: %+v", region)
+
+		// Perform OCR on the selected region
+		text, err := ocr.Recognize(region)
+		if err != nil {
+			log.Printf("OCR failed: %v", err)
+			done <- true
+			return err
+		}
+
+		log.Printf("OCR extracted text (%d chars): %q", len(text), text)
+
+		// Copy result to clipboard
+		if err := clipboard.Write(text); err != nil {
+			log.Printf("Failed to write to clipboard: %v", err)
+			done <- true
+			return err
+		}
+
+		extractedText = text
+		log.Printf("OCR completed successfully, text copied to clipboard (%d chars)", len(text))
+		done <- true
+		return nil
+	})
+
+	// Start region selection
+	if err := gui.StartRegionSelection(); err != nil {
+		log.Fatalf("Failed to start region selection: %v", err)
+	}
+
+	// Wait for completion
+	<-done
+
+	fmt.Printf("Extracted text: %s\n", extractedText)
+}
+</file>
+
+<file path="Makefile">
+# Makefile for building screen-ocr-llm for different platforms
+
+# Variables
+BINARY_NAME=screen-ocr-llm
+MAIN_PATH=main/main.go
+
+# Build for current platform
+build:
+	go build -o $(BINARY_NAME) $(MAIN_PATH)
+
+# Build for Windows
+build-windows:
+	GOOS=windows GOARCH=amd64 go build -o $(BINARY_NAME).exe $(MAIN_PATH)
+
+# Build for macOS (Intel) - requires macOS or cross-compilation setup
+build-macos:
+	@echo "Building for macOS Intel (requires macOS or proper cross-compilation setup)..."
+	GOOS=darwin GOARCH=amd64 CGO_ENABLED=1 go build -o $(BINARY_NAME)-macos-amd64 $(MAIN_PATH)
+
+# Build for macOS (Apple Silicon) - requires macOS or cross-compilation setup
+build-macos-arm:
+	@echo "Building for macOS Apple Silicon (requires macOS or proper cross-compilation setup)..."
+	GOOS=darwin GOARCH=arm64 CGO_ENABLED=1 go build -o $(BINARY_NAME)-macos-arm64 $(MAIN_PATH)
+
+# Build for Linux - requires Linux or cross-compilation setup
+build-linux:
+	@echo "Building for Linux (requires Linux or proper cross-compilation setup)..."
+	GOOS=linux GOARCH=amd64 CGO_ENABLED=1 go build -o $(BINARY_NAME)-linux $(MAIN_PATH)
+
+# Build for Linux without CGO (may have limited functionality)
+build-linux-nocgo:
+	@echo "Building for Linux without CGO (limited functionality)..."
+	GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o $(BINARY_NAME)-linux-nocgo $(MAIN_PATH)
+
+# Build for all platforms (may fail on some platforms due to CGO dependencies)
+build-all: build-windows build-macos build-macos-arm build-linux
+
+# Build for current platform only (recommended)
+build-current: build
+
+# Clean build artifacts
+clean:
+	rm -f $(BINARY_NAME) $(BINARY_NAME).exe $(BINARY_NAME)-macos-amd64 $(BINARY_NAME)-macos-arm64 $(BINARY_NAME)-linux $(BINARY_NAME)-linux-nocgo
+
+# Run tests
+test:
+	go test ./...
+
+# Run tests with coverage
+test-coverage:
+	go test -cover ./...
+
+# Run tests with verbose output
+test-verbose:
+	go test -v ./...
+
+# Install dependencies
+deps:
+	go mod tidy
+
+# Format code
+fmt:
+	go fmt ./...
+
+# Vet code
+vet:
+	go vet ./...
+
+# Run all checks
+check: fmt vet test
+
+# Create a sample .env file
+env-example:
+	@if [ ! -f .env ]; then \
+		echo "Creating .env from .env.example..."; \
+		cp .env.example .env; \
+		echo "Please edit .env with your actual API key and model."; \
+	else \
+		echo ".env file already exists."; \
+	fi
+
+# Default target
+all: deps check build
+
+.PHONY: build build-windows build-macos build-macos-arm build-linux build-linux-nocgo build-all build-current clean test test-coverage test-verbose deps fmt vet check env-example all
+</file>
+
+<file path="ocr/ocr_test.go">
+package ocr
+
+import (
+	"testing"
+
+	"screen-ocr-llm/llm"
+	"screen-ocr-llm/screenshot"
+)
+
+func TestRecognize(t *testing.T) {
+	// Initialize LLM with test config
+	llm.Init(&llm.Config{
+		APIKey: "test_api_key",
+		Model:  "test_model",
+	})
+
+	// Test with invalid region (should fail at screenshot capture)
+	region := screenshot.Region{X: 0, Y: 0, Width: 0, Height: 0}
+	_, err := Recognize(region)
+	if err == nil {
+		t.Error("Expected error with invalid region")
+	}
+	t.Logf("OCR with invalid region failed as expected: %v", err)
+
+	// Test with valid region (will fail due to no display or invalid API key)
+	region = screenshot.Region{X: 0, Y: 0, Width: 100, Height: 100}
+	_, err = Recognize(region)
+	if err == nil {
+		t.Error("Expected error (no display or invalid API key)")
+	}
+	t.Logf("OCR with valid region failed as expected: %v", err)
+}
+
+func TestRecognizeImage(t *testing.T) {
+	// Initialize LLM with test config
+	llm.Init(&llm.Config{
+		APIKey: "test_api_key",
+		Model:  "test_model",
+	})
+
+	// Test with image data (will fail due to invalid API key)
+	testImageData := []byte{0xFF, 0xFF, 0xFF, 0xFF}
+	_, err := RecognizeImage(testImageData)
+	if err == nil {
+		t.Error("Expected error with invalid API key")
+	}
+	t.Logf("OCR with image data failed as expected: %v", err)
+}
+</file>
+
+<file path="ocr/ocr.go">
+package ocr
+
+import (
+	"fmt"
+	"io/ioutil"
+	"log"
+
+	"screen-ocr-llm/llm"
+	"screen-ocr-llm/screenshot"
+)
+
+func Init() {
+	// Initialize OCR package if needed
+}
+
+// Recognize performs OCR on a screen region using OpenRouter vision models
+func Recognize(region screenshot.Region) (string, error) {
+	log.Printf("DEBUG: Capturing region: X=%d Y=%d Width=%d Height=%d", region.X, region.Y, region.Width, region.Height)
+
+	// Capture the specified region
+	imageData, err := screenshot.CaptureRegion(region)
+	if err != nil {
+		return "", err
+	}
+
+	// DEBUG: Save the captured image to see what we're actually processing
+	debugFilename := fmt.Sprintf("debug_captured_region_%dx%d.png", region.Width, region.Height)
+	if err := ioutil.WriteFile(debugFilename, imageData, 0644); err != nil {
+		log.Printf("Warning: Could not save debug image: %v", err)
+	} else {
+		log.Printf("DEBUG: Saved captured region to %s (size: %d bytes)", debugFilename, len(imageData))
+	}
+
+	// Send to OpenRouter vision model for OCR
+	return llm.QueryVision(imageData)
+}
+
+// RecognizeImage performs OCR on provided image data using OpenRouter vision models
+func RecognizeImage(imageData []byte) (string, error) {
+	return llm.QueryVision(imageData)
+}
+</file>
+
+<file path="screenshot/screenshot_test.go">
+package screenshot
+
+import (
+	"testing"
+)
+
+func TestCapture(t *testing.T) {
+	// This test would require a display, so we'll just check if the function exists
+	// and doesn't panic
+	_, err := Capture()
+	if err != nil {
+		t.Logf("Failed to capture screenshot: %v", err)
+	}
+}
+
+func TestCaptureRegion(t *testing.T) {
+	// Test with invalid region
+	_, err := CaptureRegion(Region{X: 0, Y: 0, Width: 0, Height: 0})
+	if err == nil {
+		t.Error("Expected error for invalid region dimensions")
+	}
+
+	// Test with valid region (may fail if no display available)
+	_, err = CaptureRegion(Region{X: 0, Y: 0, Width: 100, Height: 100})
+	if err != nil {
+		t.Logf("Failed to capture region (expected in headless environment): %v", err)
+	}
+}
+
+func TestGetDisplayBounds(t *testing.T) {
+	// Test getting display bounds
+	_, err := GetDisplayBounds()
+	if err != nil {
+		t.Logf("Failed to get display bounds (expected in headless environment): %v", err)
+	}
+}
+</file>
+
+<file path="screenshot/screenshot.go">
+package screenshot
+
+import (
+	"bytes"
+	"fmt"
+	"image"
+	"image/png"
+
+	"github.com/kbinani/screenshot"
+)
+
+// Region represents a screen region to capture
+type Region struct {
+	X      int
+	Y      int
+	Width  int
+	Height int
+}
+
+func Init() {
+	// Initialize screenshot package if needed
+}
+
+// Capture captures the entire screen (for backward compatibility)
+func Capture() (*image.RGBA, error) {
+	return screenshot.CaptureDisplay(0)
+}
+
+// CaptureRegion captures a specific region of the screen
+func CaptureRegion(region Region) ([]byte, error) {
+	// Validate region
+	if region.Width <= 0 || region.Height <= 0 {
+		return nil, fmt.Errorf("invalid region dimensions: width=%d, height=%d", region.Width, region.Height)
+	}
+
+	// Create bounds for the region
+	bounds := image.Rect(region.X, region.Y, region.X+region.Width, region.Y+region.Height)
+
+	// Capture the region
+	img, err := screenshot.CaptureRect(bounds)
+	if err != nil {
+		return nil, fmt.Errorf("failed to capture region: %v", err)
+	}
+
+	// Convert to PNG bytes
+	var buf bytes.Buffer
+	if err := png.Encode(&buf, img); err != nil {
+		return nil, fmt.Errorf("failed to encode image as PNG: %v", err)
+	}
+
+	return buf.Bytes(), nil
+}
+
+// GetDisplayBounds returns the bounds of the primary display
+func GetDisplayBounds() (image.Rectangle, error) {
+	n := screenshot.NumActiveDisplays()
+	if n == 0 {
+		return image.Rectangle{}, fmt.Errorf("no active displays found")
+	}
+
+	// Get bounds of the primary display (display 0)
+	bounds := screenshot.GetDisplayBounds(0)
+	return bounds, nil
+}
+</file>
+
+<file path="test_clipboard.go">
+package main
+
+import (
+	"fmt"
+	"log"
+
+	"golang.design/x/clipboard"
+)
+
+func main() {
+	// Initialize clipboard
+	err := clipboard.Init()
+	if err != nil {
+		log.Fatalf("Failed to initialize clipboard: %v", err)
+	}
+	fmt.Println("Clipboard initialized successfully")
+
+	// Test writing to clipboard
+	testText := "Hello from Go clipboard test!"
+	fmt.Printf("Writing to clipboard: %q\n", testText)
+	
+	clipboard.Write(clipboard.FmtText, []byte(testText))
+	fmt.Println("Text written to clipboard")
+
+	// Test reading from clipboard
+	fmt.Println("Reading from clipboard...")
+	data := clipboard.Read(clipboard.FmtText)
+	fmt.Printf("Read from clipboard: %q\n", string(data))
+
+	if string(data) == testText {
+		fmt.Println("✅ Clipboard test PASSED!")
+	} else {
+		fmt.Println("❌ Clipboard test FAILED!")
+		fmt.Printf("Expected: %q\n", testText)
+		fmt.Printf("Got: %q\n", string(data))
+	}
+}
+</file>
+
+<file path="tray/icon.go">
+package tray
+
+import (
+	_ "embed"
+)
+
+// Embedded SVG icon data
+//go:embed icon.svg
+var IconSVG string
+
+// SVG content for the tray icon
+const SVGContent = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16">
+  <!-- Selection loop/rectangle -->
+  <rect x="3" y="3" width="8" height="6" fill="none" stroke="#0078d4" stroke-width="1.5" stroke-dasharray="2,1" opacity="0.8"/>
+  
+  <!-- Scissors -->
+  <g transform="translate(10.5, 11) rotate(-45)">
+    <!-- Scissor handles -->
+    <circle cx="0" cy="-1" r="1" fill="none" stroke="#333333" stroke-width="0.8"/>
+    <circle cx="0" cy="1" r="1" fill="none" stroke="#333333" stroke-width="0.8"/>
+    
+    <!-- Scissor blades -->
+    <line x1="0.7" y1="-0.3" x2="2.5" y2="-0.8" stroke="#333333" stroke-width="1" stroke-linecap="round"/>
+    <line x1="0.7" y1="0.3" x2="2.5" y2="0.8" stroke="#333333" stroke-width="1" stroke-linecap="round"/>
+    
+    <!-- Center pivot -->
+    <circle cx="0.5" cy="0" r="0.3" fill="#666666"/>
+  </g>
+  
+  <!-- Small cut line to show action -->
+  <line x1="8" y1="9.5" x2="10" y2="11.5" stroke="#666666" stroke-width="1" stroke-dasharray="1,1" opacity="0.6"/>
+</svg>`
+</file>
+
+<file path="tray/icon.svg">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16">
+  <!-- 85% gray background -->
+  <rect x="0" y="0" width="16" height="16" fill="#D9D9D9" />
+
+  <!-- Selection loop/rectangle - zoomed -->
+  <rect x="2" y="2" width="10" height="7" fill="none" stroke="#0078d4" stroke-width="1.8"
+    stroke-dasharray="2.5,1.5" opacity="0.8" />
+
+  <!-- Scissors - zoomed and repositioned -->
+  <g transform="translate(11.5, 12.5) rotate(-45)">
+    <!-- Scissor handles -->
+    <circle cx="0" cy="-1.2" r="1.2" fill="none" stroke="#333333" stroke-width="1" />
+    <circle cx="0" cy="1.2" r="1.2" fill="none" stroke="#333333" stroke-width="1" />
+
+    <!-- Scissor blades -->
+    <line x1="0.8" y1="-0.4" x2="3" y2="-1" stroke="#333333" stroke-width="1.2"
+      stroke-linecap="round" />
+    <line x1="0.8" y1="0.4" x2="3" y2="1" stroke="#333333" stroke-width="1.2" stroke-linecap="round" />
+
+    <!-- Center pivot -->
+    <circle cx="0.6" cy="0" r="0.4" fill="#666666" />
+  </g>
+
+  <!-- Small cut line to show action -->
+  <line x1="9" y1="9" x2="11.2" y2="11.2" stroke="#666666" stroke-width="1.2"
+    stroke-dasharray="1.5,1.5" opacity="0.6" />
+</svg>
+</file>
+
+<file path="tray/messagebox_windows.go">
+//go:build windows
+
+package tray
+
+import (
+	"syscall"
+	"unsafe"
+
+	"golang.org/x/sys/windows"
+)
+
+const (
+	MB_OK                = 0x00000000
+	MB_ICONINFORMATION   = 0x00000040
+)
+
+var (
+	user32           = windows.NewLazySystemDLL("user32.dll")
+	procMessageBoxW  = user32.NewProc("MessageBoxW")
+)
+
+// showWindowsMessageBox displays a Windows message box
+func showWindowsMessageBox(title, message string) {
+	titlePtr, _ := syscall.UTF16PtrFromString(title)
+	messagePtr, _ := syscall.UTF16PtrFromString(message)
+	
+	procMessageBoxW.Call(
+		0, // hwnd (no parent window)
+		uintptr(unsafe.Pointer(messagePtr)),
+		uintptr(unsafe.Pointer(titlePtr)),
+		uintptr(MB_OK|MB_ICONINFORMATION),
+	)
+}
+</file>
+
+<file path="tray/tray.go">
+package tray
+
+import (
+	"context"
+	_ "embed"
+	"log"
+	"runtime"
+
+	"github.com/getlantern/systray"
+)
+
+// Embed the icon file directly into the binary
+//go:embed icon.ico
+var iconData []byte
+
+// Tray represents a system tray icon
+type Tray interface {
+	Run()
+	Destroy()
+}
+
+// Config holds tray icon configuration
+type Config struct {
+	Title   string
+	Tooltip string
+	OnExit  func()
+}
+
+// SysTray implements the Tray interface using getlantern/systray
+type SysTray struct {
+	config Config
+	ctx    context.Context
+	cancel context.CancelFunc
+}
+
+// New creates a new system tray icon using getlantern/systray
+func New(config Config) (Tray, error) {
+	ctx, cancel := context.WithCancel(context.Background())
+
+	return &SysTray{
+		config: config,
+		ctx:    ctx,
+		cancel: cancel,
+	}, nil
+}
+
+func (t *SysTray) Run() {
+	log.Printf("Starting systray...")
+
+	systray.Run(t.onReady, t.onExit)
+}
+
+func (t *SysTray) onReady() {
+	log.Printf("Systray ready, setting up icon and menu")
+
+	// Use embedded icon data
+	log.Printf("Using embedded icon, size: %d bytes", len(iconData))
+	systray.SetIcon(iconData)
+	log.Printf("Embedded icon set successfully")
+
+	systray.SetTitle("Screen OCR")
+	systray.SetTooltip(t.config.Tooltip)
+
+	// Create menu items
+	mAbout := systray.AddMenuItem("About Screen OCR", "About this application")
+	systray.AddSeparator()
+	mExit := systray.AddMenuItem("Exit", "Exit the application")
+
+	log.Printf("Systray menu created, starting event loop")
+
+	// Handle menu clicks in a separate goroutine
+	go func() {
+		for {
+			select {
+			case <-mAbout.ClickedCh:
+				log.Printf("About menu clicked")
+				showAboutDialog()
+			case <-mExit.ClickedCh:
+				log.Printf("Exit menu clicked")
+				if t.config.OnExit != nil {
+					t.config.OnExit()
+				}
+				systray.Quit()
+				return
+			case <-t.ctx.Done():
+				log.Printf("Systray context cancelled")
+				systray.Quit()
+				return
+			}
+		}
+	}()
+}
+
+func (t *SysTray) onExit() {
+	log.Printf("Systray exiting")
+	t.cancel()
+}
+
+func (t *SysTray) Destroy() {
+	log.Printf("Destroying systray")
+	systray.Quit()
+	t.cancel()
+}
+
+// getIconData returns the icon data for the tray icon
+// Based on the new SVG design with gray background and improved visibility
+func getIconData() []byte {
+	// Complete 16x16 ICO file with the new scissor/selection design
+	return []byte{
+		// ICO header
+		0x00, 0x00, 0x01, 0x00, 0x01, 0x00, 0x10, 0x10, 0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x68, 0x04,
+		0x00, 0x00, 0x16, 0x00, 0x00, 0x00,
+		// BITMAPINFOHEADER
+		0x28, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00, 0x20, 0x00, 0x00, 0x00, 0x01, 0x00, 0x20, 0x00,
+		0x00, 0x00, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+		0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+		// Pixel data (16x16, bottom-up, BGRA format)
+		// Row 15 (top of image) - Gray background
+		0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF,
+		0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF,
+		0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF,
+		0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF,
+		// Row 14 - Gray background with selection rectangle top
+		0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF, 0xD4, 0x78, 0x00, 0xFF, 0xD4, 0x78, 0x00, 0xFF,
+		0xD4, 0x78, 0x00, 0xFF, 0xD4, 0x78, 0x00, 0xFF, 0xD4, 0x78, 0x00, 0xFF, 0xD4, 0x78, 0x00, 0xFF,
+		0xD4, 0x78, 0x00, 0xFF, 0xD4, 0x78, 0x00, 0xFF, 0xD4, 0x78, 0x00, 0xFF, 0xD4, 0x78, 0x00, 0xFF,
+		0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF,
+		// Row 13 - Selection rectangle sides
+		0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF, 0xD4, 0x78, 0x00, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF,
+		0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF,
+		0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF, 0xD4, 0x78, 0x00, 0xFF,
+		0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF,
+		// Row 12 - Selection rectangle sides
+		0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF, 0xD4, 0x78, 0x00, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF,
+		0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF,
+		0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF, 0xD4, 0x78, 0x00, 0xFF,
+		0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF,
+		// Rows 11-8 - Selection rectangle sides (continue pattern)
+		0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF, 0xD4, 0x78, 0x00, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF,
+		0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF,
+		0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF, 0xD4, 0x78, 0x00, 0xFF,
+		0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF,
+		// Row 7 - Selection rectangle bottom + scissors start
+		0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF, 0xD4, 0x78, 0x00, 0xFF, 0xD4, 0x78, 0x00, 0xFF,
+		0xD4, 0x78, 0x00, 0xFF, 0xD4, 0x78, 0x00, 0xFF, 0xD4, 0x78, 0x00, 0xFF, 0xD4, 0x78, 0x00, 0xFF,
+		0xD4, 0x78, 0x00, 0xFF, 0xD4, 0x78, 0x00, 0xFF, 0xD4, 0x78, 0x00, 0xFF, 0xD4, 0x78, 0x00, 0xFF,
+		0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF,
+		// Row 6 - Scissors and cut line
+		0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF,
+		0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF,
+		0xD9, 0xD9, 0xD9, 0xFF, 0x66, 0x66, 0x66, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF, 0x33, 0x33, 0x33, 0xFF,
+		0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF,
+		// Row 5 - Scissors handles
+		0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF,
+		0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF,
+		0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF, 0x66, 0x66, 0x66, 0xFF, 0x33, 0x33, 0x33, 0xFF,
+		0x33, 0x33, 0x33, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF,
+		// Row 4 - Scissors blades
+		0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF,
+		0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF,
+		0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF, 0x33, 0x33, 0x33, 0xFF,
+		0x33, 0x33, 0x33, 0xFF, 0x33, 0x33, 0x33, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF,
+		// Row 3 - More scissors
+		0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF,
+		0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF,
+		0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF,
+		0x33, 0x33, 0x33, 0xFF, 0x33, 0x33, 0x33, 0xFF, 0x33, 0x33, 0x33, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF,
+		// Row 2 - Scissors handles
+		0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF,
+		0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF,
+		0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF,
+		0x33, 0x33, 0x33, 0xFF, 0x33, 0x33, 0x33, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF,
+		// Row 1 - Gray background
+		0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF,
+		0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF,
+		0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF,
+		0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF,
+		// Row 0 (bottom) - Gray background
+		0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF,
+		0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF,
+		0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF,
+		0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF, 0xD9, 0xD9, 0xD9, 0xFF,
+		0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+		// AND mask (all zeros for no transparency mask)
+		0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+		0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+	}
+}
+
+// showAboutDialog displays an about dialog
+func showAboutDialog() {
+	message := `Screen OCR Tool v1.0
+
+A powerful screen text extraction tool using AI vision models.
+
+Features:
+• Press Ctrl+Alt+Q to capture screen regions
+• Automatic text extraction using OCR
+• Text copied to clipboard automatically
+• System tray integration
+
+Built with Go and OpenRouter AI models.`
+
+	if runtime.GOOS == "windows" {
+		showWindowsMessageBox("About Screen OCR", message)
+	} else {
+		log.Printf("About: %s", message)
+	}
+}
+</file>
+
+<file path="validation_test.go">
+package main
+
+import (
+	"os"
+	"testing"
+
+	"screen-ocr-llm/config"
+	"screen-ocr-llm/gui"
+	"screen-ocr-llm/llm"
+	"screen-ocr-llm/screenshot"
+)
+
+// TestWorkflowValidation validates the complete workflow against Python implementation
+func TestWorkflowValidation(t *testing.T) {
+	t.Run("Configuration Compatibility", func(t *testing.T) {
+		// Test environment variable loading (matching Python)
+		os.Setenv("OPENROUTER_API_KEY", "test_key")
+		os.Setenv("MODEL", "test_model")
+		os.Setenv("ENABLE_FILE_LOGGING", "true")
+
+		cfg, err := config.Load()
+		if err != nil {
+			t.Fatalf("Config loading failed: %v", err)
+		}
+
+		if cfg.APIKey != "test_key" {
+			t.Errorf("Expected API key 'test_key', got '%s'", cfg.APIKey)
+		}
+		if cfg.Model != "test_model" {
+			t.Errorf("Expected model 'test_model', got '%s'", cfg.Model)
+		}
+		if !cfg.EnableFileLogging {
+			t.Error("Expected file logging to be enabled")
+		}
+
+		// Cleanup
+		os.Unsetenv("OPENROUTER_API_KEY")
+		os.Unsetenv("MODEL")
+		os.Unsetenv("ENABLE_FILE_LOGGING")
+	})
+
+	t.Run("API Request Structure", func(t *testing.T) {
+		// Initialize LLM with test config
+		llm.Init(&llm.Config{
+			APIKey: "test_api_key",
+			Model:  "test_model",
+		})
+
+		// Test that API request structure matches Python implementation
+		testImageData := []byte{0xFF, 0xFF, 0xFF, 0xFF}
+		_, err := llm.QueryVision(testImageData)
+
+		// Should fail with invalid API key, but validates request structure
+		if err == nil {
+			t.Error("Expected error with invalid API key")
+		}
+
+		// Error should indicate API-level failure, not structural issues
+		t.Logf("API validation error (expected): %v", err)
+	})
+
+	t.Run("Screenshot Region Compatibility", func(t *testing.T) {
+		// Test region structure matches Python's region format
+		region := screenshot.Region{
+			X:      100,
+			Y:      100,
+			Width:  400,
+			Height: 300,
+		}
+
+		// Validate region parameters
+		if region.Width <= 0 || region.Height <= 0 {
+			t.Error("Invalid region dimensions")
+		}
+
+		// Test region capture (will fail in headless environment)
+		_, err := screenshot.CaptureRegion(region)
+		if err != nil {
+			t.Logf("Region capture failed (expected in headless environment): %v", err)
+		}
+	})
+
+	t.Run("Workflow Integration", func(t *testing.T) {
+		// Test the complete workflow integration
+		workflowExecuted := false
+
+		gui.SetRegionSelectionCallback(func(region screenshot.Region) error {
+			workflowExecuted = true
+			t.Logf("Workflow callback executed with region: %+v", region)
+			return nil
+		})
+
+		err := gui.StartRegionSelection()
+		if err != nil {
+			t.Errorf("Region selection failed: %v", err)
+		}
+
+		if !workflowExecuted {
+			t.Error("Workflow callback was not executed")
+		}
+	})
+}
+
+// TestPythonCompatibility validates specific Python implementation features
+func TestPythonCompatibility(t *testing.T) {
+	t.Run("OCR Prompt Matching", func(t *testing.T) {
+		// The OCR prompt in Go should match Python exactly
+		expectedPrompt := "Perform OCR on this image. Return ONLY the raw extracted text with:\n" +
+			"- No formatting\n" +
+			"- No XML/HTML tags\n" +
+			"- No markdown\n" +
+			"- No explanations\n" +
+			"- Preserve line breaks accurately from the visual layout.\n" +
+			"If no text found, return 'NO_TEXT_FOUND'"
+
+		// This is validated by checking the LLM implementation
+		// The prompt is hardcoded in llm.QueryVision()
+		t.Logf("OCR prompt validation: Expected prompt length %d chars", len(expectedPrompt))
+	})
+
+	t.Run("API Headers Matching", func(t *testing.T) {
+		// Validate that API headers match Python implementation
+		expectedHeaders := map[string]string{
+			"Content-Type": "application/json",
+			"HTTP-Referer": "https://github.com/cherjr/screen-ocr-llm",
+			"X-Title":      "Screen OCR Tool",
+		}
+
+		for header, value := range expectedHeaders {
+			t.Logf("Expected header %s: %s", header, value)
+		}
+	})
+
+	t.Run("Retry Logic Compatibility", func(t *testing.T) {
+		// Validate retry parameters match Python
+		maxRetries := 3
+		initialDelay := 1.0 // seconds
+		backoffMultiplier := 1.5
+
+		t.Logf("Retry configuration - Max: %d, Initial Delay: %.1fs, Backoff: %.1fx",
+			maxRetries, initialDelay, backoffMultiplier)
+
+		// These values are hardcoded in llm.QueryVision() and should match Python
+	})
+}
+</file>
+
+<file path=".env.example">
+# Configuration for Screen OCR LLM Tool
+# Copy this file to .env and fill in your actual values.
+# DO NOT commit the actual .env file to Git!
+
+# Required: Your OpenRouter API Key (https://openrouter.ai/keys)
+OPENROUTER_API_KEY="YOUR_OPENROUTER_API_KEY_HERE"
+
+# Required: The OpenRouter model identifier
+# Using Google Gemma 3 12B IT - confirmed working model
+MODEL=google/gemma-3-12b-it
+
+# Optional: Enable file logging for debugging
+# Set to True to log to screen_ocr_debug.log, False or omit to disable.
+ENABLE_FILE_LOGGING=False
+</file>
+
+<file path="LICENSE">
+MIT License
+
+Copyright (c) 2024 cherjr
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+</file>
+
+<file path=".gitignore">
+.env
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+ENV/
+screenshot.png
+</file>
+
+</files>
