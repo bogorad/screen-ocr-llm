@@ -6,9 +6,9 @@ A small desktop utility to select a region of the screen, run OCR via OpenRouter
 
 ## Prerequisites
 
-- Go toolchain installed (go build)
+- Go toolchain installed (go build) if you want to build yourself; otherwise use .exe from releases.
 - Windows (current overlay/hotkey path targets Windows)
-- OpenRouter API key and a vision-capable model
+- OpenRouter API key and a vision-capable model (`:free` models are also supported, but not recommended)
 
 ## Setup
 
