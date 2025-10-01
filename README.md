@@ -26,11 +26,15 @@ A small desktop utility to select a region of the screen, run OCR via OpenRouter
 
 ## Build
 
-- **Using Go directly** (for your current platform):
-
-  ```sh
-  go build -o screen-ocr-llm ./main
-  ```
+- **Using Go directly**:
+  - On Windows (no console window):
+    ```sh
+    go build -ldflags "-H=windowsgui" -o screen-ocr-llm.exe ./main
+    ```
+  - On Linux/macOS:
+    ```sh
+    go build -o screen-ocr-llm ./main
+    ```
 
 - **Using the Makefile** (for a Windows GUI binary):
   ```sh

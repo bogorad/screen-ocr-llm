@@ -6,7 +6,8 @@ import (
 	"image"
 	"image/png"
 
-	"github.com/kbinani/screenshot"
+
+"github.com/kbinani/screenshot"
 )
 
 // Region represents a screen region to capture
@@ -21,9 +22,24 @@ func Init() {
 	// Initialize screenshot package if needed
 }
 
-// Capture captures the entire screen (for backward compatibility)
+// Capture captures the entire virtual screen across all active displays
 func Capture() (*image.RGBA, error) {
-	return screenshot.CaptureDisplay(0)
+	n := screenshot.NumActiveDisplays()
+	if n == 0 {
+		return nil, fmt.Errorf("no active displays found")
+	}
+	// Compute union of all display bounds
+	union := screenshot.GetDisplayBounds(0)
+	for i := 1; i < n; i++ {
+		b := screenshot.GetDisplayBounds(i)
+		union = union.Union(b)
+	}
+	// Capture the union rectangle
+	img, err := screenshot.CaptureRect(union)
+	if err != nil {
+		return nil, err
+	}
+	return img, nil
 }
 
 // CaptureRegion captures a specific region of the screen

@@ -50,9 +50,9 @@ func StartInteractiveRegionSelection() (screenshot.Region, error) {
 
 	log.Printf("Screen dimensions: %dx%d", simpleScreenWidth, simpleScreenHeight)
 
-	// Capture the screen first
+	// Capture the screen first (use full virtual screen size)
 	var err error
-	screenImage, err = captureScreen(int(simpleScreenWidth), int(simpleScreenHeight))
+	screenImage, err = captureScreen(int(vw), int(vh))
 	if err != nil {
 		return screenshot.Region{}, fmt.Errorf("failed to capture screen: %v", err)
 	}

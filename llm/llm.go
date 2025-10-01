@@ -227,6 +227,107 @@ func makeAPIRequest(request ChatRequest) (*ChatResponse, error) {
 	return &response, nil
 }
 
+// makeAPIRequestWithTimeout is like makeAPIRequest but allows a custom HTTP timeout (used by Ping)
+func makeAPIRequestWithTimeout(request ChatRequest, timeout time.Duration) (*ChatResponse, error) {
+	// Marshal request to JSON
+	jsonData, err := json.Marshal(request)
+	if err != nil {
+		return nil, fmt.Errorf("failed to marshal request: %v", err)
+	}
+
+	// Log the request for debugging (only log provider preferences)
+	if request.Provider != nil {
+		log.Printf("LLM: API request includes provider preferences: %+v", request.Provider)
+	} else {
+		log.Printf("LLM: API request without provider preferences (using default routing)")
+	}
+
+	// Create HTTP request
+	req, err := http.NewRequest("POST", openRouterURL, bytes.NewBuffer(jsonData))
+	if err != nil {
+		return nil, fmt.Errorf("failed to create request: %v", err)
+	}
+
+	// Set headers
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", config.APIKey))
+	req.Header.Set("HTTP-Referer", "https://github.com/cherjr/screen-ocr-llm")
+	req.Header.Set("X-Title", "Screen OCR Tool")
+
+	// Make the request with custom timeout
+	client := &http.Client{Timeout: timeout}
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("API request failed: %v", err)
+	}
+	defer resp.Body.Close()
+
+	log.Printf("LLM: API response status: %d %s", resp.StatusCode, resp.Status)
+
+	// Parse response
+	var response ChatResponse
+	if err := json.NewDecoder(resp.Body).Decode(&response); err != nil {
+		return nil, fmt.Errorf("failed to decode response: %v", err)
+	}
+
+	// Check for API errors
+	if response.Error != nil {
+		log.Printf("LLM: API error response: %s (type: %s, code: %v)", response.Error.Message, response.Error.Type, response.Error.Code)
+		return nil, fmt.Errorf("API error: %s (type: %s, code: %v)", response.Error.Message, response.Error.Type, response.Error.Code)
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("API returned status %d", resp.StatusCode)
+	}
+
+	log.Printf("LLM: API response parsed successfully, %d choices", len(response.Choices))
+	return &response, nil
+}
+
+// Ping performs a minimal LLM validation request with MaxTokens=1
+// It logs success/failure and returns an error on failure. Intended to be fast.
+func Ping() error {
+	if config == nil {
+		return fmt.Errorf("LLM client not initialized")
+	}
+	if config.APIKey == "" {
+		return fmt.Errorf("API key is required")
+	}
+	if config.Model == "" {
+		return fmt.Errorf("model is required")
+	}
+
+	req := ChatRequest{
+		Model: config.Model,
+		Messages: []Message{
+			{
+				Role: "user",
+				Content: []Content{
+					{Type: "text", Text: "Reply with a single '.' and nothing else."},
+				},
+			},
+		},
+		Temperature: 0,
+		MaxTokens:   1,
+		Provider:    getProviderPreferences(),
+	}
+
+	start := time.Now()
+	resp, err := makeAPIRequestWithTimeout(req, 8*time.Second)
+	latency := time.Since(start)
+	if err != nil {
+		log.Printf("LLM: Ping failed after %dms: %v", latency.Milliseconds(), err)
+		return err
+	}
+	if len(resp.Choices) == 0 || resp.Choices[0].Message.Content == "" {
+		log.Printf("LLM: Ping returned empty response after %dms", latency.Milliseconds())
+		return fmt.Errorf("empty response")
+	}
+	log.Printf("LLM: Ping successful in %dms", latency.Milliseconds())
+	return nil
+}
+
+
 func cleanExtractedText(text string) string {
 	// Remove any remaining image tags or artifacts
 	// This matches the Python implementation

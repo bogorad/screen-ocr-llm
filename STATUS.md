@@ -565,6 +565,38 @@ In some cases, rapid consecutive hotkey activations could leave the popup messag
 - Works in concert with prior fixes (WM_EXIT_LOOP + LockOSThread) to ensure stable consecutive runs
 
 ---
+## Current Deliberations & Plan: Always run as UI app (no console) — 2025-10-01
+
+### Context
+Ensure that regardless of mode (Resident, --run-once standalone, --run-once delegated), the Windows build runs as a GUI application and never opens a console window.
+
+### Decisions
+- For Windows builds, compile with the GUI subsystem: `-ldflags "-H=windowsgui"` for all user-facing executables.
+- Keep tests and non-Windows builds unchanged.
+
+### Changes Implemented
+- build.cmd: switched to `go build -ldflags "-H=windowsgui" -o screen-ocr-llm.exe ./main`.
+- Makefile: default `build` target now uses GUI subsystem when `OS=Windows_NT`; `build-windows` remains explicit GUI build.
+- Documentation: README.md and BUILD_INSTRUCTIONS.md updated to use GUI build flags for Windows.
+
+### Verification Plan
+- Build: run `build.cmd`; confirm `.\\screen-ocr-llm.exe` starts without a console window.
+- Resident mode: tray icon appears; hotkey triggers selection; countdown popup ticks; result popup shows; no console.
+- --run-once (standalone): selection UI → countdown → result popup → process exits; no console.
+- --run-once (delegated to resident): client exits; resident shows countdown/result; no console.
+- Logging: set `ENABLE_FILE_LOGGING=true` in `.env` to capture logs since stdout/stderr are hidden in GUI builds.
+
+### Risks/Notes
+- Stdout/stderr won’t be visible; rely on `screen_ocr_debug.log` if file logging is enabled.
+- CI/tests unaffected (`go test`); non-Windows builds remain unchanged.
+- No runtime code changes were required; this is a build/doc update only.
+
+### Next Steps
+- [ ] Manually verify all three flows on Windows (resident, run-once standalone, run-once delegated).
+- [ ] Consider adding a Windows application manifest to declare DPI awareness (separate task).
+- [ ] Optional packaging improvements (.zip/.msi) including `.env.example`.
+
+
 
 **Last Updated**: 2025-10-01
 **Status**: THREAD ISOLATION FIX COMPLETE - READY FOR USER TEST

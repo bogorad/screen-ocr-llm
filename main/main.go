@@ -19,6 +19,8 @@ import (
 	"screen-ocr-llm/gui"
 	"screen-ocr-llm/llm"
 	"screen-ocr-llm/logutil"
+		"screen-ocr-llm/notification"
+
 	"screen-ocr-llm/ocr"
 	"screen-ocr-llm/popup"
 	"screen-ocr-llm/screenshot"
@@ -37,10 +39,36 @@ func normalizeFlagDashes() {
 			os.Args[i] = "-run-once" + arg[len("--run-once"):]
 		}
 	}
+
+}
+
+
+// enableDPIAwareness attempts to set per-monitor DPI awareness on Windows to fix scaling issues
+func enableDPIAwareness() {
+	if runtime.GOOS != "windows" {
+		return
+	}
+	// Prefer per-monitor DPI awareness via Shcore.SetProcessDpiAwareness (Win 8.1+)
+	shcore := syscall.NewLazyDLL("Shcore.dll")
+	setProcessDpiAwareness := shcore.NewProc("SetProcessDpiAwareness")
+	const PROCESS_PER_MONITOR_DPI_AWARE = 2
+	if err := setProcessDpiAwareness.Find(); err == nil {
+		_, _, _ = setProcessDpiAwareness.Call(uintptr(PROCESS_PER_MONITOR_DPI_AWARE))
+		return
+	}
+	// Fallback: user32.SetProcessDPIAware (Vista+)
+	user32 := syscall.NewLazyDLL("user32.dll")
+	setProcessDPIAware := user32.NewProc("SetProcessDPIAware")
+	if err := setProcessDPIAware.Find(); err == nil {
+		_, _, _ = setProcessDPIAware.Call()
+	}
 }
 
 
 func main() {
+		// Ensure DPI awareness before creating any windows or querying metrics
+		enableDPIAwareness()
+
 	// Lock main goroutine to its own OS thread to prevent it from sharing
 	// the popup thread's message queue
 	runtime.LockOSThread()
@@ -59,6 +87,7 @@ func main() {
 		stdout := false
 		ctx := context.Background()
 		client := singleinstance.NewClient()
+
 		delegated, _, err := client.TryRunOnce(ctx, stdout)
 		if err != nil {
 			log.Printf("Delegation error: %v; falling back to standalone", err)
@@ -112,14 +141,21 @@ func main() {
 		log.Fatalf("MODEL is required. Please set it in your .env file.")
 	}
 
-	// Initialize packages
-	screenshot.Init()
-	ocr.Init()
+	// Initialize LLM first and validate immediately (blocking dialog on failure)
 	llm.Init(&llm.Config{
 		APIKey:    cfg.APIKey,
 		Model:     cfg.Model,
 		Providers: cfg.Providers,
 	})
+	if err := llm.Ping(); err != nil {
+		notification.ShowBlockingError("LLM unavailable", fmt.Sprintf("Startup check failed: %v\n\nPlease verify your API key and network connectivity.", err))
+		os.Exit(1)
+	}
+	log.Printf("LLM ping succeeded")
+
+	// Initialize remaining packages
+	screenshot.Init()
+	ocr.Init()
 	err = clipboard.Init()
 	if err != nil {
 		log.Fatalf("Failed to initialize clipboard: %v", err)
@@ -190,14 +226,21 @@ func runOCROnce(outputToStdout bool) {
 		os.Exit(1)
 	}
 
-	// Initialize packages
-	screenshot.Init()
-	ocr.Init()
+	// Initialize LLM first and validate immediately (blocking dialog on failure)
 	llm.Init(&llm.Config{
 		APIKey:    cfg.APIKey,
 		Model:     cfg.Model,
 		Providers: cfg.Providers,
 	})
+	if err := llm.Ping(); err != nil {
+		notification.ShowBlockingError("LLM unavailable", fmt.Sprintf("Startup check failed: %v\n\nPlease verify your API key and network connectivity.", err))
+		os.Exit(1)
+	}
+	log.Printf("LLM ping succeeded")
+
+	// Initialize remaining packages
+	screenshot.Init()
+	ocr.Init()
 
 	// Always initialize clipboard for consistent behavior
 	// (even if we won't use it in stdout mode)

@@ -130,6 +130,16 @@ var (
 	isCountdownMode bool
 	countdownRemaining int
 )
+// ShowBlockingError displays a modal, blocking error dialog and returns after user dismisses it.
+func ShowBlockingError(title, message string) {
+	titlePtr, _ := syscall.UTF16PtrFromString(title)
+	msgPtr, _ := syscall.UTF16PtrFromString(message)
+	const MB_OK = 0x00000000
+	const MB_ICONERROR = 0x00000010
+	const MB_SYSTEMMODAL = 0x00001000
+	procMessageBox.Call(0, uintptr(unsafe.Pointer(msgPtr)), uintptr(unsafe.Pointer(titlePtr)), MB_OK|MB_ICONERROR|MB_SYSTEMMODAL)
+}
+
 
 // initPopupThread initializes the single popup thread
 func initPopupThread() {
@@ -138,6 +148,7 @@ func initPopupThread() {
 		log.Printf("Popup: Starting single popup thread")
 
 		go func() {
+
 			runtime.LockOSThread()
 			defer runtime.UnlockOSThread()
 			defer func() {

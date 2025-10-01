@@ -3,7 +3,7 @@ REM Build script for screen-ocr-llm
 REM This ensures we build from the correct main package
 
 echo Building screen-ocr-llm...
-go build -o screen-ocr-llm.exe ./main
+go build -ldflags "-H=windowsgui" -o screen-ocr-llm.exe ./main
 
 if %ERRORLEVEL% EQU 0 (
     echo.

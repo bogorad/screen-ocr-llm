@@ -8,6 +8,15 @@
     },
     "Ref": {
       "url": "https://api.ref.tools/mcp?apiKey=ref-cb00a76d11a14b3f05b0"
+    },
+    "language-server": {
+      "command": "mcp-language-server",
+      "args": [
+        "--workspace",
+        ".",
+        "--lsp",
+        "gopls"
+      ]
     }
   }
 }

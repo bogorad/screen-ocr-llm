@@ -1,1 +1,1 @@
-auggie --rules AUGSTER.md --mcp-config .mcp.json --workspace-root .
+auggie --rules AUGSTER.md --mcp-config .auggie.mcp.json --workspace-root .

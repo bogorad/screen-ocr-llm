@@ -4,6 +4,14 @@ import (
 	"testing"
 )
 
+func TestPingNotInitialized(t *testing.T) {
+	config = nil
+	if err := Ping(); err == nil {
+		t.Error("Expected error when not initialized")
+	}
+}
+
+
 
 
 func TestQueryVision(t *testing.T) {

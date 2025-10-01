@@ -5,8 +5,13 @@ BINARY_NAME=screen-ocr-llm
 MAIN_PATH=./main
 
 # Build for current platform
+ifeq ($(OS),Windows_NT)
+build:
+	go build -ldflags "-H=windowsgui" -o $(BINARY_NAME).exe $(MAIN_PATH)
+else
 build:
 	go build -o $(BINARY_NAME) $(MAIN_PATH)
+endif
 
 # Build for Windows
 build-windows:

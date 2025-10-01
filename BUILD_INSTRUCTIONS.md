@@ -8,7 +8,7 @@ build.cmd
 ```
 or
 ```cmd
-go build -o screen-ocr-llm.exe ./main
+go build -ldflags "-H=windowsgui" -o screen-ocr-llm.exe ./main
 ```
 
 ### Linux/macOS
@@ -28,7 +28,7 @@ The application's main package is in the `./main` directory. **Always** specify 
 
 ```bash
 # ✅ CORRECT
-go build -o screen-ocr-llm.exe ./main
+go build -ldflags "-H=windowsgui" -o screen-ocr-llm.exe ./main
 
 # ❌ WRONG - Will build test files instead!
 go build -o screen-ocr-llm.exe
@@ -45,10 +45,6 @@ Test files with `package main` (like `test_clipboard.go`) should be:
 
 ## Build Options
 
-### Standard Build (with console window)
-```bash
-go build -o screen-ocr-llm.exe ./main
-```
 
 ### Windows GUI Build (no console window)
 ```bash
@@ -88,14 +84,14 @@ The application will:
 ### "Clipboard test" runs instead of the app
 **Problem:** You built without specifying `./main`
 
-**Solution:** Use `build.cmd` or `go build -o screen-ocr-llm.exe ./main`
+**Solution:** Use `build.cmd` or `go build -ldflags "-H=windowsgui" -o screen-ocr-llm.exe ./main`
 
 ### Hotkey not working
 **Problem:** The hotkey from `.env` is not being detected
 
 **Solution:** 
 1. Check your `.env` file has the correct `HOTKEY=` setting
-2. Rebuild with `build.cmd` or `go build -o screen-ocr-llm.exe ./main`
+2. Rebuild with `build.cmd` or `go build -ldflags "-H=windowsgui" -o screen-ocr-llm.exe ./main`
 3. Restart the application
 4. Check `screen_ocr_debug.log` for the loaded hotkey configuration
 
