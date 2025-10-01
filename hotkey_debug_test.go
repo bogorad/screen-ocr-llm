@@ -15,11 +15,11 @@ func TestHotkeyDebug(t *testing.T) {
 	triggered := false
 	
 	// Set up hotkey listener
-	hotkey.Listen(func() {
+	hotkey.Listen("Ctrl+Shift+O", func() {
 		log.Println("HOTKEY TRIGGERED!")
 		triggered = true
 	})
-	
+
 	log.Println("Hotkey listener started. Press Ctrl+Shift+O within 10 seconds...")
 	
 	// Wait for 10 seconds to see if hotkey is triggered

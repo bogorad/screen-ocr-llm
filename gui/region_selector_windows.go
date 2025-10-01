@@ -284,7 +284,11 @@ func workingWndProc(hwnd win.HWND, msg uint32, wParam, lParam uintptr) uintptr {
 
 	case win.WM_DESTROY:
 		log.Printf("WM_DESTROY received")
-		win.PostQuitMessage(0)
+		// Do NOT PostQuitMessage here. In the success path we return from
+		// StartInteractiveRegionSelection() as soon as we have the region,
+		// and posting WM_QUIT here would leave a leftover WM_QUIT in the
+		// thread queue that the next invocation would consume immediately,
+		// causing an instant "selection cancelled" on the second hotkey.
 		return 0
 	}
 

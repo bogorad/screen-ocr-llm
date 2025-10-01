@@ -8,6 +8,7 @@ import (
 	"net"
 	"os"
 	"os/signal"
+	"runtime"
 	"strings"
 	"syscall"
 	"time"
@@ -40,6 +41,10 @@ func normalizeFlagDashes() {
 
 
 func main() {
+	// Lock main goroutine to its own OS thread to prevent it from sharing
+	// the popup thread's message queue
+	runtime.LockOSThread()
+
 	// Parse command line flags
 	runOnce := flag.Bool("run-once", false, "Run OCR once, copy to clipboard, and exit silently")
 	// Support GNU-style double-dash flags
@@ -49,6 +54,8 @@ func main() {
 
 	// If run-once mode, prefer delegating to resident via TCP; fallback to standalone
 	if *runOnce {
+		// Load .env early so SINGLEINSTANCE_PORT_* are applied before delegation scan
+		_, _ = config.Load()
 		stdout := false
 		ctx := context.Background()
 		client := singleinstance.NewClient()
@@ -121,6 +128,9 @@ func main() {
 	log.Printf("Screen OCR LLM Tool initialized")
 	log.Printf("Using model: %s", cfg.Model)
 	log.Printf("Hotkey: %s", cfg.Hotkey)
+
+	// Propagate hotkey to About dialog
+	tray.SetAboutHotkey(cfg.Hotkey)
 
 	// Event loop + tray + hotkey
 	loop := eventloop.New()
@@ -198,68 +208,54 @@ func runOCROnce(outputToStdout bool) {
 
 	log.Printf("Running OCR once (--runonce mode)")
 
-	// Set up completion channels
-	done := make(chan bool, 1)
-	errorChan := make(chan error, 1)
-
-	// Set up the region selection callback
-	gui.SetRegionSelectionCallback(func(region screenshot.Region) error {
-		log.Printf("Processing region: %+v", region)
-
-		// Perform OCR on the selected region
-		text, err := ocr.Recognize(region)
-		if err != nil {
-			log.Printf("OCR failed: %v", err)
-			errorChan <- fmt.Errorf("OCR failed: %v", err)
-			return nil // Don't return error to avoid confusing with region selection failure
-		}
-
-		// Log OCR result safely (prevent log injection)
-		safeText := sanitizeForLogging(text)
-		log.Printf("OCR extracted text (%d chars): %q", len(text), safeText)
-
-		if outputToStdout {
-			// Output to stdout for --run-once-std mode
-			fmt.Print(text) // Use Print (not Println) to avoid extra newline
-			log.Printf("OCR completed successfully, text output to stdout (%d chars)", len(text))
-		} else {
-			// Copy result to clipboard for --run-once mode
-			if err := clipboard.Write(text); err != nil {
-				log.Printf("Failed to write to clipboard: %v", err)
-				errorChan <- fmt.Errorf("Failed to write to clipboard: %v", err)
-				return nil // Don't return error to avoid confusing with region selection failure
-			}
-			log.Printf("OCR completed successfully, text copied to clipboard (%d chars)", len(text))
-		}
-		// Always show popup for visibility in standalone run-once
-		log.Printf("Standalone: requesting popup")
-		_ = popup.Show(text)
-		// Block long enough for the popup to be visible before process exit
-		time.Sleep(3 * time.Second)
-		log.Printf("Sending completion signal...")
-		done <- true
-		log.Printf("Completion signal sent")
-		return nil
-	})
-
 	// Start region selection
-	if err := gui.StartRegionSelection(); err != nil {
+	region, err := gui.StartRegionSelection()
+	if err != nil {
 		fmt.Fprintf(os.Stderr, "Failed to start region selection: %v\n", err)
 		os.Exit(1)
 	}
 
-	// Wait for completion or error
-	log.Printf("Waiting for OCR completion...")
-	select {
-	case <-done:
-		log.Printf("OCR completion signal received")
-		log.Printf("OCR runonce completed successfully, exiting...")
-		os.Exit(0)
-	case err := <-errorChan:
-		log.Printf("OCR process failed: %v", err)
-		fmt.Fprintf(os.Stderr, "%v\n", err)
+	log.Printf("Processing region: %+v", region)
+
+	// Start countdown popup before OCR
+	deadline := eventloop.ReadDeadline()
+	_ = popup.StartCountdown(int(deadline.Seconds()))
+
+	// Perform OCR on the selected region
+	text, err := ocr.Recognize(region)
+	if err != nil {
+		_ = popup.Close() // Close countdown on error
+		log.Printf("OCR failed: %v", err)
+		fmt.Fprintf(os.Stderr, "OCR failed: %v\n", err)
 		os.Exit(1)
 	}
+
+	// Log OCR result safely (prevent log injection)
+	safeText := sanitizeForLogging(text)
+	log.Printf("OCR extracted text (%d chars): %q", len(text), safeText)
+
+	if outputToStdout {
+		// Output to stdout for --run-once-std mode
+		fmt.Print(text) // Use Print (not Println) to avoid extra newline
+		log.Printf("OCR completed successfully, text output to stdout (%d chars)", len(text))
+	} else {
+		// Copy result to clipboard for --run-once mode
+		if err := clipboard.Write(text); err != nil {
+			_ = popup.Close()
+			log.Printf("Failed to write to clipboard: %v", err)
+			fmt.Fprintf(os.Stderr, "Failed to write to clipboard: %v\n", err)
+			os.Exit(1)
+		}
+		log.Printf("OCR completed successfully, text copied to clipboard (%d chars)", len(text))
+	}
+
+	// Update countdown popup with result
+	_ = popup.UpdateText(text)
+	// Block long enough for the popup to be visible before process exit
+	time.Sleep(3 * time.Second)
+
+	log.Printf("OCR runonce completed successfully, exiting...")
+	os.Exit(0)
 }
 
 // sanitizeForLogging removes potentially dangerous characters from text for safe logging

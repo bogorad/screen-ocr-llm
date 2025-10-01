@@ -20,7 +20,7 @@ A small desktop utility to select a region of the screen, run OCR via OpenRouter
     - `HOTKEY=Ctrl+Alt+q`
     - `ENABLE_FILE_LOGGING=true`
     - `PROVIDERS=providerA,providerB`
-    - `OCR_DEADLINE_SEC=15`
+    - `OCR_DEADLINE_SEC=15` (default is 15 seconds if unset)
     - `SINGLEINSTANCE_PORT_START=49500`
     - `SINGLEINSTANCE_PORT_END=49550`
 

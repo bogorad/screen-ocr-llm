@@ -31,8 +31,9 @@ func TestIntegration(t *testing.T) {
 	screenshot.Init()
 	ocr.Init()
 	llm.Init(&llm.Config{
-		APIKey: cfg.APIKey,
-		Model:  cfg.Model,
+		APIKey:    cfg.APIKey,
+		Model:     cfg.Model,
+		Providers: cfg.Providers,
 	})
 	err := clipboard.Init()
 	if err != nil {
@@ -105,7 +106,7 @@ func TestIntegration(t *testing.T) {
 	})
 
 	// Test hotkey listener setup (doesn't actually trigger hotkey)
-	hotkey.Listen(func() {
+	hotkey.Listen("Ctrl+Shift+T", func() {
 		t.Log("Hotkey callback - this won't be called in test environment")
 	})
 	t.Log("Hotkey listener setup completed")

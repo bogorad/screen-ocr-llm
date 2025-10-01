@@ -2,8 +2,6 @@ package gui
 
 import (
 	"testing"
-
-	"screen-ocr-llm/screenshot"
 )
 
 func TestInit(t *testing.T) {
@@ -11,34 +9,17 @@ func TestInit(t *testing.T) {
 	Init()
 }
 
-func TestSetRegionSelectionCallback(t *testing.T) {
-	// Test setting callback
-	called := false
-	callback := func(region screenshot.Region) error {
-		called = true
-		return nil
-	}
-
-	SetRegionSelectionCallback(callback)
-
+func TestStartRegionSelection(t *testing.T) {
 	// Test region selection
-	err := StartRegionSelection()
+	// Note: This will open an interactive overlay window
+	// In a real test environment, you would mock StartInteractiveRegionSelection
+	region, err := StartRegionSelection()
 	if err != nil {
 		t.Errorf("StartRegionSelection failed: %v", err)
 	}
 
-	if !called {
-		t.Error("Callback was not called")
-	}
-}
-
-func TestStartRegionSelectionWithoutCallback(t *testing.T) {
-	// Reset callback
-	regionCallback = nil
-
-	// Test without callback
-	err := StartRegionSelection()
-	if err == nil {
-		t.Error("Expected error when no callback is set")
+	// Check that a valid region was returned
+	if region.Width == 0 || region.Height == 0 {
+		t.Error("Expected valid region with non-zero dimensions")
 	}
 }

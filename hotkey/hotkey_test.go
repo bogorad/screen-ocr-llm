@@ -17,8 +17,9 @@ func TestListen(t *testing.T) {
 
 	// Initialize required packages for testing
 	llm.Init(&llm.Config{
-		APIKey: apiKey,
-		Model:  "test_model",
+		APIKey:    apiKey,
+		Model:     "test_model",
+		Providers: []string{}, // Empty for test
 	})
 
 	err := clipboard.Init()
@@ -28,7 +29,7 @@ func TestListen(t *testing.T) {
 
 	// This test would require user interaction, so we'll just check if the function exists
 	// and doesn't panic during setup
-	Listen(func() {
+	Listen("Ctrl+Alt+Q", func() {
 		// Test callback - this won't be called in test environment
 	})
 

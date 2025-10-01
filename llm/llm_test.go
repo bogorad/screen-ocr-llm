@@ -1,7 +1,6 @@
 package llm
 
 import (
-	"os"
 	"testing"
 )
 
@@ -16,8 +15,9 @@ func TestQueryVision(t *testing.T) {
 
 	// Test with missing API key
 	Init(&Config{
-		APIKey: "",
-		Model:  "test_model",
+		APIKey:    "",
+		Model:     "test_model",
+		Providers: []string{},
 	})
 	_, err = QueryVision([]byte{0xFF, 0xFF, 0xFF, 0xFF})
 	if err == nil {
@@ -26,8 +26,9 @@ func TestQueryVision(t *testing.T) {
 
 	// Test with missing model
 	Init(&Config{
-		APIKey: "test_api_key",
-		Model:  "",
+		APIKey:    "test_api_key",
+		Model:     "",
+		Providers: []string{},
 	})
 	_, err = QueryVision([]byte{0xFF, 0xFF, 0xFF, 0xFF})
 	if err == nil {
@@ -36,8 +37,9 @@ func TestQueryVision(t *testing.T) {
 
 	// Test with valid config (will fail due to invalid API key, but tests the request structure)
 	Init(&Config{
-		APIKey: "mock_key_for_error_testing", // Safe mock for error testing
-		Model:  "test_model",
+		APIKey:    "mock_key_for_error_testing", // Safe mock for error testing
+		Model:     "test_model",
+		Providers: []string{},
 	})
 	testImageData := []byte{0xFF, 0xFF, 0xFF, 0xFF}
 	_, err = QueryVision(testImageData)

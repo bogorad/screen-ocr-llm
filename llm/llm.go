@@ -5,6 +5,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"time"
 )
@@ -19,6 +20,11 @@ var config *Config
 
 func Init(cfg *Config) {
 	config = cfg
+	if len(cfg.Providers) > 0 {
+		log.Printf("LLM: Initialized with %d provider(s): %v", len(cfg.Providers), cfg.Providers)
+	} else {
+		log.Printf("LLM: Initialized with no specific providers (using OpenRouter default routing)")
+	}
 }
 
 // OpenRouter API structures
@@ -72,23 +78,24 @@ type APIError struct {
 
 const (
 	openRouterURL = "https://openrouter.ai/api/v1/chat/completions"
-	maxRetries    = 3
-	initialDelay  = 1 * time.Second
 )
 
 // getProviderPreferences returns provider preferences based on config
 func getProviderPreferences() *ProviderPreferences {
 	if config == nil || len(config.Providers) == 0 {
 		// No providers specified, use default OpenRouter routing
+		log.Printf("LLM: No provider preferences configured, using OpenRouter default routing")
 		return nil
 	}
 
 	// Use the providers exactly as specified by the user
 	allowFallbacks := false
-	return &ProviderPreferences{
+	prefs := &ProviderPreferences{
 		Order:          config.Providers,
 		AllowFallbacks: &allowFallbacks,
 	}
+	log.Printf("LLM: Using provider preferences: order=%v, allow_fallbacks=%v", prefs.Order, *prefs.AllowFallbacks)
+	return prefs
 }
 
 // QueryVision sends an image to OpenRouter vision model for OCR
@@ -138,37 +145,30 @@ func QueryVision(imageData []byte) (string, error) {
 		Provider:    getProviderPreferences(),
 	}
 
-	// Retry logic with exponential backoff
-	var lastErr error
-	for attempt := 0; attempt < maxRetries; attempt++ {
-		if attempt > 0 {
-			delay := time.Duration(float64(initialDelay) * (1.5 * float64(attempt)))
-			time.Sleep(delay)
-		}
-
-		response, err := makeAPIRequest(request)
-		if err != nil {
-			lastErr = err
-			continue
-		}
-
-		// Extract text from response
-		if len(response.Choices) == 0 {
-			lastErr = fmt.Errorf("no choices in API response")
-			continue
-		}
-
-		extractedText := response.Choices[0].Message.Content
-		if extractedText == "" || extractedText == "NO_TEXT_FOUND" {
-			return "", fmt.Errorf("no text detected in image")
-		}
-
-		// Clean up any remaining artifacts
-		extractedText = cleanExtractedText(extractedText)
-		return extractedText, nil
+	// Single attempt - no retries, hard fail on any error
+	response, err := makeAPIRequest(request)
+	if err != nil {
+		log.Printf("LLM: API request failed: %v", err)
+		return "", fmt.Errorf("API request failed: %v", err)
 	}
 
-	return "", fmt.Errorf("failed after %d attempts: %v", maxRetries, lastErr)
+	// Extract text from response
+	if len(response.Choices) == 0 {
+		log.Printf("LLM: API response has no choices")
+		return "", fmt.Errorf("no choices in API response")
+	}
+
+	extractedText := response.Choices[0].Message.Content
+	log.Printf("LLM: API returned text: %d characters", len(extractedText))
+	if extractedText == "" || extractedText == "NO_TEXT_FOUND" {
+		log.Printf("LLM: No text detected in image (response was: %q)", extractedText)
+		return "", fmt.Errorf("no text detected in image")
+	}
+
+	// Clean up any remaining artifacts
+	extractedText = cleanExtractedText(extractedText)
+	log.Printf("LLM: Successfully extracted %d characters", len(extractedText))
+	return extractedText, nil
 }
 
 func makeAPIRequest(request ChatRequest) (*ChatResponse, error) {
@@ -176,6 +176,13 @@ func makeAPIRequest(request ChatRequest) (*ChatResponse, error) {
 	jsonData, err := json.Marshal(request)
 	if err != nil {
 		return nil, fmt.Errorf("failed to marshal request: %v", err)
+	}
+
+	// Log the request for debugging (only log provider preferences, not the full request with image data)
+	if request.Provider != nil {
+		log.Printf("LLM: API request includes provider preferences: %+v", request.Provider)
+	} else {
+		log.Printf("LLM: API request without provider preferences (using default routing)")
 	}
 
 	// Create HTTP request
@@ -198,6 +205,8 @@ func makeAPIRequest(request ChatRequest) (*ChatResponse, error) {
 	}
 	defer resp.Body.Close()
 
+	log.Printf("LLM: API response status: %d %s", resp.StatusCode, resp.Status)
+
 	// Parse response
 	var response ChatResponse
 	if err := json.NewDecoder(resp.Body).Decode(&response); err != nil {
@@ -206,6 +215,7 @@ func makeAPIRequest(request ChatRequest) (*ChatResponse, error) {
 
 	// Check for API errors
 	if response.Error != nil {
+		log.Printf("LLM: API error response: %s (type: %s, code: %v)", response.Error.Message, response.Error.Type, response.Error.Code)
 		return nil, fmt.Errorf("API error: %s (type: %s, code: %v)", response.Error.Message, response.Error.Type, response.Error.Code)
 	}
 
@@ -213,6 +223,7 @@ func makeAPIRequest(request ChatRequest) (*ChatResponse, error) {
 		return nil, fmt.Errorf("API returned status %d", resp.StatusCode)
 	}
 
+	log.Printf("LLM: API response parsed successfully, %d choices", len(response.Choices))
 	return &response, nil
 }
 

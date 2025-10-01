@@ -48,8 +48,9 @@ func TestWorkflowValidation(t *testing.T) {
 
 		// Initialize LLM with test config
 		llm.Init(&llm.Config{
-			APIKey: apiKey,
-			Model:  "test_model",
+			APIKey:    apiKey,
+			Model:     "test_model",
+			Providers: []string{}, // Empty for test
 		})
 
 		// Test that API request structure matches Python implementation
@@ -88,21 +89,15 @@ func TestWorkflowValidation(t *testing.T) {
 
 	t.Run("Workflow Integration", func(t *testing.T) {
 		// Test the complete workflow integration
-		workflowExecuted := false
-
-		gui.SetRegionSelectionCallback(func(region screenshot.Region) error {
-			workflowExecuted = true
-			t.Logf("Workflow callback executed with region: %+v", region)
-			return nil
-		})
-
-		err := gui.StartRegionSelection()
+		region, err := gui.StartRegionSelection()
 		if err != nil {
 			t.Errorf("Region selection failed: %v", err)
 		}
 
-		if !workflowExecuted {
-			t.Error("Workflow callback was not executed")
+		t.Logf("Workflow executed with region: %+v", region)
+
+		if region.Width == 0 || region.Height == 0 {
+			t.Error("Expected valid region with non-zero dimensions")
 		}
 	})
 }

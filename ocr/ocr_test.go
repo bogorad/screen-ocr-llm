@@ -17,8 +17,9 @@ func TestRecognize(t *testing.T) {
 
 	// Initialize LLM with test config
 	llm.Init(&llm.Config{
-		APIKey: apiKey,
-		Model:  "test_model",
+		APIKey:    apiKey,
+		Model:     "test_model",
+		Providers: []string{}, // Empty for test
 	})
 
 	// Test with invalid region (should fail at screenshot capture)
@@ -47,8 +48,9 @@ func TestRecognizeImage(t *testing.T) {
 
 	// Initialize LLM with test config
 	llm.Init(&llm.Config{
-		APIKey: apiKey,
-		Model:  "test_model",
+		APIKey:    apiKey,
+		Model:     "test_model",
+		Providers: []string{}, // Empty for test
 	})
 
 	// Test with image data (will fail due to invalid API key)

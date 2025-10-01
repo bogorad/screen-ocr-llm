@@ -2,7 +2,7 @@
 
 # Variables
 BINARY_NAME=screen-ocr-llm
-MAIN_PATH=main/main.go
+MAIN_PATH=./main
 
 # Build for current platform
 build:

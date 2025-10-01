@@ -30,47 +30,34 @@ func TestRealWorkflow(t *testing.T) {
 
 	// Initialize LLM with your actual config
 	llm.Init(&llm.Config{
-		APIKey: cfg.APIKey,
-		Model:  cfg.Model,
+		APIKey:    cfg.APIKey,
+		Model:     cfg.Model,
+		Providers: cfg.Providers,
 	})
 
 	// Test the region selection workflow
-	workflowExecuted := false
-	var capturedRegion screenshot.Region
-
-	gui.SetRegionSelectionCallback(func(region screenshot.Region) error {
-		workflowExecuted = true
-		capturedRegion = region
-		t.Logf("Region selection callback triggered with region: %+v", region)
-
-		// This would normally capture the screen region and send to OCR
-		// For testing, let's create a small test image
-		testImageData := createTestImage()
-		
-		t.Logf("Testing OCR with %d bytes of image data", len(testImageData))
-		
-		// Test the actual API call with your credentials
-		result, err := llm.QueryVision(testImageData)
-		if err != nil {
-			t.Logf("OCR API call failed (this might be expected with test image): %v", err)
-			return err
-		}
-		
-		t.Logf("OCR result: %s", result)
-		return nil
-	})
-
-	// Trigger the workflow
-	err = gui.StartRegionSelection()
+	region, err := gui.StartRegionSelection()
 	if err != nil {
 		t.Errorf("Region selection failed: %v", err)
 	}
 
-	if !workflowExecuted {
-		t.Error("Workflow callback was not executed")
+	t.Logf("Region selection completed with region: %+v", region)
+
+	// This would normally capture the screen region and send to OCR
+	// For testing, let's create a small test image
+	testImageData := createTestImage()
+
+	t.Logf("Testing OCR with %d bytes of image data", len(testImageData))
+
+	// Test the actual API call with your credentials
+	result, err := llm.QueryVision(testImageData)
+	if err != nil {
+		t.Logf("OCR API call failed (this might be expected with test image): %v", err)
+	} else {
+		t.Logf("OCR result: %s", result)
 	}
 
-	t.Logf("Test completed. Region used: %+v", capturedRegion)
+	t.Logf("Test completed. Region used: %+v", region)
 }
 
 // createTestImage creates a minimal PNG image for testing
@@ -96,8 +83,9 @@ func TestAPIConnectivity(t *testing.T) {
 	}
 
 	llm.Init(&llm.Config{
-		APIKey: cfg.APIKey,
-		Model:  cfg.Model,
+		APIKey:    cfg.APIKey,
+		Model:     cfg.Model,
+		Providers: cfg.Providers,
 	})
 
 	// Test with a simple image

@@ -3,6 +3,7 @@ package tray
 import (
 	"context"
 	_ "embed"
+	"fmt"
 	"log"
 	"runtime"
 
@@ -36,6 +37,11 @@ type Config struct {
 	Tooltip string
 	OnExit  func()
 }
+
+var aboutHotkey string
+
+// SetAboutHotkey sets the hotkey to display in the About dialog.
+func SetAboutHotkey(hk string) { aboutHotkey = hk }
 
 var aboutExtra string
 
@@ -210,11 +216,18 @@ func getIconData() []byte {
 		0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 		0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 	}
+	}
+
+func effectiveHotkey() string {
+	if aboutHotkey == "" {
+		return "Ctrl+Alt+Q"
+	}
+	return aboutHotkey
 }
 
 // showAboutDialog displays an about dialog
 func showAboutDialog() {
-	message := `Screen OCR Tool v1.0
+	message := fmt.Sprintf(`Screen OCR Tool v2.1
 
 A powerful screen text extraction tool using AI vision models.
 
@@ -224,11 +237,11 @@ Usage Modes:
 • --run-once-std: Single OCR capture → stdout → exit
 
 Features:
-• Press Ctrl+Alt+Q to capture screen regions
+• Press %s to capture screen regions
 • Automatic text extraction using OCR
 • Text copied to clipboard automatically
 • System tray integration
-• Provider routing support (PROVIDERS= in .env)`
+• Provider routing support (PROVIDERS= in .env)`, effectiveHotkey())
 	if aboutExtra != "" {
 		message += "\n\n" + aboutExtra
 	}

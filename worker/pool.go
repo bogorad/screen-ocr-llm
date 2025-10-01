@@ -2,9 +2,9 @@ package worker
 
 import (
 	"context"
+	"log"
 	"runtime"
 	"sync"
-	"time"
 
 	"screen-ocr-llm/ocr"
 	"screen-ocr-llm/screenshot"
@@ -42,9 +42,13 @@ func (p *Pool) start(n int) {
 		go func() {
 			defer p.wg.Done()
 			for j := range p.jobs {
+				log.Printf("Worker: Starting OCR for region %dx%d", j.region.Width, j.region.Height)
 				// Run OCR with ctx deadline honored inside RecognizeWithContext (to be added)
 				text, err := recognizeWithContext(j.ctx, j.region)
+				log.Printf("Worker: OCR completed, text length=%d, err=%v", len(text), err)
+				log.Printf("Worker: Invoking callback with text length=%d", len(text))
 				j.cb(text, err)
+				log.Printf("Worker: Callback returned")
 			}
 		}()
 	}
@@ -88,14 +92,6 @@ func recognizeWithContext(ctx context.Context, region screenshot.Region) (string
 	case <-ctx.Done():
 		// Allow underlying OCR to continue in background; we return timeout.
 		return "", ctx.Err()
-	case <-time.After(time.Second * 1):
-		// Small grace window to avoid busy waiting if ctx already expired.
-		select {
-		case r := <-resCh:
-			return r.text, r.err
-		default:
-			return "", ctx.Err()
-		}
 	}
 }
 

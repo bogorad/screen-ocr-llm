@@ -127,8 +127,12 @@ func (l *Loop) handleConn(ctx context.Context, conn singleinstance.Conn) {
 		return
 	}
 
-	deadline := readDeadline()
+	deadline := ReadDeadline()
 	jobCtx, _ := context.WithTimeout(ctx, deadline)
+
+	// Start countdown popup for delegated --run-once requests
+	timeoutSeconds := int(deadline.Seconds())
+	_ = popup.StartCountdown(timeoutSeconds)
 
 	l.setBusy(true)
 	submitted := l.pool.Submit(jobCtx, region, func(text string, err error) {
@@ -136,6 +140,7 @@ func (l *Loop) handleConn(ctx context.Context, conn singleinstance.Conn) {
 	})
 	if !submitted {
 		l.setBusy(false)
+		_ = popup.Close()
 		_ = conn.RespondError("Busy, please retry")
 		_ = conn.Close()
 		return
@@ -148,31 +153,37 @@ func (l *Loop) handleResult(res result) {
 	if res.conn != nil {
 		defer res.conn.Close()
 		if res.err != nil {
+			_ = popup.Close() // Close countdown popup on error
 			_ = res.conn.RespondError(res.err.Error())
 			return
 		}
 		if res.stdout {
+			_ = popup.UpdateText(res.text) // Update countdown to result
 			_ = res.conn.RespondSuccess(res.text)
-			_ = popup.Show(res.text) // also show a popup for visibility
 			return
 		}
 		if err := clipboard.Write(res.text); err != nil {
+			_ = popup.Close() // Close countdown popup on error
 			_ = res.conn.RespondError("Clipboard error: " + err.Error())
 			return
 		}
+		_ = popup.UpdateText(res.text) // Update countdown to result
 		_ = res.conn.RespondSuccess("")
 		return
 	}
 	// Resident hotkey path
 	if res.err != nil {
-		_ = popup.Show("OCR failed")
+		// Timeout or error - just close popup silently
+		_ = popup.Close()
 		return
 	}
 	if err := clipboard.Write(res.text); err != nil {
+		_ = popup.Close()
 		_ = popup.Show("Clipboard error")
 		return
 	}
-	_ = popup.Show(res.text) // 3s synchronous popup
+	// Update countdown popup with result text
+	_ = popup.UpdateText(res.text)
 }
 func (l *Loop) handleHotkey(ctx context.Context) {
 	if l.busy {
@@ -187,13 +198,20 @@ func (l *Loop) handleHotkey(ctx context.Context) {
 	if cancelled {
 		return
 	}
-	jobCtx, _ := context.WithTimeout(ctx, readDeadline())
+	deadline := ReadDeadline()
+	jobCtx, _ := context.WithTimeout(ctx, deadline)
+
+	// Start countdown popup immediately
+	timeoutSeconds := int(deadline.Seconds())
+	_ = popup.StartCountdown(timeoutSeconds)
+
 	l.busy = true
 	ok := l.pool.Submit(jobCtx, region, func(text string, err error) {
 		l.results <- result{text: text, err: err, conn: nil, stdout: false}
 	})
 	if !ok {
 		l.busy = false
+		_ = popup.Close()
 		_ = popup.Show("Busy, please retry")
 	}
 }
@@ -203,7 +221,7 @@ func (l *Loop) selectRegion(ctx context.Context) (screenshot.Region, bool, error
 	return l.selector.Select(ctx)
 }
 
-func readDeadline() time.Duration {
+func ReadDeadline() time.Duration {
 	v := os.Getenv("OCR_DEADLINE_SEC")
 	if v == "" {
 		return 15 * time.Second

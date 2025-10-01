@@ -1,0 +1,1807 @@
+2025/10/01 17:09:58 main.go:91: Pre-flight: port 54000 free → we are the one true resident
+2025/10/01 17:09:58 llm.go:24: LLM: Initialized with 3 provider(s): [crusoe/bf16 novita/bf16 deepinfra/bf16]
+2025/10/01 17:09:58 main.go:126: Screen OCR LLM Tool initialized
+2025/10/01 17:09:58 main.go:127: Using model: google/gemma-3-12b-it
+2025/10/01 17:09:58 main.go:128: Hotkey: Ctrl+Win+e
+2025/10/01 17:09:58 hotkey.go:18: Parsed hotkey configuration: [ctrl cmd e]
+2025/10/01 17:09:58 tray.go:70: Starting systray...
+2025/10/01 17:09:58 hotkey.go:46: Hotkey listener configured for: Ctrl+Win+e
+2025/10/01 17:09:58 tcp_server.go:39: singleinstance: listening on 127.0.0.1:54000
+2025/10/01 17:09:58 eventloop.go:75: Resident listening on 127.0.0.1:54000
+2025/10/01 17:09:58 hotkey.go:56: Starting gohook goroutine...
+2025/10/01 17:09:58 hotkey.go:62: Starting gohook event loop...
+2025/10/01 17:09:58 hotkey.go:68: gohook.Start() returned channel successfully
+2025/10/01 17:09:58 tray.go:76: Systray ready, setting up icon and menu
+2025/10/01 17:09:58 tray.go:80: Using embedded icon, size: 1406 bytes
+2025/10/01 17:09:58 tray.go:82: Embedded icon set successfully
+2025/10/01 17:09:58 tray.go:94: Systray menu created, starting event loop
+2025/10/01 17:10:07 tray.go:101: About menu clicked
+2025/10/01 17:10:10 hotkey.go:74: Key event: Kind=4, Rawcode=38, Keychar=65535
+2025/10/01 17:10:10 hotkey.go:74: Key event: Kind=5, Rawcode=38, Keychar=65535
+2025/10/01 17:10:11 hotkey.go:74: Key event: Kind=4, Rawcode=13, Keychar=65535
+2025/10/01 17:10:11 hotkey.go:74: Key event: Kind=5, Rawcode=13, Keychar=65535
+2025/10/01 17:10:11 llm.go:24: LLM: Initialized with 3 provider(s): [crusoe/bf16 novita/bf16 deepinfra/bf16]
+2025/10/01 17:10:11 main.go:207: Running OCR once (--runonce mode)
+2025/10/01 17:10:11 gui.go:18: Starting interactive region selection...
+2025/10/01 17:10:11 region_selector_windows.go:39: Starting WORKING Windows region selection...
+2025/10/01 17:10:11 region_selector_windows.go:49: Virtual screen: x=0 y=0 w=1920 h=1200
+2025/10/01 17:10:11 region_selector_windows.go:51: Screen dimensions: 1920x1200
+2025/10/01 17:10:11 region_selector_windows.go:59: Screen captured successfully
+2025/10/01 17:10:11 region_selector_windows.go:161: Window message: 0x81 (wParam=0, lParam=6288976)
+2025/10/01 17:10:11 region_selector_windows.go:161: Window message: 0x83 (wParam=0, lParam=6289136)
+2025/10/01 17:10:11 region_selector_windows.go:161: Window message: 0x1 (wParam=0, lParam=6288864)
+2025/10/01 17:10:11 region_selector_windows.go:161: Window message: 0x5 (wParam=0, lParam=78645120)
+2025/10/01 17:10:11 region_selector_windows.go:161: Window message: 0x3 (wParam=0, lParam=0)
+2025/10/01 17:10:11 region_selector_windows.go:161: Window message: 0x18 (wParam=1, lParam=0)
+2025/10/01 17:10:11 region_selector_windows.go:161: Window message: 0x46 (wParam=0, lParam=6289104)
+2025/10/01 17:10:11 region_selector_windows.go:161: Window message: 0x46 (wParam=0, lParam=6289104)
+2025/10/01 17:10:11 region_selector_windows.go:161: Window message: 0x1c (wParam=1, lParam=9988)
+2025/10/01 17:10:11 region_selector_windows.go:161: Window message: 0x86 (wParam=1, lParam=0)
+2025/10/01 17:10:11 region_selector_windows.go:161: Window message: 0x6 (wParam=1, lParam=0)
+2025/10/01 17:10:11 region_selector_windows.go:161: Window message: 0x281 (wParam=1, lParam=3221225487)
+2025/10/01 17:10:11 region_selector_windows.go:161: Window message: 0x282 (wParam=2, lParam=0)
+2025/10/01 17:10:11 region_selector_windows.go:161: Window message: 0x7 (wParam=0, lParam=0)
+2025/10/01 17:10:11 region_selector_windows.go:161: Window message: 0x85 (wParam=1, lParam=0)
+2025/10/01 17:10:11 region_selector_windows.go:161: Window message: 0x14 (wParam=18446744073474744456, lParam=0)
+2025/10/01 17:10:11 region_selector_windows.go:161: Window message: 0x47 (wParam=0, lParam=6289104)
+2025/10/01 17:10:11 region_selector_windows.go:98: Working overlay window created: 6294814
+2025/10/01 17:10:11 region_selector_windows.go:235: WM_PAINT called, isSelecting=false
+2025/10/01 17:10:11 region_selector_windows.go:106: Window shown, starting message loop...
+2025/10/01 17:10:11 region_selector_windows.go:161: Window message: 0x7f (wParam=1, lParam=96)
+2025/10/01 17:10:11 region_selector_windows.go:161: Window message: 0xc0de (wParam=0, lParam=0)
+2025/10/01 17:10:11 region_selector_windows.go:161: Window message: 0x7f (wParam=2, lParam=96)
+2025/10/01 17:10:11 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=75629339)
+2025/10/01 17:10:11 region_selector_windows.go:161: Window message: 0x7f (wParam=0, lParam=96)
+2025/10/01 17:10:11 region_selector_windows.go:161: Window message: 0xc053 (wParam=1, lParam=6281248)
+2025/10/01 17:10:11 region_selector_windows.go:161: Window message: 0x288 (wParam=6, lParam=6281248)
+2025/10/01 17:10:12 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=74973979)
+2025/10/01 17:10:12 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=72680216)
+2025/10/01 17:10:12 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=69731090)
+2025/10/01 17:10:12 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=66454282)
+2025/10/01 17:10:12 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=63177474)
+2025/10/01 17:10:12 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=59769593)
+2025/10/01 17:10:12 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=56296176)
+2025/10/01 17:10:12 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=53019365)
+2025/10/01 17:10:12 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=49939163)
+2025/10/01 17:10:12 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=46727887)
+2025/10/01 17:10:12 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=43778757)
+2025/10/01 17:10:12 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=40960699)
+2025/10/01 17:10:12 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=38339248)
+2025/10/01 17:10:12 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=35979940)
+2025/10/01 17:10:12 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=33882778)
+2025/10/01 17:10:12 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=31851150)
+2025/10/01 17:10:12 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=30016130)
+2025/10/01 17:10:12 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=28377717)
+2025/10/01 17:10:12 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=26870377)
+2025/10/01 17:10:12 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=25625181)
+2025/10/01 17:10:12 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=24642130)
+2025/10/01 17:10:12 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=23724615)
+2025/10/01 17:10:12 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=22938173)
+2025/10/01 17:10:12 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=22413877)
+2025/10/01 17:10:12 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=21824046)
+2025/10/01 17:10:12 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=21365287)
+2025/10/01 17:10:12 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=20972066)
+2025/10/01 17:10:12 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=20578845)
+2025/10/01 17:10:12 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=20251162)
+2025/10/01 17:10:12 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=19857943)
+2025/10/01 17:10:12 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=19595797)
+2025/10/01 17:10:12 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=19333652)
+2025/10/01 17:10:12 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=19137043)
+2025/10/01 17:10:12 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=18940435)
+2025/10/01 17:10:12 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=18809363)
+2025/10/01 17:10:12 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=18743827)
+2025/10/01 17:10:12 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=18678291)
+2025/10/01 17:10:12 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=18612755)
+2025/10/01 17:10:12 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=18547219)
+2025/10/01 17:10:12 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=18481683)
+2025/10/01 17:10:12 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=18219537)
+2025/10/01 17:10:12 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=17826317)
+2025/10/01 17:10:12 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=17433097)
+2025/10/01 17:10:12 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=17039874)
+2025/10/01 17:10:12 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=16515578)
+2025/10/01 17:10:12 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=15991278)
+2025/10/01 17:10:12 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=15270370)
+2025/10/01 17:10:12 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=14680532)
+2025/10/01 17:10:12 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=14156231)
+2025/10/01 17:10:12 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=13631930)
+2025/10/01 17:10:12 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=13304239)
+2025/10/01 17:10:12 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=13042085)
+2025/10/01 17:10:12 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=12976540)
+2025/10/01 17:10:12 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=12845459)
+2025/10/01 17:10:12 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=12779917)
+2025/10/01 17:10:12 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=12779911)
+2025/10/01 17:10:12 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=12779906)
+2025/10/01 17:10:12 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=12845438)
+2025/10/01 17:10:12 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=12976507)
+2025/10/01 17:10:12 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=12976505)
+2025/10/01 17:10:12 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=13042041)
+2025/10/01 17:10:12 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=13042040)
+2025/10/01 17:10:12 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=13107576)
+2025/10/01 17:10:12 region_selector_windows.go:161: Window message: 0x201 (wParam=1, lParam=13107576)
+2025/10/01 17:10:12 region_selector_windows.go:166: MOUSE EVENT: 0x201 at (376, 200)
+2025/10/01 17:10:12 region_selector_windows.go:173: Mouse down at (376, 200)
+2025/10/01 17:10:12 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:10:12 region_selector_windows.go:244: Drawing selection rectangle: (376,200) to (376,200)
+2025/10/01 17:10:12 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=13304183)
+2025/10/01 17:10:12 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:10:12 region_selector_windows.go:244: Drawing selection rectangle: (376,200) to (375,203)
+2025/10/01 17:10:12 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=15532423)
+2025/10/01 17:10:12 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:10:12 region_selector_windows.go:244: Drawing selection rectangle: (376,200) to (391,237)
+2025/10/01 17:10:12 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=18219432)
+2025/10/01 17:10:12 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:10:12 region_selector_windows.go:244: Drawing selection rectangle: (376,200) to (424,278)
+2025/10/01 17:10:12 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=22741493)
+2025/10/01 17:10:12 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:10:12 region_selector_windows.go:244: Drawing selection rectangle: (376,200) to (501,347)
+2025/10/01 17:10:12 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=27918948)
+2025/10/01 17:10:12 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:10:12 region_selector_windows.go:244: Drawing selection rectangle: (376,200) to (612,426)
+2025/10/01 17:10:12 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=33817338)
+2025/10/01 17:10:12 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:10:12 region_selector_windows.go:244: Drawing selection rectangle: (376,200) to (762,516)
+2025/10/01 17:10:12 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=36700991)
+2025/10/01 17:10:12 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:10:12 region_selector_windows.go:244: Drawing selection rectangle: (376,200) to (831,560)
+2025/10/01 17:10:12 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=37290830)
+2025/10/01 17:10:12 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:10:12 region_selector_windows.go:244: Drawing selection rectangle: (376,200) to (846,569)
+2025/10/01 17:10:12 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=37290828)
+2025/10/01 17:10:12 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:10:13 region_selector_windows.go:244: Drawing selection rectangle: (376,200) to (844,569)
+2025/10/01 17:10:13 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=36963140)
+2025/10/01 17:10:13 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:10:13 region_selector_windows.go:244: Drawing selection rectangle: (376,200) to (836,564)
+2025/10/01 17:10:13 region_selector_windows.go:161: Window message: 0x202 (wParam=0, lParam=36963140)
+2025/10/01 17:10:13 region_selector_windows.go:166: MOUSE EVENT: 0x202 at (836, 564)
+2025/10/01 17:10:13 region_selector_windows.go:161: Window message: 0x215 (wParam=0, lParam=0)
+2025/10/01 17:10:13 region_selector_windows.go:215: Mouse up at (836, 564), selection: 376,200,460,364
+2025/10/01 17:10:13 region_selector_windows.go:161: Window message: 0x90 (wParam=0, lParam=0)
+2025/10/01 17:10:13 region_selector_windows.go:161: Window message: 0x46 (wParam=0, lParam=6290512)
+2025/10/01 17:10:13 region_selector_windows.go:161: Window message: 0x47 (wParam=0, lParam=6290512)
+2025/10/01 17:10:13 region_selector_windows.go:161: Window message: 0x86 (wParam=0, lParam=0)
+2025/10/01 17:10:13 region_selector_windows.go:161: Window message: 0x6 (wParam=0, lParam=0)
+2025/10/01 17:10:13 region_selector_windows.go:161: Window message: 0x1c (wParam=0, lParam=9988)
+2025/10/01 17:10:13 region_selector_windows.go:161: Window message: 0x8 (wParam=0, lParam=0)
+2025/10/01 17:10:13 region_selector_windows.go:161: Window message: 0x281 (wParam=0, lParam=3221225487)
+2025/10/01 17:10:13 region_selector_windows.go:161: Window message: 0x282 (wParam=1, lParam=0)
+2025/10/01 17:10:13 region_selector_windows.go:161: Window message: 0x2 (wParam=0, lParam=0)
+2025/10/01 17:10:13 region_selector_windows.go:286: WM_DESTROY received
+2025/10/01 17:10:13 region_selector_windows.go:161: Window message: 0x82 (wParam=0, lParam=0)
+2025/10/01 17:10:13 region_selector_windows.go:128: Selection completed: {X:376 Y:200 Width:460 Height:364}
+2025/10/01 17:10:13 gui.go:33: Region selected: {X:376 Y:200 Width:460 Height:364}
+2025/10/01 17:10:13 main.go:216: Processing region: {X:376 Y:200 Width:460 Height:364}
+2025/10/01 17:10:13 ocr.go:19: DEBUG: Capturing region: X=376 Y=200 Width=460 Height=364
+2025/10/01 17:10:13 llm.go:97: LLM: Using provider preferences: order=[crusoe/bf16 novita/bf16 deepinfra/bf16], allow_fallbacks=false
+2025/10/01 17:10:13 llm.go:183: LLM: API request includes provider preferences: &{Order:[crusoe/bf16 novita/bf16 deepinfra/bf16] Quantizations:[] AllowFallbacks:0xc00000a5ec}
+2025/10/01 17:10:14 llm.go:208: LLM: API response status: 200 200 OK
+2025/10/01 17:10:15 llm.go:226: LLM: API response parsed successfully, 1 choices
+2025/10/01 17:10:15 llm.go:162: LLM: API returned text: 357 characters
+2025/10/01 17:10:15 llm.go:170: LLM: Successfully extracted 357 characters
+2025/10/01 17:10:15 main.go:228: OCR extracted text (357 chars): "9326 FUNCTION_CALL_TRACES.md\\n1405 go.mod\\n6272 go.sum\\n949 hotkey_debug_test.go\\n4304 HOTKEY_FIX_SUMMAR..."
+2025/10/01 17:10:15 main.go:241: OCR completed successfully, text copied to clipboard (357 chars)
+2025/10/01 17:10:15 main.go:245: Standalone: requesting popup
+2025/10/01 17:10:15 popup.go:15: Popup.Show called from C:/Users/chuck/git/screen-ocr-llm/main/main.go:246 with 357 characters: "9326 FUNCTION_CALL_TRACES.md\n1405 go.mod\n6272 go.s..."
+2025/10/01 17:10:15 notification_windows.go:138: Popup: Starting single popup thread
+2025/10/01 17:10:15 notification_windows.go:174: Popup: Queued popup request
+2025/10/01 17:10:15 notification_windows.go:317: Popup: Window class registered successfully
+2025/10/01 17:10:15 notification_windows.go:155: Popup: Single thread ready, processing popup queue
+2025/10/01 17:10:15 notification_windows.go:159: Popup: Processing popup request
+2025/10/01 17:10:15 notification_windows.go:323: Popup: Creating popup window
+2025/10/01 17:10:15 notification_windows.go:338: Popup: Creating window at position (20, 1080) with size 400x100
+2025/10/01 17:10:15 notification_windows.go:356: Popup: CreateWindowEx returned hwnd: 6360350
+2025/10/01 17:10:15 notification_windows.go:362: Popup: Window created successfully, hwnd: 6360350
+2025/10/01 17:10:15 notification_windows.go:390: Popup: Set 3-second close timer, result: 1
+2025/10/01 17:10:18 main.go:250: OCR runonce completed successfully, exiting...
+2025/10/01 17:10:21 hotkey.go:74: Key event: Kind=4, Rawcode=162, Keychar=65535
+2025/10/01 17:10:21 hotkey.go:85: ctrl pressed
+2025/10/01 17:10:21 hotkey.go:74: Key event: Kind=5, Rawcode=162, Keychar=65535
+2025/10/01 17:10:21 hotkey.go:126: ctrl released
+2025/10/01 17:10:21 hotkey.go:74: Key event: Kind=4, Rawcode=162, Keychar=65535
+2025/10/01 17:10:21 hotkey.go:85: ctrl pressed
+2025/10/01 17:10:21 hotkey.go:74: Key event: Kind=4, Rawcode=67, Keychar=65535
+2025/10/01 17:10:21 main.go:158: event loop stopped: context canceled
+2025/10/01 17:10:21 tray.go:125: Destroying systray
+2025/10/01 17:20:05 llm.go:24: LLM: Initialized with 3 provider(s): [crusoe/bf16 novita/bf16 deepinfra/bf16]
+2025/10/01 17:20:05 main.go:209: Running OCR once (--runonce mode)
+2025/10/01 17:20:05 gui.go:18: Starting interactive region selection...
+2025/10/01 17:20:05 region_selector_windows.go:39: Starting WORKING Windows region selection...
+2025/10/01 17:20:05 region_selector_windows.go:49: Virtual screen: x=0 y=0 w=1920 h=1200
+2025/10/01 17:20:05 region_selector_windows.go:51: Screen dimensions: 1920x1200
+2025/10/01 17:20:05 region_selector_windows.go:59: Screen captured successfully
+2025/10/01 17:20:05 region_selector_windows.go:161: Window message: 0x81 (wParam=0, lParam=6288976)
+2025/10/01 17:20:05 region_selector_windows.go:161: Window message: 0x83 (wParam=0, lParam=6289136)
+2025/10/01 17:20:05 region_selector_windows.go:161: Window message: 0x1 (wParam=0, lParam=6288864)
+2025/10/01 17:20:05 region_selector_windows.go:161: Window message: 0x5 (wParam=0, lParam=78645120)
+2025/10/01 17:20:05 region_selector_windows.go:161: Window message: 0x3 (wParam=0, lParam=0)
+2025/10/01 17:20:05 region_selector_windows.go:161: Window message: 0x18 (wParam=1, lParam=0)
+2025/10/01 17:20:05 region_selector_windows.go:161: Window message: 0x46 (wParam=0, lParam=6289104)
+2025/10/01 17:20:05 region_selector_windows.go:161: Window message: 0x46 (wParam=0, lParam=6289104)
+2025/10/01 17:20:05 region_selector_windows.go:161: Window message: 0x1c (wParam=1, lParam=9988)
+2025/10/01 17:20:05 region_selector_windows.go:161: Window message: 0x86 (wParam=1, lParam=0)
+2025/10/01 17:20:05 region_selector_windows.go:161: Window message: 0x6 (wParam=1, lParam=0)
+2025/10/01 17:20:05 region_selector_windows.go:161: Window message: 0x281 (wParam=1, lParam=3221225487)
+2025/10/01 17:20:05 region_selector_windows.go:161: Window message: 0x282 (wParam=2, lParam=0)
+2025/10/01 17:20:05 region_selector_windows.go:161: Window message: 0x7 (wParam=0, lParam=0)
+2025/10/01 17:20:05 region_selector_windows.go:161: Window message: 0x85 (wParam=1, lParam=0)
+2025/10/01 17:20:05 region_selector_windows.go:161: Window message: 0x14 (wParam=18446744073608961877, lParam=0)
+2025/10/01 17:20:05 region_selector_windows.go:161: Window message: 0x47 (wParam=0, lParam=6289104)
+2025/10/01 17:20:05 region_selector_windows.go:98: Working overlay window created: 2820516
+2025/10/01 17:20:05 region_selector_windows.go:235: WM_PAINT called, isSelecting=false
+2025/10/01 17:20:05 region_selector_windows.go:106: Window shown, starting message loop...
+2025/10/01 17:20:05 region_selector_windows.go:161: Window message: 0x7f (wParam=1, lParam=96)
+2025/10/01 17:20:05 region_selector_windows.go:161: Window message: 0xc0de (wParam=0, lParam=0)
+2025/10/01 17:20:05 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=918090)
+2025/10/01 17:20:05 region_selector_windows.go:161: Window message: 0x7f (wParam=2, lParam=96)
+2025/10/01 17:20:05 region_selector_windows.go:161: Window message: 0x7f (wParam=0, lParam=96)
+2025/10/01 17:20:05 region_selector_windows.go:161: Window message: 0xc053 (wParam=1, lParam=6281248)
+2025/10/01 17:20:05 region_selector_windows.go:161: Window message: 0x288 (wParam=6, lParam=6281248)
+2025/10/01 17:20:05 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=918090)
+2025/10/01 17:20:05 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=918090)
+2025/10/01 17:20:06 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=1114698)
+2025/10/01 17:20:06 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=1311306)
+2025/10/01 17:20:06 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=1573450)
+2025/10/01 17:20:06 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=1835593)
+2025/10/01 17:20:06 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=2097736)
+2025/10/01 17:20:06 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=2294342)
+2025/10/01 17:20:06 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=2490948)
+2025/10/01 17:20:06 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=2687553)
+2025/10/01 17:20:06 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=2818623)
+2025/10/01 17:20:06 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=2949692)
+2025/10/01 17:20:06 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=3146297)
+2025/10/01 17:20:06 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=3277366)
+2025/10/01 17:20:06 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=3473971)
+2025/10/01 17:20:06 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=3670575)
+2025/10/01 17:20:06 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=3998252)
+2025/10/01 17:20:06 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=4325927)
+2025/10/01 17:20:06 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=4719139)
+2025/10/01 17:20:06 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=5243422)
+2025/10/01 17:20:06 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=5833241)
+2025/10/01 17:20:06 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=6488597)
+2025/10/01 17:20:06 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=7275024)
+2025/10/01 17:20:06 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=8126988)
+2025/10/01 17:20:06 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=8913418)
+2025/10/01 17:20:06 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=9568776)
+2025/10/01 17:20:06 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=10224135)
+2025/10/01 17:20:06 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=10813959)
+2025/10/01 17:20:06 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=11272710)
+2025/10/01 17:20:06 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=11665925)
+2025/10/01 17:20:06 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=12059141)
+2025/10/01 17:20:06 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=12321285)
+2025/10/01 17:20:06 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=12517893)
+2025/10/01 17:20:06 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=12714501)
+2025/10/01 17:20:06 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=12780037)
+2025/10/01 17:20:06 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=12780036)
+2025/10/01 17:20:06 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=12714497)
+2025/10/01 17:20:06 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=12517884)
+2025/10/01 17:20:06 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=12386808)
+2025/10/01 17:20:06 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=12321266)
+2025/10/01 17:20:06 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=12321261)
+2025/10/01 17:20:06 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=12321255)
+2025/10/01 17:20:06 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=12321249)
+2025/10/01 17:20:06 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=12386779)
+2025/10/01 17:20:06 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=12452307)
+2025/10/01 17:20:06 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=12648907)
+2025/10/01 17:20:06 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=12714436)
+2025/10/01 17:20:06 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=12845500)
+2025/10/01 17:20:06 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=13042100)
+2025/10/01 17:20:06 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=13238702)
+2025/10/01 17:20:06 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=13435304)
+2025/10/01 17:20:06 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=13631907)
+2025/10/01 17:20:06 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=13828511)
+2025/10/01 17:20:06 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=14025116)
+2025/10/01 17:20:06 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=14156185)
+2025/10/01 17:20:06 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=14221721)
+2025/10/01 17:20:06 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=14287257)
+2025/10/01 17:20:06 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=14352792)
+2025/10/01 17:20:06 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=14352790)
+2025/10/01 17:20:06 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=14287253)
+2025/10/01 17:20:06 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=14287252)
+2025/10/01 17:20:06 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=14221715)
+2025/10/01 17:20:06 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=14156179)
+2025/10/01 17:20:06 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=14090641)
+2025/10/01 17:20:06 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=14090640)
+2025/10/01 17:20:06 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=14025104)
+2025/10/01 17:20:06 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=14025103)
+2025/10/01 17:20:06 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=14025102)
+2025/10/01 17:20:06 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=13959566)
+2025/10/01 17:20:06 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=13959565)
+2025/10/01 17:20:06 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=13894028)
+2025/10/01 17:20:06 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=13828490)
+2025/10/01 17:20:06 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=13762953)
+2025/10/01 17:20:06 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=13762952)
+2025/10/01 17:20:06 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=13697414)
+2025/10/01 17:20:06 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=13631874)
+2025/10/01 17:20:06 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=13631872)
+2025/10/01 17:20:06 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=13566333)
+2025/10/01 17:20:06 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=13500796)
+2025/10/01 17:20:06 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=13500794)
+2025/10/01 17:20:06 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=13500793)
+2025/10/01 17:20:06 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=13435256)
+2025/10/01 17:20:06 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=13435255)
+2025/10/01 17:20:06 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=13435254)
+2025/10/01 17:20:06 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=13500790)
+2025/10/01 17:20:06 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=13566326)
+2025/10/01 17:20:06 region_selector_windows.go:161: Window message: 0x201 (wParam=1, lParam=13566326)
+2025/10/01 17:20:06 region_selector_windows.go:166: MOUSE EVENT: 0x201 at (374, 207)
+2025/10/01 17:20:06 region_selector_windows.go:173: Mouse down at (374, 207)
+2025/10/01 17:20:06 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:20:07 region_selector_windows.go:244: Drawing selection rectangle: (374,207) to (374,207)
+2025/10/01 17:20:07 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=14025082)
+2025/10/01 17:20:07 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:20:07 region_selector_windows.go:244: Drawing selection rectangle: (374,207) to (378,214)
+2025/10/01 17:20:07 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=14418303)
+2025/10/01 17:20:07 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:20:07 region_selector_windows.go:244: Drawing selection rectangle: (374,207) to (383,220)
+2025/10/01 17:20:07 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=15663514)
+2025/10/01 17:20:07 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:20:07 region_selector_windows.go:244: Drawing selection rectangle: (374,207) to (410,239)
+2025/10/01 17:20:07 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=19857919)
+2025/10/01 17:20:07 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:20:07 region_selector_windows.go:244: Drawing selection rectangle: (374,207) to (511,303)
+2025/10/01 17:20:07 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=27525824)
+2025/10/01 17:20:07 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:20:07 region_selector_windows.go:244: Drawing selection rectangle: (374,207) to (704,420)
+2025/10/01 17:20:07 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=31327026)
+2025/10/01 17:20:07 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:20:07 region_selector_windows.go:244: Drawing selection rectangle: (374,207) to (818,478)
+2025/10/01 17:20:07 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=31327027)
+2025/10/01 17:20:07 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:20:07 region_selector_windows.go:244: Drawing selection rectangle: (374,207) to (819,478)
+2025/10/01 17:20:07 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=31327026)
+2025/10/01 17:20:07 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:20:07 region_selector_windows.go:244: Drawing selection rectangle: (374,207) to (818,478)
+2025/10/01 17:20:07 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=31261489)
+2025/10/01 17:20:07 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:20:07 region_selector_windows.go:244: Drawing selection rectangle: (374,207) to (817,477)
+2025/10/01 17:20:07 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=31261488)
+2025/10/01 17:20:07 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:20:07 region_selector_windows.go:244: Drawing selection rectangle: (374,207) to (816,477)
+2025/10/01 17:20:07 region_selector_windows.go:161: Window message: 0x202 (wParam=0, lParam=31261488)
+2025/10/01 17:20:07 region_selector_windows.go:166: MOUSE EVENT: 0x202 at (816, 477)
+2025/10/01 17:20:07 region_selector_windows.go:161: Window message: 0x215 (wParam=0, lParam=0)
+2025/10/01 17:20:07 region_selector_windows.go:215: Mouse up at (816, 477), selection: 374,207,442,270
+2025/10/01 17:20:07 region_selector_windows.go:161: Window message: 0x90 (wParam=0, lParam=0)
+2025/10/01 17:20:07 region_selector_windows.go:161: Window message: 0x46 (wParam=0, lParam=6290512)
+2025/10/01 17:20:07 region_selector_windows.go:161: Window message: 0x47 (wParam=0, lParam=6290512)
+2025/10/01 17:20:07 region_selector_windows.go:161: Window message: 0x86 (wParam=0, lParam=0)
+2025/10/01 17:20:07 region_selector_windows.go:161: Window message: 0x6 (wParam=0, lParam=0)
+2025/10/01 17:20:07 region_selector_windows.go:161: Window message: 0x1c (wParam=0, lParam=9988)
+2025/10/01 17:20:07 region_selector_windows.go:161: Window message: 0x8 (wParam=0, lParam=0)
+2025/10/01 17:20:07 region_selector_windows.go:161: Window message: 0x281 (wParam=0, lParam=3221225487)
+2025/10/01 17:20:07 region_selector_windows.go:161: Window message: 0x282 (wParam=1, lParam=0)
+2025/10/01 17:20:07 region_selector_windows.go:161: Window message: 0x2 (wParam=0, lParam=0)
+2025/10/01 17:20:07 region_selector_windows.go:286: WM_DESTROY received
+2025/10/01 17:20:07 region_selector_windows.go:161: Window message: 0x82 (wParam=0, lParam=0)
+2025/10/01 17:20:07 region_selector_windows.go:128: Selection completed: {X:374 Y:207 Width:442 Height:270}
+2025/10/01 17:20:07 gui.go:33: Region selected: {X:374 Y:207 Width:442 Height:270}
+2025/10/01 17:20:07 main.go:218: Processing region: {X:374 Y:207 Width:442 Height:270}
+2025/10/01 17:20:07 popup.go:33: Popup.StartCountdown called with 10 seconds
+2025/10/01 17:20:07 notification_windows.go:138: Popup: Starting single popup thread
+2025/10/01 17:20:07 notification_windows.go:453: Popup: Starting countdown popup with 10 seconds
+2025/10/01 17:20:07 ocr.go:19: DEBUG: Capturing region: X=374 Y=207 Width=442 Height=270
+2025/10/01 17:20:07 notification_windows.go:317: Popup: Window class registered successfully
+2025/10/01 17:20:07 notification_windows.go:155: Popup: Single thread ready, processing popup queue
+2025/10/01 17:20:07 notification_windows.go:159: Popup: Processing popup request
+2025/10/01 17:20:07 notification_windows.go:323: Popup: Creating popup window
+2025/10/01 17:20:07 notification_windows.go:338: Popup: Creating window at position (20, 1080) with size 400x100
+2025/10/01 17:20:07 notification_windows.go:356: Popup: CreateWindowEx returned hwnd: 2886052
+2025/10/01 17:20:07 notification_windows.go:362: Popup: Window created successfully, hwnd: 2886052
+2025/10/01 17:20:07 llm.go:97: LLM: Using provider preferences: order=[crusoe/bf16 novita/bf16 deepinfra/bf16], allow_fallbacks=false
+2025/10/01 17:20:07 llm.go:183: LLM: API request includes provider preferences: &{Order:[crusoe/bf16 novita/bf16 deepinfra/bf16] Quantizations:[] AllowFallbacks:0xc000a82248}
+2025/10/01 17:20:07 notification_windows.go:386: Popup: Countdown mode, 1s timer started, result: 2
+2025/10/01 17:20:07 notification_windows.go:467: Popup: Countdown timer started
+2025/10/01 17:20:08 llm.go:208: LLM: API response status: 200 200 OK
+2025/10/01 17:20:09 llm.go:226: LLM: API response parsed successfully, 1 choices
+2025/10/01 17:20:09 llm.go:162: LLM: API returned text: 279 characters
+2025/10/01 17:20:09 llm.go:170: LLM: Successfully extracted 279 characters
+2025/10/01 17:20:09 main.go:235: OCR extracted text (279 chars): "4304 HOTKEY_FIX_SUMMARY.md\\n3129 integration_test.go\\n1036 LICENSE\\n27201 main_new.go\\n2611 Makefile\\n729..."
+2025/10/01 17:20:09 main.go:249: OCR completed successfully, text copied to clipboard (279 chars)
+2025/10/01 17:20:09 popup.go:39: Popup.UpdateText called with 279 characters
+2025/10/01 17:20:09 notification_windows.go:489: Popup: Updating popup text to 279 characters
+2025/10/01 17:20:09 notification_windows.go:251: Popup: Switched to result mode, showing for 3 seconds
+2025/10/01 17:20:12 notification_windows.go:235: Popup: Close timer expired, closing window
+2025/10/01 17:20:12 notification_windows.go:267: Popup: WM_DESTROY received for hwnd=2886052
+2025/10/01 17:20:12 notification_windows.go:274: Popup: Posting WM_EXIT_LOOP to thread 12844
+2025/10/01 17:20:12 notification_windows.go:276: Popup: PostThreadMessage result=1, err=The operation completed successfully.
+2025/10/01 17:20:12 notification_windows.go:407: Popup: Message loop received WM_EXIT_LOOP, exiting
+2025/10/01 17:20:12 notification_windows.go:414: Popup: Message loop exited, flushing remaining messages
+2025/10/01 17:20:12 notification_windows.go:433: Popup: Message queue flushed
+2025/10/01 17:20:12 main.go:257: OCR runonce completed successfully, exiting...
+2025/10/01 17:20:14 main.go:93: Pre-flight: port 54000 free → we are the one true resident
+2025/10/01 17:20:14 llm.go:24: LLM: Initialized with 3 provider(s): [crusoe/bf16 novita/bf16 deepinfra/bf16]
+2025/10/01 17:20:14 main.go:128: Screen OCR LLM Tool initialized
+2025/10/01 17:20:14 main.go:129: Using model: google/gemma-3-12b-it
+2025/10/01 17:20:14 main.go:130: Hotkey: Ctrl+Win+e
+2025/10/01 17:20:14 hotkey.go:18: Parsed hotkey configuration: [ctrl cmd e]
+2025/10/01 17:20:14 tray.go:70: Starting systray...
+2025/10/01 17:20:14 hotkey.go:46: Hotkey listener configured for: Ctrl+Win+e
+2025/10/01 17:20:14 tcp_server.go:39: singleinstance: listening on 127.0.0.1:54000
+2025/10/01 17:20:14 eventloop.go:75: Resident listening on 127.0.0.1:54000
+2025/10/01 17:20:14 hotkey.go:56: Starting gohook goroutine...
+2025/10/01 17:20:14 hotkey.go:62: Starting gohook event loop...
+2025/10/01 17:20:14 hotkey.go:68: gohook.Start() returned channel successfully
+2025/10/01 17:20:14 tray.go:76: Systray ready, setting up icon and menu
+2025/10/01 17:20:14 tray.go:80: Using embedded icon, size: 1406 bytes
+2025/10/01 17:20:14 tray.go:82: Embedded icon set successfully
+2025/10/01 17:20:14 tray.go:94: Systray menu created, starting event loop
+2025/10/01 17:20:17 hotkey.go:74: Key event: Kind=4, Rawcode=38, Keychar=65535
+2025/10/01 17:20:17 hotkey.go:74: Key event: Kind=5, Rawcode=38, Keychar=65535
+2025/10/01 17:20:17 tcp_server.go:57: singleinstance: PING from 127.0.0.1:64440 -> PONG
+2025/10/01 17:20:17 tcp_server.go:66: singleinstance: request from 127.0.0.1:64441 mode=CLIPBOARD
+2025/10/01 17:20:17 gui.go:18: Starting interactive region selection...
+2025/10/01 17:20:17 region_selector_windows.go:39: Starting WORKING Windows region selection...
+2025/10/01 17:20:17 region_selector_windows.go:49: Virtual screen: x=0 y=0 w=1920 h=1200
+2025/10/01 17:20:17 region_selector_windows.go:51: Screen dimensions: 1920x1200
+2025/10/01 17:20:17 hotkey.go:74: Key event: Kind=4, Rawcode=13, Keychar=65535
+2025/10/01 17:20:17 hotkey.go:74: Key event: Kind=5, Rawcode=13, Keychar=65535
+2025/10/01 17:20:17 region_selector_windows.go:59: Screen captured successfully
+2025/10/01 17:20:17 region_selector_windows.go:161: Window message: 0x81 (wParam=0, lParam=6288976)
+2025/10/01 17:20:17 region_selector_windows.go:161: Window message: 0x83 (wParam=0, lParam=6289136)
+2025/10/01 17:20:17 region_selector_windows.go:161: Window message: 0x1 (wParam=0, lParam=6288864)
+2025/10/01 17:20:17 region_selector_windows.go:161: Window message: 0x5 (wParam=0, lParam=78645120)
+2025/10/01 17:20:17 region_selector_windows.go:161: Window message: 0x3 (wParam=0, lParam=0)
+2025/10/01 17:20:17 region_selector_windows.go:161: Window message: 0x18 (wParam=1, lParam=0)
+2025/10/01 17:20:17 region_selector_windows.go:161: Window message: 0x46 (wParam=0, lParam=6289104)
+2025/10/01 17:20:17 region_selector_windows.go:161: Window message: 0x46 (wParam=0, lParam=6289104)
+2025/10/01 17:20:17 region_selector_windows.go:161: Window message: 0x1c (wParam=1, lParam=0)
+2025/10/01 17:20:17 region_selector_windows.go:161: Window message: 0x86 (wParam=0, lParam=0)
+2025/10/01 17:20:17 region_selector_windows.go:161: Window message: 0x6 (wParam=1, lParam=0)
+2025/10/01 17:20:17 region_selector_windows.go:161: Window message: 0x281 (wParam=1, lParam=3221225487)
+2025/10/01 17:20:17 region_selector_windows.go:161: Window message: 0x282 (wParam=2, lParam=0)
+2025/10/01 17:20:17 region_selector_windows.go:161: Window message: 0x7 (wParam=0, lParam=0)
+2025/10/01 17:20:17 region_selector_windows.go:161: Window message: 0x85 (wParam=1, lParam=0)
+2025/10/01 17:20:17 region_selector_windows.go:161: Window message: 0x14 (wParam=419502134, lParam=0)
+2025/10/01 17:20:17 region_selector_windows.go:161: Window message: 0x47 (wParam=0, lParam=6289104)
+2025/10/01 17:20:17 region_selector_windows.go:98: Working overlay window created: 32705048
+2025/10/01 17:20:17 region_selector_windows.go:235: WM_PAINT called, isSelecting=false
+2025/10/01 17:20:17 region_selector_windows.go:106: Window shown, starting message loop...
+2025/10/01 17:20:17 region_selector_windows.go:161: Window message: 0xc0de (wParam=0, lParam=0)
+2025/10/01 17:20:17 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=655959)
+2025/10/01 17:20:17 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=655959)
+2025/10/01 17:20:17 region_selector_windows.go:161: Window message: 0x7f (wParam=1, lParam=96)
+2025/10/01 17:20:17 region_selector_windows.go:161: Window message: 0x7f (wParam=2, lParam=96)
+2025/10/01 17:20:17 region_selector_windows.go:161: Window message: 0x7f (wParam=0, lParam=96)
+2025/10/01 17:20:18 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=655959)
+2025/10/01 17:20:18 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=459350)
+2025/10/01 17:20:18 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=459349)
+2025/10/01 17:20:18 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=524884)
+2025/10/01 17:20:18 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=655954)
+2025/10/01 17:20:18 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=852560)
+2025/10/01 17:20:18 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=1114702)
+2025/10/01 17:20:18 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=1442379)
+2025/10/01 17:20:18 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=1835592)
+2025/10/01 17:20:18 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=2294340)
+2025/10/01 17:20:18 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=2818624)
+2025/10/01 17:20:18 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=3342907)
+2025/10/01 17:20:18 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=3801654)
+2025/10/01 17:20:18 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=4325938)
+2025/10/01 17:20:18 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=4915755)
+2025/10/01 17:20:18 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=5571108)
+2025/10/01 17:20:18 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=6160925)
+2025/10/01 17:20:18 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=6685205)
+2025/10/01 17:20:18 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=7275022)
+2025/10/01 17:20:18 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=7864837)
+2025/10/01 17:20:18 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=8389116)
+2025/10/01 17:20:18 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=8913394)
+2025/10/01 17:20:18 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=9372136)
+2025/10/01 17:20:18 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=9896414)
+2025/10/01 17:20:18 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=10355157)
+2025/10/01 17:20:18 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=10879437)
+2025/10/01 17:20:18 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=11272646)
+2025/10/01 17:20:18 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=11731392)
+2025/10/01 17:20:18 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=12190138)
+2025/10/01 17:20:18 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=12583349)
+2025/10/01 17:20:18 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=13042096)
+2025/10/01 17:20:18 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=13435309)
+2025/10/01 17:20:18 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=13894058)
+2025/10/01 17:20:18 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=14287272)
+2025/10/01 17:20:18 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=14614951)
+2025/10/01 17:20:18 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=14942630)
+2025/10/01 17:20:18 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=15204774)
+2025/10/01 17:20:18 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=15466918)
+2025/10/01 17:20:18 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=15663526)
+2025/10/01 17:20:18 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=15729062)
+2025/10/01 17:20:18 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=15794598)
+2025/10/01 17:20:18 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=15860135)
+2025/10/01 17:20:18 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=15860136)
+2025/10/01 17:20:18 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=15925673)
+2025/10/01 17:20:18 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=15925674)
+2025/10/01 17:20:18 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=15991211)
+2025/10/01 17:20:18 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=15860137)
+2025/10/01 17:20:18 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=15532453)
+2025/10/01 17:20:18 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=15270304)
+2025/10/01 17:20:18 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=14942618)
+2025/10/01 17:20:18 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=14614932)
+2025/10/01 17:20:18 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=14287246)
+2025/10/01 17:20:18 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=14025096)
+2025/10/01 17:20:18 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=13631873)
+2025/10/01 17:20:18 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=13369722)
+2025/10/01 17:20:18 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=13042036)
+2025/10/01 17:20:18 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=12845423)
+2025/10/01 17:20:18 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=12648810)
+2025/10/01 17:20:18 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=12517734)
+2025/10/01 17:20:18 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=12452196)
+2025/10/01 17:20:18 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=12386660)
+2025/10/01 17:20:18 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=12386659)
+2025/10/01 17:20:18 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=12321123)
+2025/10/01 17:20:18 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=12255587)
+2025/10/01 17:20:18 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=12190051)
+2025/10/01 17:20:18 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=12124515)
+2025/10/01 17:20:18 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=12058978)
+2025/10/01 17:20:18 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=12058977)
+2025/10/01 17:20:18 region_selector_windows.go:161: Window message: 0x86 (wParam=1, lParam=0)
+2025/10/01 17:20:18 region_selector_windows.go:161: Window message: 0x46 (wParam=0, lParam=6290416)
+2025/10/01 17:20:18 region_selector_windows.go:161: Window message: 0x201 (wParam=1, lParam=12058977)
+2025/10/01 17:20:18 region_selector_windows.go:166: MOUSE EVENT: 0x201 at (353, 184)
+2025/10/01 17:20:18 region_selector_windows.go:173: Mouse down at (353, 184)
+2025/10/01 17:20:18 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:20:18 region_selector_windows.go:244: Drawing selection rectangle: (353,184) to (353,184)
+2025/10/01 17:20:18 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=13435246)
+2025/10/01 17:20:18 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:20:18 region_selector_windows.go:244: Drawing selection rectangle: (353,184) to (366,205)
+2025/10/01 17:20:18 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=15270294)
+2025/10/01 17:20:18 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:20:18 region_selector_windows.go:244: Drawing selection rectangle: (353,184) to (406,233)
+2025/10/01 17:20:18 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=18809367)
+2025/10/01 17:20:18 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:20:18 region_selector_windows.go:244: Drawing selection rectangle: (353,184) to (535,287)
+2025/10/01 17:20:18 region_selector_windows.go:161: Window message: 0xc053 (wParam=1, lParam=6281248)
+2025/10/01 17:20:18 region_selector_windows.go:161: Window message: 0x288 (wParam=6, lParam=6281248)
+2025/10/01 17:20:18 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=21496511)
+2025/10/01 17:20:18 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:20:18 region_selector_windows.go:244: Drawing selection rectangle: (353,184) to (703,328)
+2025/10/01 17:20:18 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=21627615)
+2025/10/01 17:20:18 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:20:18 region_selector_windows.go:244: Drawing selection rectangle: (353,184) to (735,330)
+2025/10/01 17:20:18 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=21693158)
+2025/10/01 17:20:18 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:20:18 region_selector_windows.go:244: Drawing selection rectangle: (353,184) to (742,331)
+2025/10/01 17:20:18 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=21758700)
+2025/10/01 17:20:18 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:20:18 region_selector_windows.go:244: Drawing selection rectangle: (353,184) to (748,332)
+2025/10/01 17:20:18 region_selector_windows.go:161: Window message: 0x86 (wParam=1, lParam=0)
+2025/10/01 17:20:19 region_selector_windows.go:161: Window message: 0x7f (wParam=1, lParam=96)
+2025/10/01 17:20:19 region_selector_windows.go:161: Window message: 0x7f (wParam=2, lParam=96)
+2025/10/01 17:20:19 region_selector_windows.go:161: Window message: 0x7f (wParam=0, lParam=96)
+2025/10/01 17:20:19 region_selector_windows.go:161: Window message: 0x202 (wParam=0, lParam=21758700)
+2025/10/01 17:20:19 region_selector_windows.go:166: MOUSE EVENT: 0x202 at (748, 332)
+2025/10/01 17:20:19 region_selector_windows.go:161: Window message: 0x215 (wParam=0, lParam=0)
+2025/10/01 17:20:19 region_selector_windows.go:215: Mouse up at (748, 332), selection: 353,184,395,148
+2025/10/01 17:20:19 region_selector_windows.go:161: Window message: 0x90 (wParam=0, lParam=0)
+2025/10/01 17:20:19 region_selector_windows.go:161: Window message: 0x46 (wParam=0, lParam=6290512)
+2025/10/01 17:20:19 region_selector_windows.go:161: Window message: 0x47 (wParam=0, lParam=6290512)
+2025/10/01 17:20:19 region_selector_windows.go:161: Window message: 0x86 (wParam=0, lParam=0)
+2025/10/01 17:20:19 region_selector_windows.go:161: Window message: 0x6 (wParam=0, lParam=0)
+2025/10/01 17:20:19 region_selector_windows.go:161: Window message: 0x1c (wParam=0, lParam=9988)
+2025/10/01 17:20:19 region_selector_windows.go:161: Window message: 0x8 (wParam=0, lParam=0)
+2025/10/01 17:20:19 region_selector_windows.go:161: Window message: 0x281 (wParam=0, lParam=3221225487)
+2025/10/01 17:20:19 region_selector_windows.go:161: Window message: 0x282 (wParam=1, lParam=0)
+2025/10/01 17:20:19 region_selector_windows.go:161: Window message: 0x2 (wParam=0, lParam=0)
+2025/10/01 17:20:19 region_selector_windows.go:286: WM_DESTROY received
+2025/10/01 17:20:19 region_selector_windows.go:161: Window message: 0x82 (wParam=0, lParam=0)
+2025/10/01 17:20:19 region_selector_windows.go:128: Selection completed: {X:353 Y:184 Width:395 Height:148}
+2025/10/01 17:20:19 gui.go:33: Region selected: {X:353 Y:184 Width:395 Height:148}
+2025/10/01 17:20:19 popup.go:33: Popup.StartCountdown called with 10 seconds
+2025/10/01 17:20:19 notification_windows.go:138: Popup: Starting single popup thread
+2025/10/01 17:20:19 notification_windows.go:453: Popup: Starting countdown popup with 10 seconds
+2025/10/01 17:20:19 notification_windows.go:317: Popup: Window class registered successfully
+2025/10/01 17:20:19 notification_windows.go:155: Popup: Single thread ready, processing popup queue
+2025/10/01 17:20:19 notification_windows.go:159: Popup: Processing popup request
+2025/10/01 17:20:19 notification_windows.go:323: Popup: Creating popup window
+2025/10/01 17:20:19 notification_windows.go:338: Popup: Creating window at position (20, 1080) with size 400x100
+2025/10/01 17:20:19 pool.go:45: Worker: Starting OCR for region 395x148
+2025/10/01 17:20:19 ocr.go:19: DEBUG: Capturing region: X=353 Y=184 Width=395 Height=148
+2025/10/01 17:20:19 notification_windows.go:356: Popup: CreateWindowEx returned hwnd: 32770584
+2025/10/01 17:20:19 notification_windows.go:362: Popup: Window created successfully, hwnd: 32770584
+2025/10/01 17:20:19 notification_windows.go:386: Popup: Countdown mode, 1s timer started, result: 2
+2025/10/01 17:20:19 llm.go:97: LLM: Using provider preferences: order=[crusoe/bf16 novita/bf16 deepinfra/bf16], allow_fallbacks=false
+2025/10/01 17:20:19 llm.go:183: LLM: API request includes provider preferences: &{Order:[crusoe/bf16 novita/bf16 deepinfra/bf16] Quantizations:[] AllowFallbacks:0xc000200a00}
+2025/10/01 17:20:19 notification_windows.go:467: Popup: Countdown timer started
+2025/10/01 17:20:20 llm.go:208: LLM: API response status: 200 200 OK
+2025/10/01 17:20:20 llm.go:226: LLM: API response parsed successfully, 1 choices
+2025/10/01 17:20:20 llm.go:162: LLM: API returned text: 156 characters
+2025/10/01 17:20:20 llm.go:170: LLM: Successfully extracted 156 characters
+2025/10/01 17:20:20 pool.go:48: Worker: OCR completed, text length=156, err=<nil>
+2025/10/01 17:20:20 pool.go:49: Worker: Invoking callback with text length=156
+2025/10/01 17:20:20 pool.go:51: Worker: Callback returned
+2025/10/01 17:20:20 popup.go:39: Popup.UpdateText called with 156 characters
+2025/10/01 17:20:20 notification_windows.go:489: Popup: Updating popup text to 156 characters
+2025/10/01 17:20:20 notification_windows.go:251: Popup: Switched to result mode, showing for 3 seconds
+2025/10/01 17:20:23 notification_windows.go:235: Popup: Close timer expired, closing window
+2025/10/01 17:20:23 notification_windows.go:267: Popup: WM_DESTROY received for hwnd=32770584
+2025/10/01 17:20:23 notification_windows.go:274: Popup: Posting WM_EXIT_LOOP to thread 1788
+2025/10/01 17:20:23 notification_windows.go:276: Popup: PostThreadMessage result=1, err=The operation completed successfully.
+2025/10/01 17:20:23 notification_windows.go:407: Popup: Message loop received WM_EXIT_LOOP, exiting
+2025/10/01 17:20:23 notification_windows.go:414: Popup: Message loop exited, flushing remaining messages
+2025/10/01 17:20:23 notification_windows.go:433: Popup: Message queue flushed
+2025/10/01 17:20:24 hotkey.go:74: Key event: Kind=4, Rawcode=91, Keychar=65535
+2025/10/01 17:20:24 hotkey.go:85: cmd pressed
+2025/10/01 17:20:24 hotkey.go:74: Key event: Kind=4, Rawcode=160, Keychar=65535
+2025/10/01 17:20:24 hotkey.go:74: Key event: Kind=4, Rawcode=69, Keychar=65535
+2025/10/01 17:20:24 hotkey.go:85: e pressed
+2025/10/01 17:20:24 hotkey.go:74: Key event: Kind=5, Rawcode=69, Keychar=65535
+2025/10/01 17:20:24 hotkey.go:126: e released
+2025/10/01 17:20:25 hotkey.go:74: Key event: Kind=5, Rawcode=160, Keychar=65535
+2025/10/01 17:20:25 hotkey.go:74: Key event: Kind=4, Rawcode=162, Keychar=65535
+2025/10/01 17:20:25 hotkey.go:85: ctrl pressed
+2025/10/01 17:20:26 hotkey.go:74: Key event: Kind=4, Rawcode=69, Keychar=65535
+2025/10/01 17:20:26 hotkey.go:85: e pressed
+2025/10/01 17:20:26 hotkey.go:101: HOTKEY COMBINATION DETECTED! Ctrl+Win+e
+2025/10/01 17:20:26 hotkey.go:102: Hotkey activated
+2025/10/01 17:20:26 hotkey.go:74: Key event: Kind=5, Rawcode=69, Keychar=65535
+2025/10/01 17:20:26 gui.go:18: Starting interactive region selection...
+2025/10/01 17:20:26 region_selector_windows.go:39: Starting WORKING Windows region selection...
+2025/10/01 17:20:26 region_selector_windows.go:49: Virtual screen: x=0 y=0 w=1920 h=1200
+2025/10/01 17:20:26 region_selector_windows.go:51: Screen dimensions: 1920x1200
+2025/10/01 17:20:26 region_selector_windows.go:59: Screen captured successfully
+2025/10/01 17:20:26 region_selector_windows.go:161: Window message: 0x81 (wParam=0, lParam=6288976)
+2025/10/01 17:20:26 region_selector_windows.go:161: Window message: 0x83 (wParam=0, lParam=6289136)
+2025/10/01 17:20:26 region_selector_windows.go:161: Window message: 0x1 (wParam=0, lParam=6288864)
+2025/10/01 17:20:26 region_selector_windows.go:161: Window message: 0x5 (wParam=0, lParam=78645120)
+2025/10/01 17:20:26 region_selector_windows.go:161: Window message: 0x3 (wParam=0, lParam=0)
+2025/10/01 17:20:26 region_selector_windows.go:161: Window message: 0x18 (wParam=1, lParam=0)
+2025/10/01 17:20:26 region_selector_windows.go:161: Window message: 0x46 (wParam=0, lParam=6289104)
+2025/10/01 17:20:26 region_selector_windows.go:161: Window message: 0x46 (wParam=0, lParam=6289104)
+2025/10/01 17:20:26 region_selector_windows.go:161: Window message: 0x1c (wParam=1, lParam=9988)
+2025/10/01 17:20:26 region_selector_windows.go:161: Window message: 0x86 (wParam=1, lParam=0)
+2025/10/01 17:20:26 region_selector_windows.go:161: Window message: 0x6 (wParam=1, lParam=0)
+2025/10/01 17:20:26 region_selector_windows.go:161: Window message: 0x281 (wParam=1, lParam=3221225487)
+2025/10/01 17:20:26 region_selector_windows.go:161: Window message: 0x282 (wParam=2, lParam=0)
+2025/10/01 17:20:26 region_selector_windows.go:161: Window message: 0x7 (wParam=0, lParam=0)
+2025/10/01 17:20:26 region_selector_windows.go:161: Window message: 0x85 (wParam=1, lParam=0)
+2025/10/01 17:20:26 region_selector_windows.go:161: Window message: 0x14 (wParam=18446744073474744456, lParam=0)
+2025/10/01 17:20:26 region_selector_windows.go:161: Window message: 0x47 (wParam=0, lParam=6289104)
+2025/10/01 17:20:26 region_selector_windows.go:98: Working overlay window created: 32836120
+2025/10/01 17:20:26 region_selector_windows.go:235: WM_PAINT called, isSelecting=false
+2025/10/01 17:20:26 region_selector_windows.go:106: Window shown, starting message loop...
+2025/10/01 17:20:26 region_selector_windows.go:161: Window message: 0xc0de (wParam=0, lParam=0)
+2025/10/01 17:20:26 region_selector_windows.go:161: Window message: 0x200 (wParam=8, lParam=24576818)
+2025/10/01 17:20:26 region_selector_windows.go:161: Window message: 0xc053 (wParam=1, lParam=6281248)
+2025/10/01 17:20:26 region_selector_windows.go:161: Window message: 0x288 (wParam=6, lParam=6281248)
+2025/10/01 17:20:26 region_selector_windows.go:161: Window message: 0x200 (wParam=8, lParam=24576818)
+2025/10/01 17:20:26 region_selector_windows.go:161: Window message: 0x200 (wParam=8, lParam=24576818)
+2025/10/01 17:20:26 region_selector_windows.go:161: Window message: 0x101 (wParam=17, lParam=3223126017)
+2025/10/01 17:20:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=24576818)
+2025/10/01 17:20:26 region_selector_windows.go:161: Window message: 0x101 (wParam=91, lParam=3243966465)
+2025/10/01 17:20:26 hotkey.go:74: Key event: Kind=5, Rawcode=162, Keychar=65535
+2025/10/01 17:20:26 hotkey.go:74: Key event: Kind=5, Rawcode=91, Keychar=65535
+2025/10/01 17:20:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=24118064)
+2025/10/01 17:20:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=23069468)
+2025/10/01 17:20:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=20775656)
+2025/10/01 17:20:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=20054736)
+2025/10/01 17:20:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=19530424)
+2025/10/01 17:20:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=19006114)
+2025/10/01 17:20:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=18612875)
+2025/10/01 17:20:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=18350708)
+2025/10/01 17:20:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=18088542)
+2025/10/01 17:20:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=17957451)
+2025/10/01 17:20:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=17891897)
+2025/10/01 17:20:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=17826345)
+2025/10/01 17:20:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=17826332)
+2025/10/01 17:20:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=17826322)
+2025/10/01 17:20:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=17826311)
+2025/10/01 17:20:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=17826303)
+2025/10/01 17:20:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=17826295)
+2025/10/01 17:20:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=17826288)
+2025/10/01 17:20:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=17826283)
+2025/10/01 17:20:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=17826279)
+2025/10/01 17:20:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=17826276)
+2025/10/01 17:20:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=17891809)
+2025/10/01 17:20:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=17957341)
+2025/10/01 17:20:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=18022874)
+2025/10/01 17:20:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=18022870)
+2025/10/01 17:20:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=18153938)
+2025/10/01 17:20:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=18219470)
+2025/10/01 17:20:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=18350535)
+2025/10/01 17:20:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=18481600)
+2025/10/01 17:20:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=18547129)
+2025/10/01 17:20:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=18678194)
+2025/10/01 17:20:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=18743721)
+2025/10/01 17:20:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=18874786)
+2025/10/01 17:20:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=18940314)
+2025/10/01 17:20:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=19071379)
+2025/10/01 17:20:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=19136910)
+2025/10/01 17:20:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=19267976)
+2025/10/01 17:20:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=19333507)
+2025/10/01 17:20:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=19333504)
+2025/10/01 17:20:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=19399039)
+2025/10/01 17:20:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=19399038)
+2025/10/01 17:20:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=19399037)
+2025/10/01 17:20:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=19464571)
+2025/10/01 17:20:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=19464569)
+2025/10/01 17:20:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=19530104)
+2025/10/01 17:20:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=19530103)
+2025/10/01 17:20:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=19595639)
+2025/10/01 17:20:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=19661175)
+2025/10/01 17:20:26 region_selector_windows.go:161: Window message: 0x201 (wParam=1, lParam=19661175)
+2025/10/01 17:20:26 region_selector_windows.go:166: MOUSE EVENT: 0x201 at (375, 300)
+2025/10/01 17:20:26 region_selector_windows.go:173: Mouse down at (375, 300)
+2025/10/01 17:20:26 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:20:26 region_selector_windows.go:244: Drawing selection rectangle: (375,300) to (375,300)
+2025/10/01 17:20:26 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=19988851)
+2025/10/01 17:20:26 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:20:26 region_selector_windows.go:244: Drawing selection rectangle: (375,300) to (371,305)
+2025/10/01 17:20:26 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=21758321)
+2025/10/01 17:20:26 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:20:26 region_selector_windows.go:244: Drawing selection rectangle: (375,300) to (369,332)
+2025/10/01 17:20:26 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=23396755)
+2025/10/01 17:20:26 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:20:26 region_selector_windows.go:244: Drawing selection rectangle: (375,300) to (403,357)
+2025/10/01 17:20:26 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=25625066)
+2025/10/01 17:20:26 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:20:26 region_selector_windows.go:244: Drawing selection rectangle: (375,300) to (490,391)
+2025/10/01 17:20:26 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=25952781)
+2025/10/01 17:20:26 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:20:26 region_selector_windows.go:244: Drawing selection rectangle: (375,300) to (525,396)
+2025/10/01 17:20:26 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=25952789)
+2025/10/01 17:20:26 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:20:27 region_selector_windows.go:244: Drawing selection rectangle: (375,300) to (533,396)
+2025/10/01 17:20:27 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=25952791)
+2025/10/01 17:20:27 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:20:27 region_selector_windows.go:244: Drawing selection rectangle: (375,300) to (535,396)
+2025/10/01 17:20:27 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=25952797)
+2025/10/01 17:20:27 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:20:27 region_selector_windows.go:244: Drawing selection rectangle: (375,300) to (541,396)
+2025/10/01 17:20:27 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=25952809)
+2025/10/01 17:20:27 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:20:27 region_selector_windows.go:244: Drawing selection rectangle: (375,300) to (553,396)
+2025/10/01 17:20:27 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=25756225)
+2025/10/01 17:20:27 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:20:27 region_selector_windows.go:244: Drawing selection rectangle: (375,300) to (577,393)
+2025/10/01 17:20:27 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=25690712)
+2025/10/01 17:20:27 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:20:27 region_selector_windows.go:244: Drawing selection rectangle: (375,300) to (600,392)
+2025/10/01 17:20:27 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=25690716)
+2025/10/01 17:20:27 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:20:27 region_selector_windows.go:244: Drawing selection rectangle: (375,300) to (604,392)
+2025/10/01 17:20:27 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=25625181)
+2025/10/01 17:20:27 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:20:27 region_selector_windows.go:244: Drawing selection rectangle: (375,300) to (605,391)
+2025/10/01 17:20:27 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=24773241)
+2025/10/01 17:20:27 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:20:27 region_selector_windows.go:244: Drawing selection rectangle: (375,300) to (633,378)
+2025/10/01 17:20:27 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=24248989)
+2025/10/01 17:20:27 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:20:27 region_selector_windows.go:244: Drawing selection rectangle: (375,300) to (669,370)
+2025/10/01 17:20:27 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=24117951)
+2025/10/01 17:20:27 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:20:27 region_selector_windows.go:244: Drawing selection rectangle: (375,300) to (703,368)
+2025/10/01 17:20:27 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=24117980)
+2025/10/01 17:20:27 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:20:27 region_selector_windows.go:244: Drawing selection rectangle: (375,300) to (732,368)
+2025/10/01 17:20:27 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=24117981)
+2025/10/01 17:20:27 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:20:27 region_selector_windows.go:244: Drawing selection rectangle: (375,300) to (733,368)
+2025/10/01 17:20:27 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=24183517)
+2025/10/01 17:20:27 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:20:27 region_selector_windows.go:244: Drawing selection rectangle: (375,300) to (733,369)
+2025/10/01 17:20:27 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=24249053)
+2025/10/01 17:20:27 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:20:27 region_selector_windows.go:244: Drawing selection rectangle: (375,300) to (733,370)
+2025/10/01 17:20:27 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=24183517)
+2025/10/01 17:20:27 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:20:27 region_selector_windows.go:244: Drawing selection rectangle: (375,300) to (733,369)
+2025/10/01 17:20:27 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=24052445)
+2025/10/01 17:20:27 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:20:27 region_selector_windows.go:244: Drawing selection rectangle: (375,300) to (733,367)
+2025/10/01 17:20:27 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=23921373)
+2025/10/01 17:20:27 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:20:27 region_selector_windows.go:244: Drawing selection rectangle: (375,300) to (733,365)
+2025/10/01 17:20:28 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=23855837)
+2025/10/01 17:20:28 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:20:28 region_selector_windows.go:244: Drawing selection rectangle: (375,300) to (733,364)
+2025/10/01 17:20:28 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=23790301)
+2025/10/01 17:20:28 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:20:28 region_selector_windows.go:244: Drawing selection rectangle: (375,300) to (733,363)
+2025/10/01 17:20:28 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=23790302)
+2025/10/01 17:20:28 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:20:28 region_selector_windows.go:244: Drawing selection rectangle: (375,300) to (734,363)
+2025/10/01 17:20:28 region_selector_windows.go:161: Window message: 0x202 (wParam=0, lParam=23790302)
+2025/10/01 17:20:28 region_selector_windows.go:166: MOUSE EVENT: 0x202 at (734, 363)
+2025/10/01 17:20:28 region_selector_windows.go:161: Window message: 0x215 (wParam=0, lParam=0)
+2025/10/01 17:20:28 region_selector_windows.go:215: Mouse up at (734, 363), selection: 375,300,359,63
+2025/10/01 17:20:28 region_selector_windows.go:161: Window message: 0x90 (wParam=0, lParam=0)
+2025/10/01 17:20:28 region_selector_windows.go:161: Window message: 0x46 (wParam=0, lParam=6290512)
+2025/10/01 17:20:28 region_selector_windows.go:161: Window message: 0x47 (wParam=0, lParam=6290512)
+2025/10/01 17:20:28 region_selector_windows.go:161: Window message: 0x86 (wParam=0, lParam=0)
+2025/10/01 17:20:28 region_selector_windows.go:161: Window message: 0x6 (wParam=0, lParam=0)
+2025/10/01 17:20:28 region_selector_windows.go:161: Window message: 0x1c (wParam=0, lParam=9988)
+2025/10/01 17:20:28 region_selector_windows.go:161: Window message: 0x8 (wParam=0, lParam=0)
+2025/10/01 17:20:28 region_selector_windows.go:161: Window message: 0x281 (wParam=0, lParam=3221225487)
+2025/10/01 17:20:28 region_selector_windows.go:161: Window message: 0x282 (wParam=1, lParam=0)
+2025/10/01 17:20:28 region_selector_windows.go:161: Window message: 0x2 (wParam=0, lParam=0)
+2025/10/01 17:20:28 region_selector_windows.go:286: WM_DESTROY received
+2025/10/01 17:20:28 region_selector_windows.go:161: Window message: 0x82 (wParam=0, lParam=0)
+2025/10/01 17:20:28 region_selector_windows.go:128: Selection completed: {X:375 Y:300 Width:359 Height:63}
+2025/10/01 17:20:28 gui.go:33: Region selected: {X:375 Y:300 Width:359 Height:63}
+2025/10/01 17:20:28 popup.go:33: Popup.StartCountdown called with 10 seconds
+2025/10/01 17:20:28 notification_windows.go:453: Popup: Starting countdown popup with 10 seconds
+2025/10/01 17:20:28 pool.go:45: Worker: Starting OCR for region 359x63
+2025/10/01 17:20:28 ocr.go:19: DEBUG: Capturing region: X=375 Y=300 Width=359 Height=63
+2025/10/01 17:20:28 notification_windows.go:159: Popup: Processing popup request
+2025/10/01 17:20:28 notification_windows.go:323: Popup: Creating popup window
+2025/10/01 17:20:28 notification_windows.go:338: Popup: Creating window at position (20, 1080) with size 400x100
+2025/10/01 17:20:28 llm.go:97: LLM: Using provider preferences: order=[crusoe/bf16 novita/bf16 deepinfra/bf16], allow_fallbacks=false
+2025/10/01 17:20:28 llm.go:183: LLM: API request includes provider preferences: &{Order:[crusoe/bf16 novita/bf16 deepinfra/bf16] Quantizations:[] AllowFallbacks:0xc00000ac4c}
+2025/10/01 17:20:28 notification_windows.go:356: Popup: CreateWindowEx returned hwnd: 32901656
+2025/10/01 17:20:28 notification_windows.go:362: Popup: Window created successfully, hwnd: 32901656
+2025/10/01 17:20:28 notification_windows.go:386: Popup: Countdown mode, 1s timer started, result: 2
+2025/10/01 17:20:28 notification_windows.go:467: Popup: Countdown timer started
+2025/10/01 17:20:29 llm.go:208: LLM: API response status: 200 200 OK
+2025/10/01 17:20:29 llm.go:226: LLM: API response parsed successfully, 1 choices
+2025/10/01 17:20:29 llm.go:162: LLM: API returned text: 64 characters
+2025/10/01 17:20:29 llm.go:170: LLM: Successfully extracted 64 characters
+2025/10/01 17:20:29 pool.go:48: Worker: OCR completed, text length=64, err=<nil>
+2025/10/01 17:20:29 pool.go:49: Worker: Invoking callback with text length=64
+2025/10/01 17:20:29 pool.go:51: Worker: Callback returned
+2025/10/01 17:20:29 popup.go:39: Popup.UpdateText called with 64 characters
+2025/10/01 17:20:29 notification_windows.go:489: Popup: Updating popup text to 64 characters
+2025/10/01 17:20:29 notification_windows.go:251: Popup: Switched to result mode, showing for 3 seconds
+2025/10/01 17:20:32 notification_windows.go:235: Popup: Close timer expired, closing window
+2025/10/01 17:20:32 notification_windows.go:267: Popup: WM_DESTROY received for hwnd=32901656
+2025/10/01 17:20:32 notification_windows.go:274: Popup: Posting WM_EXIT_LOOP to thread 1788
+2025/10/01 17:20:32 notification_windows.go:276: Popup: PostThreadMessage result=1, err=The operation completed successfully.
+2025/10/01 17:20:32 notification_windows.go:407: Popup: Message loop received WM_EXIT_LOOP, exiting
+2025/10/01 17:20:32 notification_windows.go:414: Popup: Message loop exited, flushing remaining messages
+2025/10/01 17:20:32 notification_windows.go:433: Popup: Message queue flushed
+2025/10/01 17:20:34 hotkey.go:74: Key event: Kind=4, Rawcode=85, Keychar=65535
+2025/10/01 17:20:34 hotkey.go:74: Key event: Kind=5, Rawcode=85, Keychar=65535
+2025/10/01 17:20:35 hotkey.go:74: Key event: Kind=4, Rawcode=80, Keychar=65535
+2025/10/01 17:20:35 hotkey.go:74: Key event: Kind=5, Rawcode=80, Keychar=65535
+2025/10/01 17:20:35 hotkey.go:74: Key event: Kind=4, Rawcode=68, Keychar=65535
+2025/10/01 17:20:35 hotkey.go:74: Key event: Kind=5, Rawcode=68, Keychar=65535
+2025/10/01 17:20:35 hotkey.go:74: Key event: Kind=4, Rawcode=65, Keychar=65535
+2025/10/01 17:20:36 hotkey.go:74: Key event: Kind=5, Rawcode=65, Keychar=65535
+2025/10/01 17:20:36 hotkey.go:74: Key event: Kind=4, Rawcode=84, Keychar=65535
+2025/10/01 17:20:36 hotkey.go:74: Key event: Kind=5, Rawcode=84, Keychar=65535
+2025/10/01 17:20:36 hotkey.go:74: Key event: Kind=4, Rawcode=69, Keychar=65535
+2025/10/01 17:20:36 hotkey.go:85: e pressed
+2025/10/01 17:20:36 hotkey.go:74: Key event: Kind=5, Rawcode=69, Keychar=65535
+2025/10/01 17:20:36 hotkey.go:126: e released
+2025/10/01 17:20:36 hotkey.go:74: Key event: Kind=4, Rawcode=32, Keychar=65535
+2025/10/01 17:20:36 hotkey.go:74: Key event: Kind=5, Rawcode=32, Keychar=65535
+2025/10/01 17:20:36 hotkey.go:74: Key event: Kind=4, Rawcode=82, Keychar=65535
+2025/10/01 17:20:36 hotkey.go:74: Key event: Kind=5, Rawcode=82, Keychar=65535
+2025/10/01 17:20:36 hotkey.go:74: Key event: Kind=4, Rawcode=69, Keychar=65535
+2025/10/01 17:20:36 hotkey.go:85: e pressed
+2025/10/01 17:20:36 hotkey.go:74: Key event: Kind=5, Rawcode=69, Keychar=65535
+2025/10/01 17:20:36 hotkey.go:126: e released
+2025/10/01 17:20:36 hotkey.go:74: Key event: Kind=4, Rawcode=65, Keychar=65535
+2025/10/01 17:20:36 hotkey.go:74: Key event: Kind=5, Rawcode=65, Keychar=65535
+2025/10/01 17:20:36 hotkey.go:74: Key event: Kind=4, Rawcode=68, Keychar=65535
+2025/10/01 17:20:36 hotkey.go:74: Key event: Kind=5, Rawcode=68, Keychar=65535
+2025/10/01 17:20:37 hotkey.go:74: Key event: Kind=4, Rawcode=77, Keychar=65535
+2025/10/01 17:20:37 hotkey.go:74: Key event: Kind=5, Rawcode=77, Keychar=65535
+2025/10/01 17:20:37 hotkey.go:74: Key event: Kind=4, Rawcode=69, Keychar=65535
+2025/10/01 17:20:37 hotkey.go:85: e pressed
+2025/10/01 17:20:37 hotkey.go:74: Key event: Kind=5, Rawcode=69, Keychar=65535
+2025/10/01 17:20:37 hotkey.go:126: e released
+2025/10/01 17:20:37 hotkey.go:74: Key event: Kind=4, Rawcode=188, Keychar=65535
+2025/10/01 17:20:37 hotkey.go:74: Key event: Kind=5, Rawcode=188, Keychar=65535
+2025/10/01 17:20:37 hotkey.go:74: Key event: Kind=4, Rawcode=32, Keychar=65535
+2025/10/01 17:20:37 hotkey.go:74: Key event: Kind=5, Rawcode=32, Keychar=65535
+2025/10/01 17:20:38 hotkey.go:74: Key event: Kind=4, Rawcode=66, Keychar=65535
+2025/10/01 17:20:38 hotkey.go:74: Key event: Kind=5, Rawcode=66, Keychar=65535
+2025/10/01 17:20:38 hotkey.go:74: Key event: Kind=4, Rawcode=85, Keychar=65535
+2025/10/01 17:20:38 hotkey.go:74: Key event: Kind=5, Rawcode=85, Keychar=65535
+2025/10/01 17:20:39 hotkey.go:74: Key event: Kind=4, Rawcode=77, Keychar=65535
+2025/10/01 17:20:39 hotkey.go:74: Key event: Kind=5, Rawcode=77, Keychar=65535
+2025/10/01 17:20:39 hotkey.go:74: Key event: Kind=4, Rawcode=80, Keychar=65535
+2025/10/01 17:20:39 hotkey.go:74: Key event: Kind=5, Rawcode=80, Keychar=65535
+2025/10/01 17:20:39 hotkey.go:74: Key event: Kind=4, Rawcode=32, Keychar=65535
+2025/10/01 17:20:39 hotkey.go:74: Key event: Kind=5, Rawcode=32, Keychar=65535
+2025/10/01 17:20:44 hotkey.go:74: Key event: Kind=4, Rawcode=162, Keychar=65535
+2025/10/01 17:20:44 hotkey.go:85: ctrl pressed
+2025/10/01 17:20:44 hotkey.go:74: Key event: Kind=5, Rawcode=162, Keychar=65535
+2025/10/01 17:20:44 hotkey.go:126: ctrl released
+2025/10/01 17:20:44 hotkey.go:74: Key event: Kind=4, Rawcode=162, Keychar=65535
+2025/10/01 17:20:44 hotkey.go:85: ctrl pressed
+2025/10/01 17:20:44 hotkey.go:74: Key event: Kind=4, Rawcode=37, Keychar=65535
+2025/10/01 17:20:44 hotkey.go:74: Key event: Kind=5, Rawcode=37, Keychar=65535
+2025/10/01 17:20:45 hotkey.go:74: Key event: Kind=4, Rawcode=37, Keychar=65535
+2025/10/01 17:20:45 hotkey.go:74: Key event: Kind=5, Rawcode=37, Keychar=65535
+2025/10/01 17:20:45 hotkey.go:74: Key event: Kind=5, Rawcode=162, Keychar=65535
+2025/10/01 17:20:45 hotkey.go:126: ctrl released
+2025/10/01 17:20:45 hotkey.go:74: Key event: Kind=4, Rawcode=162, Keychar=65535
+2025/10/01 17:20:45 hotkey.go:85: ctrl pressed
+2025/10/01 17:20:45 hotkey.go:74: Key event: Kind=4, Rawcode=39, Keychar=65535
+2025/10/01 17:20:45 hotkey.go:74: Key event: Kind=5, Rawcode=39, Keychar=65535
+2025/10/01 17:20:45 hotkey.go:74: Key event: Kind=5, Rawcode=162, Keychar=65535
+2025/10/01 17:20:45 hotkey.go:126: ctrl released
+2025/10/01 17:20:46 hotkey.go:74: Key event: Kind=4, Rawcode=37, Keychar=65535
+2025/10/01 17:20:46 hotkey.go:74: Key event: Kind=5, Rawcode=37, Keychar=65535
+2025/10/01 17:20:46 hotkey.go:74: Key event: Kind=4, Rawcode=37, Keychar=65535
+2025/10/01 17:20:46 hotkey.go:74: Key event: Kind=5, Rawcode=37, Keychar=65535
+2025/10/01 17:20:46 hotkey.go:74: Key event: Kind=4, Rawcode=190, Keychar=65535
+2025/10/01 17:20:46 hotkey.go:74: Key event: Kind=5, Rawcode=190, Keychar=65535
+2025/10/01 17:20:46 hotkey.go:74: Key event: Kind=4, Rawcode=77, Keychar=65535
+2025/10/01 17:20:46 hotkey.go:74: Key event: Kind=5, Rawcode=77, Keychar=65535
+2025/10/01 17:20:46 hotkey.go:74: Key event: Kind=4, Rawcode=68, Keychar=65535
+2025/10/01 17:20:46 hotkey.go:74: Key event: Kind=5, Rawcode=68, Keychar=65535
+2025/10/01 17:20:47 hotkey.go:74: Key event: Kind=4, Rawcode=35, Keychar=65535
+2025/10/01 17:20:47 hotkey.go:74: Key event: Kind=5, Rawcode=35, Keychar=65535
+2025/10/01 17:20:47 hotkey.go:74: Key event: Kind=4, Rawcode=162, Keychar=65535
+2025/10/01 17:20:47 hotkey.go:85: ctrl pressed
+2025/10/01 17:20:47 hotkey.go:74: Key event: Kind=4, Rawcode=39, Keychar=65535
+2025/10/01 17:20:47 hotkey.go:74: Key event: Kind=5, Rawcode=39, Keychar=65535
+2025/10/01 17:20:47 hotkey.go:74: Key event: Kind=4, Rawcode=39, Keychar=65535
+2025/10/01 17:20:47 hotkey.go:74: Key event: Kind=5, Rawcode=39, Keychar=65535
+2025/10/01 17:20:47 hotkey.go:74: Key event: Kind=5, Rawcode=162, Keychar=65535
+2025/10/01 17:20:47 hotkey.go:126: ctrl released
+2025/10/01 17:20:52 hotkey.go:74: Key event: Kind=4, Rawcode=84, Keychar=65535
+2025/10/01 17:20:52 hotkey.go:74: Key event: Kind=5, Rawcode=84, Keychar=65535
+2025/10/01 17:20:52 hotkey.go:74: Key event: Kind=4, Rawcode=73, Keychar=65535
+2025/10/01 17:20:52 hotkey.go:74: Key event: Kind=5, Rawcode=73, Keychar=65535
+2025/10/01 17:20:52 hotkey.go:74: Key event: Kind=4, Rawcode=77, Keychar=65535
+2025/10/01 17:20:52 hotkey.go:74: Key event: Kind=5, Rawcode=77, Keychar=65535
+2025/10/01 17:20:52 hotkey.go:74: Key event: Kind=4, Rawcode=69, Keychar=65535
+2025/10/01 17:20:52 hotkey.go:85: e pressed
+2025/10/01 17:20:52 hotkey.go:74: Key event: Kind=5, Rawcode=69, Keychar=65535
+2025/10/01 17:20:52 hotkey.go:126: e released
+2025/10/01 17:20:53 hotkey.go:74: Key event: Kind=4, Rawcode=79, Keychar=65535
+2025/10/01 17:20:53 hotkey.go:74: Key event: Kind=5, Rawcode=79, Keychar=65535
+2025/10/01 17:20:53 hotkey.go:74: Key event: Kind=4, Rawcode=85, Keychar=65535
+2025/10/01 17:20:53 hotkey.go:74: Key event: Kind=5, Rawcode=85, Keychar=65535
+2025/10/01 17:20:53 hotkey.go:74: Key event: Kind=4, Rawcode=84, Keychar=65535
+2025/10/01 17:20:53 hotkey.go:74: Key event: Kind=5, Rawcode=84, Keychar=65535
+2025/10/01 17:20:53 hotkey.go:74: Key event: Kind=4, Rawcode=32, Keychar=65535
+2025/10/01 17:20:53 hotkey.go:74: Key event: Kind=5, Rawcode=32, Keychar=65535
+2025/10/01 17:20:54 hotkey.go:74: Key event: Kind=4, Rawcode=83, Keychar=65535
+2025/10/01 17:20:54 hotkey.go:74: Key event: Kind=5, Rawcode=83, Keychar=65535
+2025/10/01 17:20:54 hotkey.go:74: Key event: Kind=4, Rawcode=79, Keychar=65535
+2025/10/01 17:20:54 hotkey.go:74: Key event: Kind=5, Rawcode=79, Keychar=65535
+2025/10/01 17:20:54 hotkey.go:74: Key event: Kind=4, Rawcode=8, Keychar=65535
+2025/10/01 17:20:54 hotkey.go:74: Key event: Kind=5, Rawcode=8, Keychar=65535
+2025/10/01 17:20:54 hotkey.go:74: Key event: Kind=4, Rawcode=8, Keychar=65535
+2025/10/01 17:20:54 hotkey.go:74: Key event: Kind=5, Rawcode=8, Keychar=65535
+2025/10/01 17:20:54 hotkey.go:74: Key event: Kind=4, Rawcode=84, Keychar=65535
+2025/10/01 17:20:54 hotkey.go:74: Key event: Kind=5, Rawcode=84, Keychar=65535
+2025/10/01 17:20:54 hotkey.go:74: Key event: Kind=4, Rawcode=79, Keychar=65535
+2025/10/01 17:20:54 hotkey.go:74: Key event: Kind=5, Rawcode=79, Keychar=65535
+2025/10/01 17:20:55 hotkey.go:74: Key event: Kind=4, Rawcode=32, Keychar=65535
+2025/10/01 17:20:55 hotkey.go:74: Key event: Kind=5, Rawcode=32, Keychar=65535
+2025/10/01 17:20:55 hotkey.go:74: Key event: Kind=4, Rawcode=49, Keychar=65535
+2025/10/01 17:20:55 hotkey.go:74: Key event: Kind=5, Rawcode=49, Keychar=65535
+2025/10/01 17:20:55 hotkey.go:74: Key event: Kind=4, Rawcode=53, Keychar=65535
+2025/10/01 17:20:55 hotkey.go:74: Key event: Kind=5, Rawcode=53, Keychar=65535
+2025/10/01 17:20:56 hotkey.go:74: Key event: Kind=4, Rawcode=32, Keychar=65535
+2025/10/01 17:20:56 hotkey.go:74: Key event: Kind=5, Rawcode=32, Keychar=65535
+2025/10/01 17:20:56 hotkey.go:74: Key event: Kind=4, Rawcode=83, Keychar=65535
+2025/10/01 17:20:56 hotkey.go:74: Key event: Kind=5, Rawcode=83, Keychar=65535
+2025/10/01 17:20:56 hotkey.go:74: Key event: Kind=4, Rawcode=69, Keychar=65535
+2025/10/01 17:20:56 hotkey.go:85: e pressed
+2025/10/01 17:20:56 hotkey.go:74: Key event: Kind=5, Rawcode=69, Keychar=65535
+2025/10/01 17:20:56 hotkey.go:126: e released
+2025/10/01 17:20:56 hotkey.go:74: Key event: Kind=4, Rawcode=67, Keychar=65535
+2025/10/01 17:20:56 hotkey.go:74: Key event: Kind=5, Rawcode=67, Keychar=65535
+2025/10/01 17:20:56 hotkey.go:74: Key event: Kind=4, Rawcode=32, Keychar=65535
+2025/10/01 17:20:56 hotkey.go:74: Key event: Kind=5, Rawcode=32, Keychar=65535
+2025/10/01 17:20:57 hotkey.go:74: Key event: Kind=4, Rawcode=73, Keychar=65535
+2025/10/01 17:20:57 hotkey.go:74: Key event: Kind=5, Rawcode=73, Keychar=65535
+2025/10/01 17:20:57 hotkey.go:74: Key event: Kind=4, Rawcode=78, Keychar=65535
+2025/10/01 17:20:57 hotkey.go:74: Key event: Kind=5, Rawcode=78, Keychar=65535
+2025/10/01 17:20:57 hotkey.go:74: Key event: Kind=4, Rawcode=83, Keychar=65535
+2025/10/01 17:20:57 hotkey.go:74: Key event: Kind=5, Rawcode=83, Keychar=65535
+2025/10/01 17:20:57 hotkey.go:74: Key event: Kind=4, Rawcode=84, Keychar=65535
+2025/10/01 17:20:57 hotkey.go:74: Key event: Kind=5, Rawcode=84, Keychar=65535
+2025/10/01 17:20:58 hotkey.go:74: Key event: Kind=4, Rawcode=69, Keychar=65535
+2025/10/01 17:20:58 hotkey.go:85: e pressed
+2025/10/01 17:20:58 hotkey.go:74: Key event: Kind=5, Rawcode=69, Keychar=65535
+2025/10/01 17:20:58 hotkey.go:126: e released
+2025/10/01 17:20:58 hotkey.go:74: Key event: Kind=4, Rawcode=65, Keychar=65535
+2025/10/01 17:20:58 hotkey.go:74: Key event: Kind=5, Rawcode=65, Keychar=65535
+2025/10/01 17:20:58 hotkey.go:74: Key event: Kind=4, Rawcode=68, Keychar=65535
+2025/10/01 17:20:58 hotkey.go:74: Key event: Kind=5, Rawcode=68, Keychar=65535
+2025/10/01 17:20:58 hotkey.go:74: Key event: Kind=4, Rawcode=32, Keychar=65535
+2025/10/01 17:20:58 hotkey.go:74: Key event: Kind=5, Rawcode=32, Keychar=65535
+2025/10/01 17:20:58 hotkey.go:74: Key event: Kind=4, Rawcode=79, Keychar=65535
+2025/10/01 17:20:58 hotkey.go:74: Key event: Kind=5, Rawcode=79, Keychar=65535
+2025/10/01 17:20:59 hotkey.go:74: Key event: Kind=4, Rawcode=70, Keychar=65535
+2025/10/01 17:20:59 hotkey.go:74: Key event: Kind=5, Rawcode=70, Keychar=65535
+2025/10/01 17:20:59 hotkey.go:74: Key event: Kind=4, Rawcode=32, Keychar=65535
+2025/10/01 17:20:59 hotkey.go:74: Key event: Kind=5, Rawcode=32, Keychar=65535
+2025/10/01 17:20:59 hotkey.go:74: Key event: Kind=4, Rawcode=49, Keychar=65535
+2025/10/01 17:20:59 hotkey.go:74: Key event: Kind=5, Rawcode=49, Keychar=65535
+2025/10/01 17:20:59 hotkey.go:74: Key event: Kind=4, Rawcode=48, Keychar=65535
+2025/10/01 17:20:59 hotkey.go:74: Key event: Kind=5, Rawcode=48, Keychar=65535
+2025/10/01 17:21:00 hotkey.go:74: Key event: Kind=4, Rawcode=190, Keychar=65535
+2025/10/01 17:21:00 hotkey.go:74: Key event: Kind=5, Rawcode=190, Keychar=65535
+2025/10/01 17:21:03 hotkey.go:74: Key event: Kind=4, Rawcode=89, Keychar=65535
+2025/10/01 17:21:03 hotkey.go:74: Key event: Kind=5, Rawcode=89, Keychar=65535
+2025/10/01 17:21:03 hotkey.go:74: Key event: Kind=4, Rawcode=13, Keychar=65535
+2025/10/01 17:21:03 hotkey.go:74: Key event: Kind=5, Rawcode=13, Keychar=65535
+2025/10/01 17:21:03 main.go:160: event loop stopped: context canceled
+2025/10/01 17:21:03 tray.go:125: Destroying systray
+2025/10/01 17:24:14 llm.go:24: LLM: Initialized with 3 provider(s): [crusoe/bf16 novita/bf16 deepinfra/bf16]
+2025/10/01 17:24:14 main.go:209: Running OCR once (--runonce mode)
+2025/10/01 17:24:14 gui.go:18: Starting interactive region selection...
+2025/10/01 17:24:14 region_selector_windows.go:39: Starting WORKING Windows region selection...
+2025/10/01 17:24:14 region_selector_windows.go:49: Virtual screen: x=0 y=0 w=1920 h=1200
+2025/10/01 17:24:14 region_selector_windows.go:51: Screen dimensions: 1920x1200
+2025/10/01 17:24:14 region_selector_windows.go:59: Screen captured successfully
+2025/10/01 17:24:14 region_selector_windows.go:161: Window message: 0x81 (wParam=0, lParam=6288976)
+2025/10/01 17:24:14 region_selector_windows.go:161: Window message: 0x83 (wParam=0, lParam=6289136)
+2025/10/01 17:24:14 region_selector_windows.go:161: Window message: 0x1 (wParam=0, lParam=6288864)
+2025/10/01 17:24:14 region_selector_windows.go:161: Window message: 0x5 (wParam=0, lParam=78645120)
+2025/10/01 17:24:14 region_selector_windows.go:161: Window message: 0x3 (wParam=0, lParam=0)
+2025/10/01 17:24:14 region_selector_windows.go:161: Window message: 0x18 (wParam=1, lParam=0)
+2025/10/01 17:24:14 region_selector_windows.go:161: Window message: 0x46 (wParam=0, lParam=6289104)
+2025/10/01 17:24:14 region_selector_windows.go:161: Window message: 0x46 (wParam=0, lParam=6289104)
+2025/10/01 17:24:14 region_selector_windows.go:161: Window message: 0x1c (wParam=1, lParam=9988)
+2025/10/01 17:24:14 region_selector_windows.go:161: Window message: 0x86 (wParam=1, lParam=0)
+2025/10/01 17:24:14 region_selector_windows.go:161: Window message: 0x6 (wParam=1, lParam=0)
+2025/10/01 17:24:14 region_selector_windows.go:161: Window message: 0x281 (wParam=1, lParam=3221225487)
+2025/10/01 17:24:14 region_selector_windows.go:161: Window message: 0x282 (wParam=2, lParam=0)
+2025/10/01 17:24:14 region_selector_windows.go:161: Window message: 0x7 (wParam=0, lParam=0)
+2025/10/01 17:24:14 region_selector_windows.go:161: Window message: 0x85 (wParam=1, lParam=0)
+2025/10/01 17:24:14 region_selector_windows.go:161: Window message: 0x14 (wParam=18446744073474744456, lParam=0)
+2025/10/01 17:24:14 region_selector_windows.go:161: Window message: 0x47 (wParam=0, lParam=6289104)
+2025/10/01 17:24:14 region_selector_windows.go:98: Working overlay window created: 32180600
+2025/10/01 17:24:14 region_selector_windows.go:235: WM_PAINT called, isSelecting=false
+2025/10/01 17:24:14 region_selector_windows.go:106: Window shown, starting message loop...
+2025/10/01 17:24:14 region_selector_windows.go:161: Window message: 0x7f (wParam=1, lParam=96)
+2025/10/01 17:24:14 region_selector_windows.go:161: Window message: 0xc0de (wParam=0, lParam=0)
+2025/10/01 17:24:14 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=588)
+2025/10/01 17:24:14 region_selector_windows.go:161: Window message: 0x7f (wParam=2, lParam=96)
+2025/10/01 17:24:14 region_selector_windows.go:161: Window message: 0x7f (wParam=0, lParam=96)
+2025/10/01 17:24:14 region_selector_windows.go:161: Window message: 0xc053 (wParam=1, lParam=6281248)
+2025/10/01 17:24:14 region_selector_windows.go:161: Window message: 0x288 (wParam=6, lParam=6281248)
+2025/10/01 17:24:15 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=587)
+2025/10/01 17:24:15 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=197193)
+2025/10/01 17:24:15 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=524872)
+2025/10/01 17:24:15 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=983621)
+2025/10/01 17:24:15 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=1704514)
+2025/10/01 17:24:15 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=2753085)
+2025/10/01 17:24:15 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=3736121)
+2025/10/01 17:24:15 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=4981299)
+2025/10/01 17:24:15 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=6357548)
+2025/10/01 17:24:15 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=7864869)
+2025/10/01 17:24:15 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=9241118)
+2025/10/01 17:24:15 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=10813973)
+2025/10/01 17:24:15 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=12190222)
+2025/10/01 17:24:15 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=13500934)
+2025/10/01 17:24:15 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=14615039)
+2025/10/01 17:24:15 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=15794682)
+2025/10/01 17:24:15 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=16777717)
+2025/10/01 17:24:15 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=17629682)
+2025/10/01 17:24:15 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=18350576)
+2025/10/01 17:24:15 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=18940399)
+2025/10/01 17:24:15 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=19530222)
+2025/10/01 17:24:15 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=19923438)
+2025/10/01 17:24:15 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=20185582)
+2025/10/01 17:24:15 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=20251118)
+2025/10/01 17:24:15 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=20251117)
+2025/10/01 17:24:15 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=20251115)
+2025/10/01 17:24:15 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=20120041)
+2025/10/01 17:24:15 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=20054503)
+2025/10/01 17:24:15 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=19988964)
+2025/10/01 17:24:15 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=19923426)
+2025/10/01 17:24:15 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=19923425)
+2025/10/01 17:24:15 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=19857887)
+2025/10/01 17:24:15 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=19857885)
+2025/10/01 17:24:15 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=19857883)
+2025/10/01 17:24:15 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=19857881)
+2025/10/01 17:24:15 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=19857879)
+2025/10/01 17:24:15 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=19857878)
+2025/10/01 17:24:15 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=19857877)
+2025/10/01 17:24:15 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=19792339)
+2025/10/01 17:24:15 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=19726800)
+2025/10/01 17:24:15 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=19661260)
+2025/10/01 17:24:15 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=19530185)
+2025/10/01 17:24:15 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=19399109)
+2025/10/01 17:24:15 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=19268033)
+2025/10/01 17:24:15 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=19071420)
+2025/10/01 17:24:15 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=18940344)
+2025/10/01 17:24:15 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=18743732)
+2025/10/01 17:24:15 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=18547120)
+2025/10/01 17:24:15 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=18416045)
+2025/10/01 17:24:15 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=18219432)
+2025/10/01 17:24:15 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=18219431)
+2025/10/01 17:24:15 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=18153895)
+2025/10/01 17:24:15 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=18153894)
+2025/10/01 17:24:15 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=18219430)
+2025/10/01 17:24:15 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=18284966)
+2025/10/01 17:24:15 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=18350502)
+2025/10/01 17:24:15 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=18416038)
+2025/10/01 17:24:15 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=18416037)
+2025/10/01 17:24:15 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=18481573)
+2025/10/01 17:24:15 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=18547109)
+2025/10/01 17:24:15 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=18612645)
+2025/10/01 17:24:15 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=18612644)
+2025/10/01 17:24:15 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=18612642)
+2025/10/01 17:24:15 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=18612641)
+2025/10/01 17:24:15 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=18612640)
+2025/10/01 17:24:15 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=18678175)
+2025/10/01 17:24:15 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=18678173)
+2025/10/01 17:24:15 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=18678172)
+2025/10/01 17:24:15 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=18743706)
+2025/10/01 17:24:15 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=18743705)
+2025/10/01 17:24:15 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=18743704)
+2025/10/01 17:24:15 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=18743703)
+2025/10/01 17:24:15 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=18743701)
+2025/10/01 17:24:15 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=18743700)
+2025/10/01 17:24:15 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=18743699)
+2025/10/01 17:24:15 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=18743698)
+2025/10/01 17:24:15 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=18809234)
+2025/10/01 17:24:15 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=18874770)
+2025/10/01 17:24:15 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=18940306)
+2025/10/01 17:24:15 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=19005842)
+2025/10/01 17:24:15 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=19071378)
+2025/10/01 17:24:15 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=19136914)
+2025/10/01 17:24:15 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=19202450)
+2025/10/01 17:24:15 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=19267986)
+2025/10/01 17:24:15 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=19333522)
+2025/10/01 17:24:15 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=19399058)
+2025/10/01 17:24:16 region_selector_windows.go:161: Window message: 0x201 (wParam=1, lParam=19399058)
+2025/10/01 17:24:16 region_selector_windows.go:166: MOUSE EVENT: 0x201 at (402, 296)
+2025/10/01 17:24:16 region_selector_windows.go:173: Mouse down at (402, 296)
+2025/10/01 17:24:16 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:24:16 region_selector_windows.go:244: Drawing selection rectangle: (402,296) to (402,296)
+2025/10/01 17:24:16 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=19464594)
+2025/10/01 17:24:16 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:24:16 region_selector_windows.go:244: Drawing selection rectangle: (402,296) to (402,297)
+2025/10/01 17:24:16 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=20513192)
+2025/10/01 17:24:16 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:24:16 region_selector_windows.go:244: Drawing selection rectangle: (402,296) to (424,313)
+2025/10/01 17:24:16 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=21627335)
+2025/10/01 17:24:16 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:24:16 region_selector_windows.go:244: Drawing selection rectangle: (402,296) to (455,330)
+2025/10/01 17:24:16 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=22348267)
+2025/10/01 17:24:16 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:24:16 region_selector_windows.go:244: Drawing selection rectangle: (402,296) to (491,341)
+2025/10/01 17:24:16 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=22675981)
+2025/10/01 17:24:16 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:24:16 region_selector_windows.go:244: Drawing selection rectangle: (402,296) to (525,346)
+2025/10/01 17:24:16 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=23069238)
+2025/10/01 17:24:16 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:24:16 region_selector_windows.go:244: Drawing selection rectangle: (402,296) to (566,352)
+2025/10/01 17:24:16 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=23069253)
+2025/10/01 17:24:16 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:24:16 region_selector_windows.go:244: Drawing selection rectangle: (402,296) to (581,352)
+2025/10/01 17:24:16 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=23069256)
+2025/10/01 17:24:16 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:24:16 region_selector_windows.go:244: Drawing selection rectangle: (402,296) to (584,352)
+2025/10/01 17:24:16 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=22938192)
+2025/10/01 17:24:16 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:24:16 region_selector_windows.go:244: Drawing selection rectangle: (402,296) to (592,350)
+2025/10/01 17:24:16 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=22872670)
+2025/10/01 17:24:16 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:24:16 region_selector_windows.go:244: Drawing selection rectangle: (402,296) to (606,349)
+2025/10/01 17:24:16 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=22741604)
+2025/10/01 17:24:16 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:24:16 region_selector_windows.go:244: Drawing selection rectangle: (402,296) to (612,347)
+2025/10/01 17:24:16 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=22413929)
+2025/10/01 17:24:16 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:24:16 region_selector_windows.go:244: Drawing selection rectangle: (402,296) to (617,342)
+2025/10/01 17:24:16 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=22282861)
+2025/10/01 17:24:16 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:24:16 region_selector_windows.go:244: Drawing selection rectangle: (402,296) to (621,340)
+2025/10/01 17:24:16 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=22217328)
+2025/10/01 17:24:16 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:24:16 region_selector_windows.go:244: Drawing selection rectangle: (402,296) to (624,339)
+2025/10/01 17:24:16 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=22151797)
+2025/10/01 17:24:16 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:24:16 region_selector_windows.go:244: Drawing selection rectangle: (402,296) to (629,338)
+2025/10/01 17:24:16 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=22151798)
+2025/10/01 17:24:16 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:24:16 region_selector_windows.go:244: Drawing selection rectangle: (402,296) to (630,338)
+2025/10/01 17:24:16 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=22151807)
+2025/10/01 17:24:16 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:24:16 region_selector_windows.go:244: Drawing selection rectangle: (402,296) to (639,338)
+2025/10/01 17:24:16 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=22151810)
+2025/10/01 17:24:16 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:24:16 region_selector_windows.go:244: Drawing selection rectangle: (402,296) to (642,338)
+2025/10/01 17:24:16 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=22151814)
+2025/10/01 17:24:16 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:24:16 region_selector_windows.go:244: Drawing selection rectangle: (402,296) to (646,338)
+2025/10/01 17:24:16 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=22086283)
+2025/10/01 17:24:16 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:24:16 region_selector_windows.go:244: Drawing selection rectangle: (402,296) to (651,337)
+2025/10/01 17:24:16 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=22086285)
+2025/10/01 17:24:16 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:24:16 region_selector_windows.go:244: Drawing selection rectangle: (402,296) to (653,337)
+2025/10/01 17:24:16 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=22086287)
+2025/10/01 17:24:16 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:24:16 region_selector_windows.go:244: Drawing selection rectangle: (402,296) to (655,337)
+2025/10/01 17:24:16 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=22020751)
+2025/10/01 17:24:16 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:24:16 region_selector_windows.go:244: Drawing selection rectangle: (402,296) to (655,336)
+2025/10/01 17:24:16 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=22020755)
+2025/10/01 17:24:16 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:24:16 region_selector_windows.go:244: Drawing selection rectangle: (402,296) to (659,336)
+2025/10/01 17:24:16 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=21955221)
+2025/10/01 17:24:16 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:24:16 region_selector_windows.go:244: Drawing selection rectangle: (402,296) to (661,335)
+2025/10/01 17:24:16 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=21955222)
+2025/10/01 17:24:16 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:24:16 region_selector_windows.go:244: Drawing selection rectangle: (402,296) to (662,335)
+2025/10/01 17:24:16 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=21955223)
+2025/10/01 17:24:16 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:24:17 region_selector_windows.go:244: Drawing selection rectangle: (402,296) to (663,335)
+2025/10/01 17:24:17 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=21955225)
+2025/10/01 17:24:17 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:24:17 region_selector_windows.go:244: Drawing selection rectangle: (402,296) to (665,335)
+2025/10/01 17:24:17 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=21955227)
+2025/10/01 17:24:17 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:24:17 region_selector_windows.go:244: Drawing selection rectangle: (402,296) to (667,335)
+2025/10/01 17:24:17 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=21955228)
+2025/10/01 17:24:17 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:24:17 region_selector_windows.go:244: Drawing selection rectangle: (402,296) to (668,335)
+2025/10/01 17:24:17 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=21955229)
+2025/10/01 17:24:17 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:24:17 region_selector_windows.go:244: Drawing selection rectangle: (402,296) to (669,335)
+2025/10/01 17:24:17 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=21955230)
+2025/10/01 17:24:17 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:24:17 region_selector_windows.go:244: Drawing selection rectangle: (402,296) to (670,335)
+2025/10/01 17:24:17 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=21955231)
+2025/10/01 17:24:17 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:24:17 region_selector_windows.go:244: Drawing selection rectangle: (402,296) to (671,335)
+2025/10/01 17:24:17 region_selector_windows.go:161: Window message: 0x202 (wParam=0, lParam=21955231)
+2025/10/01 17:24:17 region_selector_windows.go:166: MOUSE EVENT: 0x202 at (671, 335)
+2025/10/01 17:24:17 region_selector_windows.go:161: Window message: 0x215 (wParam=0, lParam=0)
+2025/10/01 17:24:17 region_selector_windows.go:215: Mouse up at (671, 335), selection: 402,296,269,39
+2025/10/01 17:24:17 region_selector_windows.go:161: Window message: 0x90 (wParam=0, lParam=0)
+2025/10/01 17:24:17 region_selector_windows.go:161: Window message: 0x46 (wParam=0, lParam=6290512)
+2025/10/01 17:24:17 region_selector_windows.go:161: Window message: 0x47 (wParam=0, lParam=6290512)
+2025/10/01 17:24:17 region_selector_windows.go:161: Window message: 0x86 (wParam=0, lParam=0)
+2025/10/01 17:24:17 region_selector_windows.go:161: Window message: 0x6 (wParam=0, lParam=0)
+2025/10/01 17:24:17 region_selector_windows.go:161: Window message: 0x1c (wParam=0, lParam=9988)
+2025/10/01 17:24:17 region_selector_windows.go:161: Window message: 0x8 (wParam=0, lParam=0)
+2025/10/01 17:24:17 region_selector_windows.go:161: Window message: 0x281 (wParam=0, lParam=3221225487)
+2025/10/01 17:24:17 region_selector_windows.go:161: Window message: 0x282 (wParam=1, lParam=0)
+2025/10/01 17:24:17 region_selector_windows.go:161: Window message: 0x2 (wParam=0, lParam=0)
+2025/10/01 17:24:17 region_selector_windows.go:286: WM_DESTROY received
+2025/10/01 17:24:17 region_selector_windows.go:161: Window message: 0x82 (wParam=0, lParam=0)
+2025/10/01 17:24:17 region_selector_windows.go:128: Selection completed: {X:402 Y:296 Width:269 Height:39}
+2025/10/01 17:24:17 gui.go:33: Region selected: {X:402 Y:296 Width:269 Height:39}
+2025/10/01 17:24:17 main.go:218: Processing region: {X:402 Y:296 Width:269 Height:39}
+2025/10/01 17:24:17 popup.go:33: Popup.StartCountdown called with 15 seconds
+2025/10/01 17:24:17 notification_windows.go:138: Popup: Starting single popup thread
+2025/10/01 17:24:17 notification_windows.go:453: Popup: Starting countdown popup with 15 seconds
+2025/10/01 17:24:17 ocr.go:19: DEBUG: Capturing region: X=402 Y=296 Width=269 Height=39
+2025/10/01 17:24:17 notification_windows.go:317: Popup: Window class registered successfully
+2025/10/01 17:24:17 notification_windows.go:155: Popup: Single thread ready, processing popup queue
+2025/10/01 17:24:17 notification_windows.go:159: Popup: Processing popup request
+2025/10/01 17:24:17 notification_windows.go:323: Popup: Creating popup window
+2025/10/01 17:24:17 notification_windows.go:338: Popup: Creating window at position (20, 1080) with size 400x100
+2025/10/01 17:24:17 notification_windows.go:356: Popup: CreateWindowEx returned hwnd: 32246136
+2025/10/01 17:24:17 notification_windows.go:362: Popup: Window created successfully, hwnd: 32246136
+2025/10/01 17:24:17 llm.go:97: LLM: Using provider preferences: order=[crusoe/bf16 novita/bf16 deepinfra/bf16], allow_fallbacks=false
+2025/10/01 17:24:17 llm.go:183: LLM: API request includes provider preferences: &{Order:[crusoe/bf16 novita/bf16 deepinfra/bf16] Quantizations:[] AllowFallbacks:0xc0001480b4}
+2025/10/01 17:24:17 notification_windows.go:386: Popup: Countdown mode, 1s timer started, result: 2
+2025/10/01 17:24:17 notification_windows.go:467: Popup: Countdown timer started
+2025/10/01 17:24:18 llm.go:208: LLM: API response status: 200 200 OK
+2025/10/01 17:24:18 llm.go:226: LLM: API response parsed successfully, 1 choices
+2025/10/01 17:24:18 llm.go:162: LLM: API returned text: 49 characters
+2025/10/01 17:24:18 llm.go:170: LLM: Successfully extracted 49 characters
+2025/10/01 17:24:18 main.go:235: OCR extracted text (49 chars): "876 test_clipboard.go\\n1562 test_ocr_with_image.go"
+2025/10/01 17:24:18 main.go:249: OCR completed successfully, text copied to clipboard (49 chars)
+2025/10/01 17:24:18 popup.go:39: Popup.UpdateText called with 49 characters
+2025/10/01 17:24:18 notification_windows.go:489: Popup: Updating popup text to 49 characters
+2025/10/01 17:24:18 notification_windows.go:251: Popup: Switched to result mode, showing for 3 seconds
+2025/10/01 17:24:21 notification_windows.go:235: Popup: Close timer expired, closing window
+2025/10/01 17:24:21 notification_windows.go:267: Popup: WM_DESTROY received for hwnd=32246136
+2025/10/01 17:24:21 notification_windows.go:274: Popup: Posting WM_EXIT_LOOP to thread 22544
+2025/10/01 17:24:21 notification_windows.go:276: Popup: PostThreadMessage result=1, err=The operation completed successfully.
+2025/10/01 17:24:21 notification_windows.go:407: Popup: Message loop received WM_EXIT_LOOP, exiting
+2025/10/01 17:24:21 notification_windows.go:414: Popup: Message loop exited, flushing remaining messages
+2025/10/01 17:24:21 notification_windows.go:433: Popup: Message queue flushed
+2025/10/01 17:24:21 main.go:257: OCR runonce completed successfully, exiting...
+2025/10/01 17:24:24 main.go:93: Pre-flight: port 54000 free → we are the one true resident
+2025/10/01 17:24:24 llm.go:24: LLM: Initialized with 3 provider(s): [crusoe/bf16 novita/bf16 deepinfra/bf16]
+2025/10/01 17:24:24 main.go:128: Screen OCR LLM Tool initialized
+2025/10/01 17:24:24 main.go:129: Using model: google/gemma-3-12b-it
+2025/10/01 17:24:24 main.go:130: Hotkey: Ctrl+alt+q
+2025/10/01 17:24:24 tray.go:70: Starting systray...
+2025/10/01 17:24:24 hotkey.go:18: Parsed hotkey configuration: [ctrl alt q]
+2025/10/01 17:24:24 hotkey.go:46: Hotkey listener configured for: Ctrl+alt+q
+2025/10/01 17:24:24 tcp_server.go:39: singleinstance: listening on 127.0.0.1:54000
+2025/10/01 17:24:24 eventloop.go:75: Resident listening on 127.0.0.1:54000
+2025/10/01 17:24:24 hotkey.go:56: Starting gohook goroutine...
+2025/10/01 17:24:24 hotkey.go:62: Starting gohook event loop...
+2025/10/01 17:24:24 hotkey.go:68: gohook.Start() returned channel successfully
+2025/10/01 17:24:24 tray.go:76: Systray ready, setting up icon and menu
+2025/10/01 17:24:24 tray.go:80: Using embedded icon, size: 1406 bytes
+2025/10/01 17:24:24 tray.go:82: Embedded icon set successfully
+2025/10/01 17:24:24 tray.go:94: Systray menu created, starting event loop
+2025/10/01 17:24:25 hotkey.go:74: Key event: Kind=4, Rawcode=38, Keychar=65535
+2025/10/01 17:24:26 hotkey.go:74: Key event: Kind=5, Rawcode=38, Keychar=65535
+2025/10/01 17:24:26 hotkey.go:74: Key event: Kind=4, Rawcode=13, Keychar=65535
+2025/10/01 17:24:26 hotkey.go:74: Key event: Kind=5, Rawcode=13, Keychar=65535
+2025/10/01 17:24:26 tcp_server.go:57: singleinstance: PING from 127.0.0.1:52833 -> PONG
+2025/10/01 17:24:26 tcp_server.go:66: singleinstance: request from 127.0.0.1:52834 mode=CLIPBOARD
+2025/10/01 17:24:26 gui.go:18: Starting interactive region selection...
+2025/10/01 17:24:26 region_selector_windows.go:39: Starting WORKING Windows region selection...
+2025/10/01 17:24:26 region_selector_windows.go:49: Virtual screen: x=0 y=0 w=1920 h=1200
+2025/10/01 17:24:26 region_selector_windows.go:51: Screen dimensions: 1920x1200
+2025/10/01 17:24:26 region_selector_windows.go:59: Screen captured successfully
+2025/10/01 17:24:26 region_selector_windows.go:161: Window message: 0x81 (wParam=0, lParam=6288976)
+2025/10/01 17:24:26 region_selector_windows.go:161: Window message: 0x83 (wParam=0, lParam=6289136)
+2025/10/01 17:24:26 region_selector_windows.go:161: Window message: 0x1 (wParam=0, lParam=6288864)
+2025/10/01 17:24:26 region_selector_windows.go:161: Window message: 0x5 (wParam=0, lParam=78645120)
+2025/10/01 17:24:26 region_selector_windows.go:161: Window message: 0x3 (wParam=0, lParam=0)
+2025/10/01 17:24:26 region_selector_windows.go:161: Window message: 0x18 (wParam=1, lParam=0)
+2025/10/01 17:24:26 region_selector_windows.go:161: Window message: 0x46 (wParam=0, lParam=6289104)
+2025/10/01 17:24:26 region_selector_windows.go:161: Window message: 0x46 (wParam=0, lParam=6289104)
+2025/10/01 17:24:26 region_selector_windows.go:161: Window message: 0x1c (wParam=1, lParam=0)
+2025/10/01 17:24:26 region_selector_windows.go:161: Window message: 0x86 (wParam=0, lParam=0)
+2025/10/01 17:24:26 region_selector_windows.go:161: Window message: 0x6 (wParam=1, lParam=0)
+2025/10/01 17:24:26 region_selector_windows.go:161: Window message: 0x281 (wParam=1, lParam=3221225487)
+2025/10/01 17:24:26 region_selector_windows.go:161: Window message: 0x282 (wParam=2, lParam=0)
+2025/10/01 17:24:26 region_selector_windows.go:161: Window message: 0x7 (wParam=0, lParam=0)
+2025/10/01 17:24:26 region_selector_windows.go:161: Window message: 0x85 (wParam=1, lParam=0)
+2025/10/01 17:24:26 region_selector_windows.go:161: Window message: 0x14 (wParam=18446744073608961877, lParam=0)
+2025/10/01 17:24:26 region_selector_windows.go:161: Window message: 0x47 (wParam=0, lParam=6289104)
+2025/10/01 17:24:26 region_selector_windows.go:98: Working overlay window created: 20253176
+2025/10/01 17:24:26 region_selector_windows.go:235: WM_PAINT called, isSelecting=false
+2025/10/01 17:24:26 region_selector_windows.go:106: Window shown, starting message loop...
+2025/10/01 17:24:26 region_selector_windows.go:161: Window message: 0xc0de (wParam=0, lParam=0)
+2025/10/01 17:24:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=615)
+2025/10/01 17:24:26 region_selector_windows.go:161: Window message: 0x7f (wParam=1, lParam=96)
+2025/10/01 17:24:26 region_selector_windows.go:161: Window message: 0x7f (wParam=2, lParam=96)
+2025/10/01 17:24:26 region_selector_windows.go:161: Window message: 0x7f (wParam=0, lParam=96)
+2025/10/01 17:24:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=614)
+2025/10/01 17:24:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=612)
+2025/10/01 17:24:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=608)
+2025/10/01 17:24:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=603)
+2025/10/01 17:24:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=598)
+2025/10/01 17:24:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=592)
+2025/10/01 17:24:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=587)
+2025/10/01 17:24:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=583)
+2025/10/01 17:24:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=66114)
+2025/10/01 17:24:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=328251)
+2025/10/01 17:24:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=655925)
+2025/10/01 17:24:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=1180205)
+2025/10/01 17:24:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=1835553)
+2025/10/01 17:24:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=2556437)
+2025/10/01 17:24:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=3342854)
+2025/10/01 17:24:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=4391413)
+2025/10/01 17:24:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=5308901)
+2025/10/01 17:24:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=6291923)
+2025/10/01 17:24:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=7274946)
+2025/10/01 17:24:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=8257970)
+2025/10/01 17:24:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=9306531)
+2025/10/01 17:24:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=10289558)
+2025/10/01 17:24:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=11207050)
+2025/10/01 17:24:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=12059009)
+2025/10/01 17:24:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=12779898)
+2025/10/01 17:24:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=13435253)
+2025/10/01 17:24:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=13959538)
+2025/10/01 17:24:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=14483824)
+2025/10/01 17:24:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=14877038)
+2025/10/01 17:24:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=15270254)
+2025/10/01 17:24:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=15532398)
+2025/10/01 17:24:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=15794542)
+2025/10/01 17:24:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=15860078)
+2025/10/01 17:24:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=15925614)
+2025/10/01 17:24:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=16056686)
+2025/10/01 17:24:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=16187758)
+2025/10/01 17:24:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=16449902)
+2025/10/01 17:24:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=16646509)
+2025/10/01 17:24:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=16908653)
+2025/10/01 17:24:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=17236332)
+2025/10/01 17:24:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=17432940)
+2025/10/01 17:24:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=17695084)
+2025/10/01 17:24:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=17891692)
+2025/10/01 17:24:26 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=17957228)
+2025/10/01 17:24:27 region_selector_windows.go:161: Window message: 0x86 (wParam=1, lParam=0)
+2025/10/01 17:24:27 region_selector_windows.go:161: Window message: 0x46 (wParam=0, lParam=6290416)
+2025/10/01 17:24:27 region_selector_windows.go:161: Window message: 0x201 (wParam=1, lParam=17957228)
+2025/10/01 17:24:27 region_selector_windows.go:166: MOUSE EVENT: 0x201 at (364, 274)
+2025/10/01 17:24:27 region_selector_windows.go:173: Mouse down at (364, 274)
+2025/10/01 17:24:27 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:24:27 region_selector_windows.go:244: Drawing selection rectangle: (364,274) to (364,274)
+2025/10/01 17:24:27 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=18284915)
+2025/10/01 17:24:27 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:24:27 region_selector_windows.go:244: Drawing selection rectangle: (364,274) to (371,279)
+2025/10/01 17:24:27 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=19071375)
+2025/10/01 17:24:27 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:24:27 region_selector_windows.go:244: Drawing selection rectangle: (364,274) to (399,291)
+2025/10/01 17:24:27 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=20054466)
+2025/10/01 17:24:27 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:24:27 region_selector_windows.go:244: Drawing selection rectangle: (364,274) to (450,306)
+2025/10/01 17:24:27 region_selector_windows.go:161: Window message: 0xc053 (wParam=1, lParam=6281248)
+2025/10/01 17:24:27 region_selector_windows.go:161: Window message: 0x288 (wParam=6, lParam=6281248)
+2025/10/01 17:24:27 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=20840987)
+2025/10/01 17:24:27 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:24:27 region_selector_windows.go:244: Drawing selection rectangle: (364,274) to (539,318)
+2025/10/01 17:24:27 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=20906558)
+2025/10/01 17:24:27 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:24:27 region_selector_windows.go:244: Drawing selection rectangle: (364,274) to (574,319)
+2025/10/01 17:24:27 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=20972110)
+2025/10/01 17:24:27 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:24:27 region_selector_windows.go:244: Drawing selection rectangle: (364,274) to (590,320)
+2025/10/01 17:24:27 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=20972111)
+2025/10/01 17:24:27 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:24:27 region_selector_windows.go:244: Drawing selection rectangle: (364,274) to (591,320)
+2025/10/01 17:24:27 region_selector_windows.go:161: Window message: 0x202 (wParam=0, lParam=20972111)
+2025/10/01 17:24:27 region_selector_windows.go:166: MOUSE EVENT: 0x202 at (591, 320)
+2025/10/01 17:24:27 region_selector_windows.go:161: Window message: 0x215 (wParam=0, lParam=0)
+2025/10/01 17:24:27 region_selector_windows.go:215: Mouse up at (591, 320), selection: 364,274,227,46
+2025/10/01 17:24:27 region_selector_windows.go:161: Window message: 0x90 (wParam=0, lParam=0)
+2025/10/01 17:24:27 region_selector_windows.go:161: Window message: 0x46 (wParam=0, lParam=6290512)
+2025/10/01 17:24:27 region_selector_windows.go:161: Window message: 0x47 (wParam=0, lParam=6290512)
+2025/10/01 17:24:27 region_selector_windows.go:161: Window message: 0x86 (wParam=0, lParam=0)
+2025/10/01 17:24:27 region_selector_windows.go:161: Window message: 0x6 (wParam=0, lParam=0)
+2025/10/01 17:24:27 region_selector_windows.go:161: Window message: 0x1c (wParam=0, lParam=9988)
+2025/10/01 17:24:27 region_selector_windows.go:161: Window message: 0x8 (wParam=0, lParam=0)
+2025/10/01 17:24:27 region_selector_windows.go:161: Window message: 0x281 (wParam=0, lParam=3221225487)
+2025/10/01 17:24:27 region_selector_windows.go:161: Window message: 0x282 (wParam=1, lParam=0)
+2025/10/01 17:24:27 region_selector_windows.go:161: Window message: 0x2 (wParam=0, lParam=0)
+2025/10/01 17:24:27 region_selector_windows.go:286: WM_DESTROY received
+2025/10/01 17:24:27 region_selector_windows.go:161: Window message: 0x82 (wParam=0, lParam=0)
+2025/10/01 17:24:27 region_selector_windows.go:128: Selection completed: {X:364 Y:274 Width:227 Height:46}
+2025/10/01 17:24:27 gui.go:33: Region selected: {X:364 Y:274 Width:227 Height:46}
+2025/10/01 17:24:27 popup.go:33: Popup.StartCountdown called with 15 seconds
+2025/10/01 17:24:27 notification_windows.go:138: Popup: Starting single popup thread
+2025/10/01 17:24:27 notification_windows.go:453: Popup: Starting countdown popup with 15 seconds
+2025/10/01 17:24:27 notification_windows.go:317: Popup: Window class registered successfully
+2025/10/01 17:24:27 notification_windows.go:155: Popup: Single thread ready, processing popup queue
+2025/10/01 17:24:27 notification_windows.go:159: Popup: Processing popup request
+2025/10/01 17:24:27 notification_windows.go:323: Popup: Creating popup window
+2025/10/01 17:24:27 notification_windows.go:338: Popup: Creating window at position (20, 1080) with size 400x100
+2025/10/01 17:24:27 pool.go:45: Worker: Starting OCR for region 227x46
+2025/10/01 17:24:27 ocr.go:19: DEBUG: Capturing region: X=364 Y=274 Width=227 Height=46
+2025/10/01 17:24:27 llm.go:97: LLM: Using provider preferences: order=[crusoe/bf16 novita/bf16 deepinfra/bf16], allow_fallbacks=false
+2025/10/01 17:24:27 llm.go:183: LLM: API request includes provider preferences: &{Order:[crusoe/bf16 novita/bf16 deepinfra/bf16] Quantizations:[] AllowFallbacks:0xc00000a6f4}
+2025/10/01 17:24:27 notification_windows.go:356: Popup: CreateWindowEx returned hwnd: 20318712
+2025/10/01 17:24:27 notification_windows.go:362: Popup: Window created successfully, hwnd: 20318712
+2025/10/01 17:24:27 notification_windows.go:386: Popup: Countdown mode, 1s timer started, result: 2
+2025/10/01 17:24:27 notification_windows.go:467: Popup: Countdown timer started
+2025/10/01 17:24:28 llm.go:208: LLM: API response status: 200 200 OK
+2025/10/01 17:24:28 llm.go:226: LLM: API response parsed successfully, 1 choices
+2025/10/01 17:24:28 llm.go:162: LLM: API returned text: 42 characters
+2025/10/01 17:24:28 llm.go:170: LLM: Successfully extracted 42 characters
+2025/10/01 17:24:28 pool.go:48: Worker: OCR completed, text length=42, err=<nil>
+2025/10/01 17:24:28 pool.go:49: Worker: Invoking callback with text length=42
+2025/10/01 17:24:28 pool.go:51: Worker: Callback returned
+2025/10/01 17:24:28 popup.go:39: Popup.UpdateText called with 42 characters
+2025/10/01 17:24:28 notification_windows.go:489: Popup: Updating popup text to 42 characters
+2025/10/01 17:24:28 notification_windows.go:251: Popup: Switched to result mode, showing for 3 seconds
+2025/10/01 17:24:31 notification_windows.go:235: Popup: Close timer expired, closing window
+2025/10/01 17:24:31 notification_windows.go:267: Popup: WM_DESTROY received for hwnd=20318712
+2025/10/01 17:24:31 notification_windows.go:274: Popup: Posting WM_EXIT_LOOP to thread 23616
+2025/10/01 17:24:31 notification_windows.go:276: Popup: PostThreadMessage result=1, err=The operation completed successfully.
+2025/10/01 17:24:31 notification_windows.go:407: Popup: Message loop received WM_EXIT_LOOP, exiting
+2025/10/01 17:24:31 notification_windows.go:414: Popup: Message loop exited, flushing remaining messages
+2025/10/01 17:24:31 notification_windows.go:433: Popup: Message queue flushed
+2025/10/01 17:24:32 hotkey.go:74: Key event: Kind=4, Rawcode=162, Keychar=65535
+2025/10/01 17:24:32 hotkey.go:85: ctrl pressed
+2025/10/01 17:24:32 hotkey.go:74: Key event: Kind=5, Rawcode=162, Keychar=65535
+2025/10/01 17:24:32 hotkey.go:126: ctrl released
+2025/10/01 17:24:32 hotkey.go:74: Key event: Kind=4, Rawcode=162, Keychar=65535
+2025/10/01 17:24:32 hotkey.go:85: ctrl pressed
+2025/10/01 17:24:32 hotkey.go:74: Key event: Kind=4, Rawcode=164, Keychar=65535
+2025/10/01 17:24:32 hotkey.go:85: alt pressed
+2025/10/01 17:24:32 hotkey.go:74: Key event: Kind=4, Rawcode=81, Keychar=65535
+2025/10/01 17:24:32 hotkey.go:85: q pressed
+2025/10/01 17:24:32 hotkey.go:101: HOTKEY COMBINATION DETECTED! Ctrl+alt+q
+2025/10/01 17:24:32 hotkey.go:102: Hotkey activated
+2025/10/01 17:24:32 hotkey.go:74: Key event: Kind=5, Rawcode=81, Keychar=65535
+2025/10/01 17:24:32 gui.go:18: Starting interactive region selection...
+2025/10/01 17:24:32 region_selector_windows.go:39: Starting WORKING Windows region selection...
+2025/10/01 17:24:32 region_selector_windows.go:49: Virtual screen: x=0 y=0 w=1920 h=1200
+2025/10/01 17:24:32 region_selector_windows.go:51: Screen dimensions: 1920x1200
+2025/10/01 17:24:32 region_selector_windows.go:59: Screen captured successfully
+2025/10/01 17:24:32 region_selector_windows.go:161: Window message: 0x81 (wParam=0, lParam=6288976)
+2025/10/01 17:24:32 region_selector_windows.go:161: Window message: 0x83 (wParam=0, lParam=6289136)
+2025/10/01 17:24:32 region_selector_windows.go:161: Window message: 0x1 (wParam=0, lParam=6288864)
+2025/10/01 17:24:32 region_selector_windows.go:161: Window message: 0x5 (wParam=0, lParam=78645120)
+2025/10/01 17:24:32 region_selector_windows.go:161: Window message: 0x3 (wParam=0, lParam=0)
+2025/10/01 17:24:32 region_selector_windows.go:161: Window message: 0x18 (wParam=1, lParam=0)
+2025/10/01 17:24:32 region_selector_windows.go:161: Window message: 0x46 (wParam=0, lParam=6289104)
+2025/10/01 17:24:32 region_selector_windows.go:161: Window message: 0x46 (wParam=0, lParam=6289104)
+2025/10/01 17:24:32 region_selector_windows.go:161: Window message: 0x1c (wParam=1, lParam=9988)
+2025/10/01 17:24:32 region_selector_windows.go:161: Window message: 0x86 (wParam=1, lParam=0)
+2025/10/01 17:24:32 region_selector_windows.go:161: Window message: 0x6 (wParam=1, lParam=0)
+2025/10/01 17:24:32 region_selector_windows.go:161: Window message: 0x281 (wParam=1, lParam=3221225487)
+2025/10/01 17:24:32 region_selector_windows.go:161: Window message: 0x282 (wParam=2, lParam=0)
+2025/10/01 17:24:32 region_selector_windows.go:161: Window message: 0x7 (wParam=0, lParam=0)
+2025/10/01 17:24:32 region_selector_windows.go:161: Window message: 0x85 (wParam=1, lParam=0)
+2025/10/01 17:24:32 region_selector_windows.go:161: Window message: 0x14 (wParam=18446744073608961877, lParam=0)
+2025/10/01 17:24:32 region_selector_windows.go:161: Window message: 0x47 (wParam=0, lParam=6289104)
+2025/10/01 17:24:32 region_selector_windows.go:98: Working overlay window created: 20384248
+2025/10/01 17:24:32 region_selector_windows.go:235: WM_PAINT called, isSelecting=false
+2025/10/01 17:24:32 region_selector_windows.go:106: Window shown, starting message loop...
+2025/10/01 17:24:32 region_selector_windows.go:161: Window message: 0xc0de (wParam=0, lParam=0)
+2025/10/01 17:24:32 region_selector_windows.go:161: Window message: 0x200 (wParam=8, lParam=21037657)
+2025/10/01 17:24:32 region_selector_windows.go:161: Window message: 0xc053 (wParam=1, lParam=6281248)
+2025/10/01 17:24:32 region_selector_windows.go:161: Window message: 0x288 (wParam=6, lParam=6281248)
+2025/10/01 17:24:32 region_selector_windows.go:161: Window message: 0x200 (wParam=8, lParam=21037657)
+2025/10/01 17:24:32 region_selector_windows.go:161: Window message: 0x101 (wParam=18, lParam=3224895489)
+2025/10/01 17:24:32 region_selector_windows.go:161: Window message: 0x101 (wParam=17, lParam=3223126017)
+2025/10/01 17:24:32 hotkey.go:74: Key event: Kind=5, Rawcode=164, Keychar=65535
+2025/10/01 17:24:32 hotkey.go:74: Key event: Kind=5, Rawcode=162, Keychar=65535
+2025/10/01 17:24:32 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=21037656)
+2025/10/01 17:24:32 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=20972119)
+2025/10/01 17:24:32 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=20972118)
+2025/10/01 17:24:32 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=20906581)
+2025/10/01 17:24:32 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=20841043)
+2025/10/01 17:24:32 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=20841042)
+2025/10/01 17:24:32 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=20775505)
+2025/10/01 17:24:32 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=20709968)
+2025/10/01 17:24:32 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=20644431)
+2025/10/01 17:24:32 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=20644430)
+2025/10/01 17:24:32 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=20513357)
+2025/10/01 17:24:32 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=20513356)
+2025/10/01 17:24:32 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=20382283)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=20251209)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=20120135)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=20054598)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=19923525)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=19857986)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=19726912)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=19595837)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=19399224)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=19202612)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=19005999)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=18874922)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=18743844)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=18678302)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=18612761)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=18547218)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=18481675)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=18481669)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=18416126)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=18350584)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=18285043)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=18285038)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=18219497)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=18153956)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=18022878)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=17957337)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=17891795)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=17760717)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=17629640)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=17433026)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=17236411)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=17039797)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=16843182)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=16646569)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=16449955)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=16253342)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=16056729)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=15860116)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=15794579)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=15794578)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=15729041)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=15729040)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=15663504)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=15597967)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=15597966)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=15532430)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=15532429)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=15466893)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=15466892)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=15401356)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=15401355)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=15335819)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=15335818)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=15270281)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=15139208)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=15139207)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=15073670)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=15008134)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=14942597)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=14877061)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=14877060)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=14811524)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=14745987)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=14745987)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=14680451)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=14614914)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=14549378)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=14483841)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=14483840)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=14418304)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=14418304)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=14352767)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=14287230)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=14221693)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=14221692)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=14156155)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=14090619)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=14090618)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=0, lParam=14090617)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x201 (wParam=1, lParam=14090617)
+2025/10/01 17:24:33 region_selector_windows.go:166: MOUSE EVENT: 0x201 at (377, 215)
+2025/10/01 17:24:33 region_selector_windows.go:173: Mouse down at (377, 215)
+2025/10/01 17:24:33 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:24:33 region_selector_windows.go:244: Drawing selection rectangle: (377,215) to (377,215)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=14156153)
+2025/10/01 17:24:33 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:24:33 region_selector_windows.go:244: Drawing selection rectangle: (377,215) to (377,216)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=14483833)
+2025/10/01 17:24:33 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:24:33 region_selector_windows.go:244: Drawing selection rectangle: (377,215) to (377,221)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=15008123)
+2025/10/01 17:24:33 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:24:33 region_selector_windows.go:244: Drawing selection rectangle: (377,215) to (379,229)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=15466880)
+2025/10/01 17:24:33 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:24:33 region_selector_windows.go:244: Drawing selection rectangle: (377,215) to (384,236)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=16187787)
+2025/10/01 17:24:33 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:24:33 region_selector_windows.go:244: Drawing selection rectangle: (377,215) to (395,247)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=17039776)
+2025/10/01 17:24:33 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:24:33 region_selector_windows.go:244: Drawing selection rectangle: (377,215) to (416,260)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=17629615)
+2025/10/01 17:24:33 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:24:33 region_selector_windows.go:244: Drawing selection rectangle: (377,215) to (431,269)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=17891764)
+2025/10/01 17:24:33 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:24:33 region_selector_windows.go:244: Drawing selection rectangle: (377,215) to (436,273)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=18022838)
+2025/10/01 17:24:33 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:24:33 region_selector_windows.go:244: Drawing selection rectangle: (377,215) to (438,275)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=18088375)
+2025/10/01 17:24:33 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:24:33 region_selector_windows.go:244: Drawing selection rectangle: (377,215) to (439,276)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=18219450)
+2025/10/01 17:24:33 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:24:33 region_selector_windows.go:244: Drawing selection rectangle: (377,215) to (442,278)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=18284990)
+2025/10/01 17:24:33 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:24:33 region_selector_windows.go:244: Drawing selection rectangle: (377,215) to (446,279)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=18481613)
+2025/10/01 17:24:33 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:24:33 region_selector_windows.go:244: Drawing selection rectangle: (377,215) to (461,282)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=18612691)
+2025/10/01 17:24:33 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:24:33 region_selector_windows.go:244: Drawing selection rectangle: (377,215) to (467,284)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=18678227)
+2025/10/01 17:24:33 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:24:33 region_selector_windows.go:244: Drawing selection rectangle: (377,215) to (467,285)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=18874835)
+2025/10/01 17:24:33 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:24:33 region_selector_windows.go:244: Drawing selection rectangle: (377,215) to (467,288)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=19071439)
+2025/10/01 17:24:33 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:24:33 region_selector_windows.go:244: Drawing selection rectangle: (377,215) to (463,291)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=19268044)
+2025/10/01 17:24:33 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:24:33 region_selector_windows.go:244: Drawing selection rectangle: (377,215) to (460,294)
+2025/10/01 17:24:33 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=19333579)
+2025/10/01 17:24:33 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:24:34 region_selector_windows.go:244: Drawing selection rectangle: (377,215) to (459,295)
+2025/10/01 17:24:34 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=19530186)
+2025/10/01 17:24:34 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:24:34 region_selector_windows.go:244: Drawing selection rectangle: (377,215) to (458,298)
+2025/10/01 17:24:34 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=19792327)
+2025/10/01 17:24:34 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:24:34 region_selector_windows.go:244: Drawing selection rectangle: (377,215) to (455,302)
+2025/10/01 17:24:34 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=19923398)
+2025/10/01 17:24:34 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:24:34 region_selector_windows.go:244: Drawing selection rectangle: (377,215) to (454,304)
+2025/10/01 17:24:34 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=20054469)
+2025/10/01 17:24:34 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:24:34 region_selector_windows.go:244: Drawing selection rectangle: (377,215) to (453,306)
+2025/10/01 17:24:34 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=20120005)
+2025/10/01 17:24:34 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:24:34 region_selector_windows.go:244: Drawing selection rectangle: (377,215) to (453,307)
+2025/10/01 17:24:34 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=20316613)
+2025/10/01 17:24:34 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:24:34 region_selector_windows.go:244: Drawing selection rectangle: (377,215) to (453,310)
+2025/10/01 17:24:34 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=20447685)
+2025/10/01 17:24:34 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:24:34 region_selector_windows.go:244: Drawing selection rectangle: (377,215) to (453,312)
+2025/10/01 17:24:34 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=20513221)
+2025/10/01 17:24:34 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:24:34 region_selector_windows.go:244: Drawing selection rectangle: (377,215) to (453,313)
+2025/10/01 17:24:34 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=20578757)
+2025/10/01 17:24:34 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:24:34 region_selector_windows.go:244: Drawing selection rectangle: (377,215) to (453,314)
+2025/10/01 17:24:34 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=20709829)
+2025/10/01 17:24:34 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:24:34 region_selector_windows.go:244: Drawing selection rectangle: (377,215) to (453,316)
+2025/10/01 17:24:34 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=20775365)
+2025/10/01 17:24:34 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:24:34 region_selector_windows.go:244: Drawing selection rectangle: (377,215) to (453,317)
+2025/10/01 17:24:34 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=20840901)
+2025/10/01 17:24:34 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:24:34 region_selector_windows.go:244: Drawing selection rectangle: (377,215) to (453,318)
+2025/10/01 17:24:34 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=20906438)
+2025/10/01 17:24:34 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:24:35 region_selector_windows.go:244: Drawing selection rectangle: (377,215) to (454,319)
+2025/10/01 17:24:35 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=20971974)
+2025/10/01 17:24:35 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:24:35 region_selector_windows.go:244: Drawing selection rectangle: (377,215) to (454,320)
+2025/10/01 17:24:35 region_selector_windows.go:161: Window message: 0x200 (wParam=1, lParam=20971975)
+2025/10/01 17:24:35 region_selector_windows.go:235: WM_PAINT called, isSelecting=true
+2025/10/01 17:24:35 region_selector_windows.go:244: Drawing selection rectangle: (377,215) to (455,320)
+2025/10/01 17:24:35 region_selector_windows.go:161: Window message: 0x202 (wParam=0, lParam=20971975)
+2025/10/01 17:24:35 region_selector_windows.go:166: MOUSE EVENT: 0x202 at (455, 320)
+2025/10/01 17:24:35 region_selector_windows.go:161: Window message: 0x215 (wParam=0, lParam=0)
+2025/10/01 17:24:35 region_selector_windows.go:215: Mouse up at (455, 320), selection: 377,215,78,105
+2025/10/01 17:24:35 region_selector_windows.go:161: Window message: 0x90 (wParam=0, lParam=0)
+2025/10/01 17:24:35 region_selector_windows.go:161: Window message: 0x46 (wParam=0, lParam=6290512)
+2025/10/01 17:24:35 region_selector_windows.go:161: Window message: 0x47 (wParam=0, lParam=6290512)
+2025/10/01 17:24:35 region_selector_windows.go:161: Window message: 0x86 (wParam=0, lParam=0)
+2025/10/01 17:24:35 region_selector_windows.go:161: Window message: 0x6 (wParam=0, lParam=0)
+2025/10/01 17:24:35 region_selector_windows.go:161: Window message: 0x1c (wParam=0, lParam=9988)
+2025/10/01 17:24:35 region_selector_windows.go:161: Window message: 0x8 (wParam=0, lParam=0)
+2025/10/01 17:24:35 region_selector_windows.go:161: Window message: 0x281 (wParam=0, lParam=3221225487)
+2025/10/01 17:24:35 region_selector_windows.go:161: Window message: 0x282 (wParam=1, lParam=0)
+2025/10/01 17:24:35 region_selector_windows.go:161: Window message: 0x2 (wParam=0, lParam=0)
+2025/10/01 17:24:35 region_selector_windows.go:286: WM_DESTROY received
+2025/10/01 17:24:35 region_selector_windows.go:161: Window message: 0x82 (wParam=0, lParam=0)
+2025/10/01 17:24:35 region_selector_windows.go:128: Selection completed: {X:377 Y:215 Width:78 Height:105}
+2025/10/01 17:24:35 gui.go:33: Region selected: {X:377 Y:215 Width:78 Height:105}
+2025/10/01 17:24:35 popup.go:33: Popup.StartCountdown called with 15 seconds
+2025/10/01 17:24:35 notification_windows.go:453: Popup: Starting countdown popup with 15 seconds
+2025/10/01 17:24:35 notification_windows.go:159: Popup: Processing popup request
+2025/10/01 17:24:35 notification_windows.go:323: Popup: Creating popup window
+2025/10/01 17:24:35 notification_windows.go:338: Popup: Creating window at position (20, 1080) with size 400x100
+2025/10/01 17:24:35 pool.go:45: Worker: Starting OCR for region 78x105
+2025/10/01 17:24:35 ocr.go:19: DEBUG: Capturing region: X=377 Y=215 Width=78 Height=105
+2025/10/01 17:24:35 notification_windows.go:356: Popup: CreateWindowEx returned hwnd: 20449784
+2025/10/01 17:24:35 notification_windows.go:362: Popup: Window created successfully, hwnd: 20449784
+2025/10/01 17:24:35 llm.go:97: LLM: Using provider preferences: order=[crusoe/bf16 novita/bf16 deepinfra/bf16], allow_fallbacks=false
+2025/10/01 17:24:35 llm.go:183: LLM: API request includes provider preferences: &{Order:[crusoe/bf16 novita/bf16 deepinfra/bf16] Quantizations:[] AllowFallbacks:0xc000182d04}
+2025/10/01 17:24:35 notification_windows.go:386: Popup: Countdown mode, 1s timer started, result: 2
+2025/10/01 17:24:35 notification_windows.go:467: Popup: Countdown timer started
+2025/10/01 17:24:35 llm.go:208: LLM: API response status: 200 200 OK
+2025/10/01 17:24:36 llm.go:226: LLM: API response parsed successfully, 1 choices
+2025/10/01 17:24:36 llm.go:162: LLM: API returned text: 26 characters
+2025/10/01 17:24:36 llm.go:170: LLM: Successfully extracted 26 characters
+2025/10/01 17:24:36 pool.go:48: Worker: OCR completed, text length=26, err=<nil>
+2025/10/01 17:24:36 pool.go:49: Worker: Invoking callback with text length=26
+2025/10/01 17:24:36 pool.go:51: Worker: Callback returned
+2025/10/01 17:24:36 popup.go:39: Popup.UpdateText called with 26 characters
+2025/10/01 17:24:36 notification_windows.go:489: Popup: Updating popup text to 26 characters
+2025/10/01 17:24:36 notification_windows.go:251: Popup: Switched to result mode, showing for 3 seconds
+2025/10/01 17:24:36 hotkey.go:74: Key event: Kind=4, Rawcode=162, Keychar=65535
+2025/10/01 17:24:36 hotkey.go:85: ctrl pressed
+2025/10/01 17:24:37 hotkey.go:74: Key event: Kind=4, Rawcode=162, Keychar=65535
+2025/10/01 17:24:37 hotkey.go:85: ctrl pressed
+2025/10/01 17:24:37 hotkey.go:74: Key event: Kind=4, Rawcode=162, Keychar=65535
+2025/10/01 17:24:37 hotkey.go:85: ctrl pressed
+2025/10/01 17:24:37 hotkey.go:74: Key event: Kind=4, Rawcode=162, Keychar=65535
+2025/10/01 17:24:37 hotkey.go:85: ctrl pressed
+2025/10/01 17:24:37 hotkey.go:74: Key event: Kind=4, Rawcode=162, Keychar=65535
+2025/10/01 17:24:37 hotkey.go:85: ctrl pressed
+2025/10/01 17:24:37 hotkey.go:74: Key event: Kind=4, Rawcode=162, Keychar=65535
+2025/10/01 17:24:37 hotkey.go:85: ctrl pressed
+2025/10/01 17:24:37 hotkey.go:74: Key event: Kind=4, Rawcode=162, Keychar=65535
+2025/10/01 17:24:37 hotkey.go:85: ctrl pressed
+2025/10/01 17:24:37 hotkey.go:74: Key event: Kind=4, Rawcode=162, Keychar=65535
+2025/10/01 17:24:37 hotkey.go:85: ctrl pressed
+2025/10/01 17:24:37 hotkey.go:74: Key event: Kind=4, Rawcode=162, Keychar=65535
+2025/10/01 17:24:37 hotkey.go:85: ctrl pressed
+2025/10/01 17:24:37 hotkey.go:74: Key event: Kind=4, Rawcode=162, Keychar=65535
+2025/10/01 17:24:37 hotkey.go:85: ctrl pressed
+2025/10/01 17:24:37 hotkey.go:74: Key event: Kind=4, Rawcode=162, Keychar=65535
+2025/10/01 17:24:37 hotkey.go:85: ctrl pressed
+2025/10/01 17:24:37 hotkey.go:74: Key event: Kind=5, Rawcode=162, Keychar=65535
+2025/10/01 17:24:37 hotkey.go:126: ctrl released
+2025/10/01 17:24:37 hotkey.go:74: Key event: Kind=4, Rawcode=162, Keychar=65535
+2025/10/01 17:24:37 hotkey.go:85: ctrl pressed
+2025/10/01 17:24:38 hotkey.go:74: Key event: Kind=4, Rawcode=162, Keychar=65535
+2025/10/01 17:24:38 hotkey.go:85: ctrl pressed
+2025/10/01 17:24:38 hotkey.go:74: Key event: Kind=4, Rawcode=162, Keychar=65535
+2025/10/01 17:24:38 hotkey.go:85: ctrl pressed
+2025/10/01 17:24:38 hotkey.go:74: Key event: Kind=4, Rawcode=162, Keychar=65535
+2025/10/01 17:24:38 hotkey.go:85: ctrl pressed
+2025/10/01 17:24:38 hotkey.go:74: Key event: Kind=4, Rawcode=162, Keychar=65535
+2025/10/01 17:24:38 hotkey.go:85: ctrl pressed
+2025/10/01 17:24:38 hotkey.go:74: Key event: Kind=4, Rawcode=162, Keychar=65535
+2025/10/01 17:24:38 hotkey.go:85: ctrl pressed
+2025/10/01 17:24:38 hotkey.go:74: Key event: Kind=4, Rawcode=162, Keychar=65535
+2025/10/01 17:24:38 hotkey.go:85: ctrl pressed
+2025/10/01 17:24:38 hotkey.go:74: Key event: Kind=4, Rawcode=162, Keychar=65535
+2025/10/01 17:24:38 hotkey.go:85: ctrl pressed
+2025/10/01 17:24:38 hotkey.go:74: Key event: Kind=4, Rawcode=67, Keychar=65535
+2025/10/01 17:24:38 hotkey.go:74: Key event: Kind=5, Rawcode=67, Keychar=65535
+2025/10/01 17:24:39 notification_windows.go:235: Popup: Close timer expired, closing window
+2025/10/01 17:24:39 notification_windows.go:267: Popup: WM_DESTROY received for hwnd=20449784
+2025/10/01 17:24:39 notification_windows.go:274: Popup: Posting WM_EXIT_LOOP to thread 23616
+2025/10/01 17:24:39 notification_windows.go:276: Popup: PostThreadMessage result=1, err=The operation completed successfully.
+2025/10/01 17:24:39 notification_windows.go:407: Popup: Message loop received WM_EXIT_LOOP, exiting
+2025/10/01 17:24:39 notification_windows.go:414: Popup: Message loop exited, flushing remaining messages
+2025/10/01 17:24:39 notification_windows.go:433: Popup: Message queue flushed
+2025/10/01 17:24:39 hotkey.go:74: Key event: Kind=4, Rawcode=68, Keychar=65535
+2025/10/01 17:24:39 hotkey.go:74: Key event: Kind=5, Rawcode=68, Keychar=65535
+2025/10/01 17:24:40 main.go:160: event loop stopped: context canceled
+2025/10/01 17:24:40 tray.go:125: Destroying systray
