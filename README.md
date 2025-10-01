@@ -1,5 +1,7 @@
 # Screen OCR LLM
 
+inspired by the [original code](https://github.com/cherjr/screen-ocr-llm)
+
 A small desktop utility to select a region of the screen, run OCR via OpenRouter vision models, and copy the result to the clipboard. Runs as a resident tray app with a global hotkey, and also supports a one-shot CLI mode.
 
 ## Prerequisites
