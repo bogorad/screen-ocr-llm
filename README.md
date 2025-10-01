@@ -1,6 +1,6 @@
 # Screen OCR LLM
 
-\*\* Inspured by [the original code](https://github.com/cherjr/screen-ocr-llm)
+Inspired by [the original code](https://github.com/cherjr/screen-ocr-llm)
 
 A small desktop utility to select a region of the screen, run OCR via OpenRouter vision models, and copy the result to the clipboard.
 
