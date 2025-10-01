@@ -17,20 +17,20 @@ type Config struct {
 }
 
 func Load() (*Config, error) {
-	// Try to load .env file from current directory or executable directory
-	envPaths := []string{".env"}
-
-	// If running as executable, also try the executable's directory
+	// Load configuration from sources in priority order:
+	// 1) .env in the application (executable) directory
+	// 2) If not found, use SCREEN_OCR_LLM env var as a path to a config file
 	if execPath, err := os.Executable(); err == nil {
 		execDir := filepath.Dir(execPath)
-		envPaths = append(envPaths, filepath.Join(execDir, ".env"))
-	}
-
-	// Try to load .env file (ignore errors if file doesn't exist)
-	for _, envPath := range envPaths {
-		if _, err := os.Stat(envPath); err == nil {
-			godotenv.Load(envPath)
-			break
+		exeEnv := filepath.Join(execDir, ".env")
+		if _, err := os.Stat(exeEnv); err == nil {
+			_ = godotenv.Load(exeEnv)
+		} else {
+			if alt := os.Getenv("SCREEN_OCR_LLM"); alt != "" {
+				if _, err := os.Stat(alt); err == nil {
+					_ = godotenv.Load(alt)
+				}
+			}
 		}
 	}
 

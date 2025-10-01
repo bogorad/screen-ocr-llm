@@ -597,6 +597,60 @@ Ensure that regardless of mode (Resident, --run-once standalone, --run-once dele
 - [ ] Optional packaging improvements (.zip/.msi) including `.env.example`.
 
 
+## Startup LLM Ping + Blocking Dialog (2025-10-01)
+
+### Change
+- On startup, immediately perform a minimal LLM ping (MaxTokens=1) after loading config and initializing LLM.
+- If the ping fails, show a blocking Windows error dialog explaining the failure and exit.
+- In `--run-once`, if a resident is detected and request is delegated, the client no longer pings; only the process that will actually handle OCR performs the ping.
+
+### Files Modified
+- `llm/llm.go`: Added `Ping()` and `makeAPIRequestWithTimeout()` helpers.
+- `notification/notification_windows.go`: Added `ShowBlockingError(title, message string)` using `MessageBoxW`.
+- `main/main.go`: Call `llm.Ping()` at startup (resident and standalone run-once); show blocking dialog on failure; removed ping in run-once delegation path.
+
+### Outcome
+- Clear, early failure when LLM is unavailable; no background run with broken config.
+- Delegated run-once avoids redundant pings.
+
+---
+
+## High-DPI Selection Coverage Fix (2025-10-01)
+
+### Issue
+- On 150% DPI scaling, selection only worked on part of the screen.
+
+### Fixes
+- Enable DPI awareness at startup (prefer per-monitor DPI awareness via `Shcore.SetProcessDpiAwareness`, fallback to `user32.SetProcessDPIAware`).
+- Capture the full virtual screen for overlay background and screenshots (use union of all display bounds).
+
+### Files Modified
+- `main/main.go`: Added `enableDPIAwareness()` and called it before any window/metrics usage.
+- `screenshot/screenshot.go`: `Capture()` now captures the union rectangle across all active displays.
+- `gui/region_selector_windows.go`: Capture uses virtual screen width/height to match overlay window.
+
+### Outcome
+- Selection overlay and mouse coordinates align across scaled, multi-monitor setups.
+
+---
+
+## Config Load Order + Logging Respect Fix (2025-10-01)
+
+### Changes
+- Config search order:
+  1) `.env` in the executable directory
+  2) If not found, load from path in `SCREEN_OCR_LLM` env var (if it points to a file)
+- Logging bug fix: no more forced early file logging; `EnableFileLogging=false` now fully suppresses log file creation/usage.
+
+### Files Modified
+- `config/config.go`: Implemented new config search order.
+- `main/main.go`: Removed pre-config `logutil.Setup(true)`; now call `setupLogging(cfg.EnableFileLogging)` after loading config in both resident and run-once paths.
+- `logutil/logutil.go`: Already respected `enableFileLogging`; no change required.
+
+### Outcome
+- Startup finds config as requested; logging strictly follows `ENABLE_FILE_LOGGING`.
+
+
 
 **Last Updated**: 2025-10-01
 **Status**: THREAD ISOLATION FIX COMPLETE - READY FOR USER TEST

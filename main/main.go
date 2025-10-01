@@ -104,8 +104,6 @@ func main() {
 		return
 	}
 
-	// Pre-flight: set up file logging early so detection logs are captured
-	logutil.Setup(true)
 	// Load .env early so SINGLEINSTANCE_PORT_* are available for pre-flight
 	_, _ = config.Load()
 	// ---------- SINGLE-INSTANCE NUKE ----------
@@ -213,8 +211,8 @@ func runOCROnce(outputToStdout bool) {
 		os.Exit(1)
 	}
 
-	// Set up logging to file only (no stdout output)
-	setupLogging(true) // Force file logging
+	// Set up logging per configuration (file logging may be disabled)
+	setupLogging(cfg.EnableFileLogging)
 
 	// Validate configuration
 	if cfg.APIKey == "" {

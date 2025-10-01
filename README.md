@@ -16,6 +16,10 @@ A small desktop utility to select a region of the screen, run OCR via OpenRouter
     - `OPENROUTER_API_KEY=`
     - `MODEL=` (e.g., `google/gemma-2-9b-it`)
 
+
+2.  Alternatively, you can point the app to a config file via an environment variable:
+    - Set `SCREEN_OCR_LLM` to the full path of a `.env`-format file. If `.env` is not found in the executable directory, the app will load configuration from this path.
+
 2.  You can also add these optional keys to your `.env` file to customize behavior:
     - `HOTKEY=Ctrl+Alt+q`
     - `ENABLE_FILE_LOGGING=true`
@@ -80,10 +84,14 @@ The two modes are designed to work together intelligently to prevent conflicts a
 - When you start a new capture with `--run-once`, the application first checks if a **resident** instance is already running.
 - **If a resident instance is found**, the `--run-once` process delegates the capture request to the running instance and exits. The resident application then takes over, presenting the screen selection UI.
 - **If no resident instance is active**, the `--run-once` process will handle the capture itself in a temporary standalone mode before exiting.
+- **Startup validation**: On launch, the app performs a minimal LLM connectivity check (1-token ping). If it fails, a blocking error dialog is shown and the app exits. In `--run-once`, if a resident is detected and the request is delegated, the client does not ping.
+- **High-DPI**: The app enables DPI awareness and uses the full virtual screen for overlays and screenshots to work correctly on scaled multi-monitor setups.
+- **Logging**: Controlled by `ENABLE_FILE_LOGGING`. When `false`, logs are suppressed; when `true`, logs are written to `screen_ocr_debug.log` (size-rotated). In GUI builds, stdout/stderr are hidden, so enable file logging for diagnostics.
+
 
 This delegation mechanism ensures a stable and predictable user experience by guaranteeing that only one screen selection process can be active at a time.
 
 ## Notes
 
-- **Logging**: If enabled in the `.env` file, logs are written to `screen_ocr_debug.log`, which is automatically rotated based on size.
+- **Logging**: Controlled by `ENABLE_FILE_LOGGING`. When `false`, logs are suppressed; when `true`, logs are written to `screen_ocr_debug.log` with size-based rotation. In GUI builds, stdout/stderr are hidden, so enable file logging for diagnostics.
 - **Single Instance**: The tool uses a loopback TCP port to enforce a single resident instance and to manage delegation from `--run-once` clients.
