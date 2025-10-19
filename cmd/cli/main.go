@@ -6,6 +6,7 @@ import (
 	"flag"
 	"fmt"
 	"io"
+	"log"
 	"os"
 	"strings"
 	"time"
@@ -39,7 +40,14 @@ func run() error {
 		return fmt.Errorf("required flag -file not specified\nUsage: ocr-tool -file <path|-> [-json] [-v]")
 	}
 
-	if *verbose {
+	// Configure logging BEFORE any other operations
+	// The llm package uses Go's standard log package
+	if !*verbose {
+		// Silence all logs (including llm package) when not verbose
+		log.SetOutput(io.Discard)
+	} else {
+		// In verbose mode, all logs go to stderr
+		log.SetOutput(os.Stderr)
 		fmt.Fprintf(os.Stderr, "[verbose] Starting OCR tool\n")
 	}
 
@@ -64,7 +72,7 @@ func run() error {
 		return fmt.Errorf("MODEL is required in .env file")
 	}
 
-	// Initialize LLM package
+	// Initialize LLM package (will now respect log configuration)
 	llm.Init(&llm.Config{
 		APIKey:    apiKey,
 		Model:     cfg.Model,
@@ -97,7 +105,7 @@ func loadAPIKey(cfg *config.Config, verbose bool) (string, error) {
 	// Priority 2: Check environment variable
 	if envKey := os.Getenv("OPENROUTER_API_KEY"); envKey != "" {
 		if verbose {
-			fmt.Fprintf(os.Stderr, "[verbose] API key loaded from: OPENROUTER_API_KEY env var (value: %s...)\n", envKey[:10])
+			fmt.Fprintf(os.Stderr, "[verbose] API key loaded from: OPENROUTER_API_KEY env var (value: %s)\n", truncateSecret(envKey, 10))
 		}
 		return envKey, nil
 	}
@@ -105,12 +113,21 @@ func loadAPIKey(cfg *config.Config, verbose bool) (string, error) {
 	// Priority 3: Check config file (already loaded by config.Load())
 	if cfg.APIKey != "" {
 		if verbose {
-			fmt.Fprintf(os.Stderr, "[verbose] API key loaded from: config file (value: %s...)\n", cfg.APIKey[:10])
+			fmt.Fprintf(os.Stderr, "[verbose] API key loaded from: config file (value: %s)\n", truncateSecret(cfg.APIKey, 10))
 		}
 		return cfg.APIKey, nil
 	}
 
 	return "", fmt.Errorf("OPENROUTER_API_KEY not found. Checked:\n  1. %s\n  2. OPENROUTER_API_KEY env var\n  3. .env config file", secretFilePath)
+}
+
+// truncateSecret safely truncates a secret for display, showing only first N characters
+// If the secret is shorter than N, returns the whole secret with "..."
+func truncateSecret(secret string, maxLen int) string {
+	if len(secret) <= maxLen {
+		return secret + "..."
+	}
+	return secret[:maxLen] + "..."
 }
 
 func processOCR(filePath string, jsonOutput bool, verbose bool) error {
