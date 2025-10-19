@@ -38,6 +38,22 @@ build-linux-nocgo:
 	@echo "Building for Linux without CGO (limited functionality)..."
 	GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o $(BINARY_NAME)-linux-nocgo $(MAIN_PATH)
 
+# Linux CLI build target
+build-cli-linux:
+	GOOS=linux GOARCH=amd64 go build -o ocr-tool ./cmd/cli
+
+# Cross-compile from Windows
+build-cli-linux-from-windows:
+	set GOOS=linux&& set GOARCH=amd64&& go build -o ocr-tool ./cmd/cli
+
+# Local build (detects OS automatically)
+build-cli:
+	go build -o ocr-tool ./cmd/cli
+
+# Test CLI
+test-cli:
+	cd cmd/cli && go test -v
+
 # Build for all platforms (may fail on some platforms due to CGO dependencies)
 build-all: build-windows build-macos build-macos-arm build-linux
 
@@ -88,4 +104,4 @@ env-example:
 # Default target
 all: deps check build
 
-.PHONY: build build-windows build-macos build-macos-arm build-linux build-linux-nocgo build-all build-current clean test test-coverage test-verbose deps fmt vet check env-example all
+.PHONY: build build-windows build-macos build-macos-arm build-linux build-linux-nocgo build-cli-linux build-cli-linux-from-windows build-cli test-cli build-all build-current clean test test-coverage test-verbose deps fmt vet check env-example all

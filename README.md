@@ -10,6 +10,21 @@ A small desktop utility to select a region of the screen, run OCR via OpenRouter
 - Windows (current overlay/hotkey path targets Windows)
 - OpenRouter API key and a vision-capable model (`:free` models are also supported, but not recommended)
 
+## Linux CLI Tool
+
+A standalone CLI utility for Linux users:
+
+```sh
+# Build
+cd cmd/cli
+go build -o ocr-tool .
+
+# Usage
+./ocr-tool -file screenshot.png
+```
+
+See [cmd/cli/README.md](cmd/cli/README.md) for details.
+
 ## Setup
 
 1.  Create a `.env` file in the same directory as the executable with the following required keys:

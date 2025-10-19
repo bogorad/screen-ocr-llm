@@ -59,6 +59,22 @@ See the `Makefile` for cross-platform build targets:
 - `make build-macos-arm` - macOS Apple Silicon
 - `make build-linux` - Linux
 
+## Building the Linux CLI Tool
+
+The Linux CLI tool is a separate binary that does not include GUI dependencies.
+
+### On Linux
+```bash
+go build -o ocr-tool ./cmd/cli
+```
+
+### Cross-compile from Windows
+```cmd
+set GOOS=linux&& set GOARCH=amd64&& go build -o ocr-tool ./cmd/cli
+```
+
+The CLI tool uses the same configuration system but operates in single-shot mode (no daemon, no GUI).
+
 ## Running the Application
 
 After building:
