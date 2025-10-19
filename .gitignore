@@ -1,3 +1,4 @@
 .env
 *.exe
 repomix-output.xml
+cmd/cli/ocr-tool
