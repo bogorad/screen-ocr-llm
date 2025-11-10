@@ -1,5 +1,6 @@
 .env
 *.exe
+*.bin
 repomix-output.xml
 cmd/cli/ocr-tool
 ocr-tool
