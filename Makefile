@@ -2,7 +2,7 @@
 
 # Variables
 BINARY_NAME=screen-ocr-llm
-MAIN_PATH=./main
+MAIN_PATH=./src/main
 
 # Build for current platform
 ifeq ($(OS),Windows_NT)
@@ -40,19 +40,19 @@ build-linux-nocgo:
 
 # Linux CLI build target
 build-cli-linux:
-	GOOS=linux GOARCH=amd64 go build -o ocr-tool ./cmd/cli
+	GOOS=linux GOARCH=amd64 go build -o ocr-tool ./src/cmd/cli
 
 # Cross-compile from Windows
 build-cli-linux-from-windows:
-	set GOOS=linux&& set GOARCH=amd64&& go build -o ocr-tool ./cmd/cli
+	set GOOS=linux&& set GOARCH=amd64&& go build -o ocr-tool ./src/cmd/cli
 
 # Local build (detects OS automatically)
 build-cli:
-	go build -o ocr-tool ./cmd/cli
+	go build -o ocr-tool ./src/cmd/cli
 
 # Test CLI
 test-cli:
-	cd cmd/cli && go test -v
+	cd src/cmd/cli && go test -v
 
 # Build for all platforms (may fail on some platforms due to CGO dependencies)
 build-all: build-windows build-macos build-macos-arm build-linux

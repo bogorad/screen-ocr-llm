@@ -4,6 +4,55 @@ Inspired by [the original code](https://github.com/cherjr/screen-ocr-llm)
 
 A small desktop utility to select a region of the screen, run OCR via OpenRouter vision models, and copy the result to the clipboard.
 
+## Architecture Overview
+
+### Directory Structure
+
+- `src/` - All source code packages
+- `tests/` - Integration and debug test files
+- Unit tests (`*_test.go`) remain with their respective packages
+
+At a high level, the Windows app is structured as:
+
+- `src/main`:
+  - Parses flags and normalizes `--run-once`.
+  - Ensures single resident instance via a TCP preflight on the configured port.
+  - Loads configuration (`src/config`), enables DPI awareness, and configures logging (`src/logutil`).
+  - Initializes the LLM client (`src/llm`) and performs a 1-token startup ping (blocking dialog on failure).
+  - In resident mode:
+    - Starts the central event loop (`src/eventloop`), the system tray (`src/tray`), and global hotkey listener (`src/hotkey`).
+  - In `--run-once` mode:
+    - First tries to delegate to a running resident via `src/singleinstance.Client`.
+    - If no resident is available, runs a standalone capture+OCR flow.
+
+- `src/eventloop`:
+  - Owns the single-instance TCP server (`src/singleinstance.Server`).
+  - Listens for:
+    - Global hotkey triggers.
+    - Delegated `--run-once` requests.
+  - For each request:
+    - Uses `src/overlay.Selector`/`src/gui` to run the interactive region selector.
+    - Submits OCR work to a bounded worker pool (`src/worker` + `src/ocr` + `src/llm`).
+    - Updates UI via `src/popup` and writes results via `src/clipboard`.
+  - Enforces that only one OCR job runs at a time ("busy" behavior).
+
+- `src/overlay` + `src/gui` + `src/screenshot`:
+  - Implement the Windows overlay window and mouse-driven region selection.
+  - Capture the selected region (multi-monitor aware) as PNG bytes for OCR.
+
+- `src/llm` + `src/ocr`:
+  - `src/ocr` captures the region and forwards it to `src/llm`.
+  - `src/llm` calls the OpenRouter Chat Completions API with a strict OCR-style prompt and optional `PROVIDERS` routing.
+
+- `src/singleinstance`:
+  - TCP-based discovery and delegation so `--run-once` clients hand work to the resident when available.
+
+- `src/tray` + `src/popup` + `src/notification`:
+  - System tray icon, About/Exit menu, and small non-intrusive popups.
+  - Countdown popup appears during OCR and is updated/closed when results arrive.
+
+The Linux CLI (`src/cmd/cli`) is a separate, GUI-free binary that reuses `src/config` and `src/llm` to run OCR on PNG input (file or stdin) and print plain-text or JSON output.
+
 ## Prerequisites
 
 - Go toolchain installed (go build) if you want to build yourself; otherwise use .exe from releases.
@@ -16,14 +65,14 @@ A standalone CLI utility for Linux users:
 
 ```sh
 # Build
-cd cmd/cli
+cd src/cmd/cli
 go build -o ocr-tool .
 
 # Usage
 ./ocr-tool -file screenshot.png
 ```
 
-See [cmd/cli/README.md](cmd/cli/README.md) for details.
+See [src/cmd/cli/README.md](src/cmd/cli/README.md) for details.
 
 ## Setup
 
@@ -40,7 +89,7 @@ See [cmd/cli/README.md](cmd/cli/README.md) for details.
     - `HOTKEY=Ctrl+Alt+q`
     - `ENABLE_FILE_LOGGING=true`
     - `PROVIDERS=providerA,providerB`
-    - `OCR_DEADLINE_SEC=15` (default is 15 seconds if unset)
+    - `OCR_DEADLINE_SEC=20` (default is 20 seconds if unset)
     - `SINGLEINSTANCE_PORT_START=49500`
     - `SINGLEINSTANCE_PORT_END=49550`
 
@@ -49,11 +98,11 @@ See [cmd/cli/README.md](cmd/cli/README.md) for details.
 - **Using Go directly**:
   - On Windows (no console window):
     ```sh
-    go build -ldflags "-H=windowsgui" -o screen-ocr-llm.exe ./main
+    go build -ldflags "-H=windowsgui" -o screen-ocr-llm.exe ./src/main
     ```
   - On Linux/macOS:
     ```sh
-    go build -o screen-ocr-llm ./main
+    go build -o screen-ocr-llm ./src/main
     ```
 
 - **Using the Makefile** (for a Windows GUI binary):
