@@ -27,6 +27,7 @@ Each ADR follows this structure:
 | [006](006-dpi-awareness.md) | DPI Awareness Implementation | Accepted | 2025-10-01 |
 | [007](007-tcp-single-instance.md) | TCP-based Single Instance | Accepted | 2025-10-01 |
 | [008](008-provider-routing.md) | Provider Routing Support | Accepted | 2025-10-01 |
+| [009](009-multi-monitor-support.md) | Multi-Monitor Support and Coordinate Handling | Accepted | 2025-12-14 |
 
 ## Creating a New ADR
 
