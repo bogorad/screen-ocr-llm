@@ -25,6 +25,8 @@ var (
 	simpleEndX, simpleEndY     int32
 	simpleScreenWidth          int32
 	simpleScreenHeight         int32
+	simpleVirtualScreenX       int32
+	simpleVirtualScreenY       int32
 	simpleSelectionResult      chan screenshot.Region
 )
 
@@ -48,6 +50,10 @@ func StartInteractiveRegionSelection() (screenshot.Region, error) {
 	vw := win.GetSystemMetrics(win.SM_CXVIRTUALSCREEN)
 	vh := win.GetSystemMetrics(win.SM_CYVIRTUALSCREEN)
 	log.Printf("Virtual screen: x=%d y=%d w=%d h=%d", vx, vy, vw, vh)
+
+	// Store virtual screen offset for coordinate calculation
+	simpleVirtualScreenX = vx
+	simpleVirtualScreenY = vy
 
 	log.Printf("Screen dimensions: %dx%d", simpleScreenWidth, simpleScreenHeight)
 
@@ -241,11 +247,12 @@ func workingWndProc(hwnd win.HWND, msg uint32, wParam, lParam uintptr) uintptr {
 
 			if width > 5 && height > 5 {
 				region := screenshot.Region{
-					X:      int(left),
-					Y:      int(top),
+					X:      int(left) + int(simpleVirtualScreenX),
+					Y:      int(top) + int(simpleVirtualScreenY),
 					Width:  int(width),
 					Height: int(height),
 				}
+				log.Printf("Final region with virtual screen offset: X=%d Y=%d W=%d H=%d", region.X, region.Y, region.Width, region.Height)
 				simpleSelectionResult <- region
 			} else {
 				log.Printf("Selection too small, ignoring")
