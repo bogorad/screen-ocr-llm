@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.5.0] - 2025-12-14
+
+### Added
+- Comprehensive diagnostic logging for multi-monitor troubleshooting
+- Virtual screen coordinate offset support for vertical monitor arrangements
+
+### Fixed
+- Multi-monitor overlay cursor focus issues (SetForegroundWindow failures)
+- Incorrect region coordinates on monitors positioned above/below primary display
+- Cursor display during region selection (ensures crosshairs instead of circle)
+- Coordinate offset calculations for non-zero virtual screen origins
+
+### Changed
+- Enhanced window focus management with BringWindowToTop fallback
+- Improved cursor loading and caching for consistent display
+
 ## [2.4.0] - 2025-11-10
 
 ### Added
@@ -94,12 +110,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Version History
 
+- **2.5.0** (2025-12-14) - Multi-monitor fixes + diagnostic logging
 - **2.4.0** (2025-11-10) - Configurable timeout + codebase reorganization + ADRs
 - **2.3.0** (2025-10-01) - DPI awareness + thread isolation + provider routing
 - **2.2.0** - Single instance + delegation
 - **2.1.0** - Linux CLI tool
 - **2.0.0** - Initial Go implementation
 
+[2.5.0]: https://github.com/user/screen-ocr-llm/compare/2.4...2.5.0
 [2.4.0]: https://github.com/user/screen-ocr-llm/compare/2.3...2.4.0
 [2.3.0]: https://github.com/user/screen-ocr-llm/compare/2.2...2.3.0
 [2.2.0]: https://github.com/user/screen-ocr-llm/compare/2.1...2.2.0
