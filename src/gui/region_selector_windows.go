@@ -305,7 +305,11 @@ func workingWndProc(hwnd win.HWND, msg uint32, wParam, lParam uintptr) uintptr {
 
 	case win.WM_SETCURSOR:
 		log.Printf("WM_SETCURSOR received, setting cross cursor")
-		return 0
+		crossCursor := win.LoadCursor(0, win.MAKEINTRESOURCE(win.IDC_CROSS))
+		if crossCursor != 0 {
+			win.SetCursor(crossCursor)
+		}
+		return 1 // Indicate we handled it
 
 	case win.WM_ACTIVATE:
 		log.Printf("WM_ACTIVATE received, wParam: %d", wParam)
