@@ -52,20 +52,68 @@ func enableDPIAwareness() {
 	setProcessDpiAwareness := shcore.NewProc("SetProcessDpiAwareness")
 	const PROCESS_PER_MONITOR_DPI_AWARE = 2
 	if err := setProcessDpiAwareness.Find(); err == nil {
-		_, _, _ = setProcessDpiAwareness.Call(uintptr(PROCESS_PER_MONITOR_DPI_AWARE))
+		ret, _, _ := setProcessDpiAwareness.Call(uintptr(PROCESS_PER_MONITOR_DPI_AWARE))
+		if ret == 0 {
+			log.Printf("DPI: Successfully set per-monitor DPI awareness")
+		} else {
+			log.Printf("DPI: Failed to set per-monitor DPI awareness, error code: %d", ret)
+		}
 		return
 	}
+	log.Printf("DPI: Shcore.SetProcessDpiAwareness not available, trying fallback")
 	// Fallback: user32.SetProcessDPIAware (Vista+)
 	user32 := syscall.NewLazyDLL("user32.dll")
 	setProcessDPIAware := user32.NewProc("SetProcessDPIAware")
 	if err := setProcessDPIAware.Find(); err == nil {
-		_, _, _ = setProcessDPIAware.Call()
+		ret, _, _ := setProcessDPIAware.Call()
+		if ret != 0 {
+			log.Printf("DPI: Successfully set system DPI awareness (fallback)")
+		} else {
+			log.Printf("DPI: Failed to set system DPI awareness (fallback)")
+		}
+	} else {
+		log.Printf("DPI: SetProcessDPIAware not available, no DPI awareness set")
 	}
+}
+
+func logMonitorConfiguration() {
+	if runtime.GOOS != "windows" {
+		return
+	}
+	user32 := syscall.NewLazyDLL("user32.dll")
+	getSystemMetrics := user32.NewProc("GetSystemMetrics")
+
+	// Get monitor count
+	smCMonitors := 80 // SM_CMONITORS
+	ret, _, _ := getSystemMetrics.Call(uintptr(smCMonitors))
+	monitorCount := int(ret)
+	log.Printf("MONITOR: Detected %d monitors", monitorCount)
+
+	// Virtual screen metrics
+	smXVirtualScreen := 76  // SM_XVIRTUALSCREEN
+	smYVirtualScreen := 77  // SM_YVIRTUALSCREEN
+	smCXVirtualScreen := 78 // SM_CXVIRTUALSCREEN
+	smCYVirtualScreen := 79 // SM_CYVIRTUALSCREEN
+
+	vx, _, _ := getSystemMetrics.Call(uintptr(smXVirtualScreen))
+	vy, _, _ := getSystemMetrics.Call(uintptr(smYVirtualScreen))
+	vw, _, _ := getSystemMetrics.Call(uintptr(smCXVirtualScreen))
+	vh, _, _ := getSystemMetrics.Call(uintptr(smCYVirtualScreen))
+
+	log.Printf("MONITOR: Virtual screen - x:%d y:%d w:%d h:%d", vx, vy, vw, vh)
+
+	// Primary screen metrics
+	smCXScreen := 0 // SM_CXSCREEN
+	smCYScreen := 1 // SM_CYSCREEN
+	pw, _, _ := getSystemMetrics.Call(uintptr(smCXScreen))
+	ph, _, _ := getSystemMetrics.Call(uintptr(smCYScreen))
+	log.Printf("MONITOR: Primary screen - w:%d h:%d", pw, ph)
 }
 
 func main() {
 	// Ensure DPI awareness before creating any windows or querying metrics
 	enableDPIAwareness()
+	logMonitorConfiguration()
 
 	// Lock main goroutine to its own OS thread to prevent it from sharing
 	// the popup thread's message queue

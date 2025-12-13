@@ -7,6 +7,7 @@ import (
 	"image"
 	"image/draw"
 	"log"
+	"os"
 	"syscall"
 	"time"
 	"unsafe"
@@ -77,8 +78,10 @@ func StartInteractiveRegionSelection() (screenshot.Region, error) {
 
 	atom := win.RegisterClassEx(&wndClass)
 	if atom == 0 {
+		log.Printf("OVERLAY: Failed to register window class")
 		return screenshot.Region{}, fmt.Errorf("failed to register window class")
 	}
+	log.Printf("OVERLAY: Window class registered successfully, atom: %d", atom)
 	defer win.UnregisterClass(className)
 
 	// Create fullscreen window covering the entire virtual screen
@@ -92,15 +95,27 @@ func StartInteractiveRegionSelection() (screenshot.Region, error) {
 	)
 
 	if simpleOverlayHwnd == 0 {
+		log.Printf("OVERLAY: Failed to create overlay window")
 		return screenshot.Region{}, fmt.Errorf("failed to create overlay window")
 	}
 
-	log.Printf("Working overlay window created: %v", simpleOverlayHwnd)
+	log.Printf("OVERLAY: Window created successfully, hwnd: %v, position: (%d,%d) size: (%d,%d)", simpleOverlayHwnd, vx, vy, vw, vh)
 
 	// Show window and bring to front
+	log.Printf("OVERLAY: Calling ShowWindow")
 	win.ShowWindow(simpleOverlayHwnd, win.SW_SHOW)
-	win.SetForegroundWindow(simpleOverlayHwnd)
-	win.SetFocus(simpleOverlayHwnd)
+	log.Printf("OVERLAY: Calling AllowSetForegroundWindow")
+	user32 := syscall.NewLazyDLL("user32.dll")
+	allowSetForegroundWindow := user32.NewProc("AllowSetForegroundWindow")
+	pid := os.Getpid()
+	allowSetForegroundWindow.Call(uintptr(pid))
+	log.Printf("OVERLAY: Calling SetForegroundWindow")
+	ret := win.SetForegroundWindow(simpleOverlayHwnd)
+	log.Printf("OVERLAY: SetForegroundWindow returned: %v", ret)
+	log.Printf("OVERLAY: Calling SetFocus")
+	focusRet := win.SetFocus(simpleOverlayHwnd)
+	log.Printf("OVERLAY: SetFocus returned: %v", focusRet)
+	log.Printf("OVERLAY: Calling UpdateWindow")
 	win.UpdateWindow(simpleOverlayHwnd)
 
 	log.Printf("Window shown, starting message loop...")
@@ -137,14 +152,21 @@ func StartInteractiveRegionSelection() (screenshot.Region, error) {
 
 // captureScreen captures the entire screen as an RGBA image
 func captureScreen(width, height int) (*image.RGBA, error) {
+	log.Printf("OVERLAY: Starting screen capture for overlay background, expected size: %dx%d", width, height)
 	// Use the project's screenshot package to capture the screen
 	img, err := screenshot.Capture()
 	if err != nil {
+		log.Printf("OVERLAY: Screen capture failed: %v", err)
 		return nil, err
 	}
 
+	actualW := img.Bounds().Dx()
+	actualH := img.Bounds().Dy()
+	log.Printf("OVERLAY: Screen captured successfully, actual size: %dx%d", actualW, actualH)
+
 	// The image is already RGBA, but let's ensure it matches our expected size
-	if img.Bounds().Dx() != width || img.Bounds().Dy() != height {
+	if actualW != width || actualH != height {
+		log.Printf("OVERLAY: Size mismatch, resizing from %dx%d to %dx%d", actualW, actualH, width, height)
 		// Resize if needed
 		rgba := image.NewRGBA(image.Rect(0, 0, width, height))
 		draw.Draw(rgba, rgba.Bounds(), img, image.Point{}, draw.Src)
@@ -269,6 +291,14 @@ func workingWndProc(hwnd win.HWND, msg uint32, wParam, lParam uintptr) uintptr {
 		}
 
 		win.EndPaint(hwnd, &ps)
+		return 0
+
+	case win.WM_SETCURSOR:
+		log.Printf("WM_SETCURSOR received, setting cross cursor")
+		return 0
+
+	case win.WM_ACTIVATE:
+		log.Printf("WM_ACTIVATE received, wParam: %d", wParam)
 		return 0
 
 	case win.WM_KEYDOWN:
