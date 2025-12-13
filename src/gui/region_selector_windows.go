@@ -27,6 +27,7 @@ var (
 	simpleScreenHeight         int32
 	simpleVirtualScreenX       int32
 	simpleVirtualScreenY       int32
+	simpleCrossCursor          win.HCURSOR
 	simpleSelectionResult      chan screenshot.Region
 )
 
@@ -65,6 +66,12 @@ func StartInteractiveRegionSelection() (screenshot.Region, error) {
 	}
 	log.Printf("Screen captured successfully")
 
+	// Load cross cursor
+	simpleCrossCursor = win.LoadCursor(0, win.MAKEINTRESOURCE(win.IDC_CROSS))
+	if simpleCrossCursor == 0 {
+		log.Printf("OVERLAY: Failed to load cross cursor")
+	}
+
 	// Initialize selection state
 	simpleSelectionResult = make(chan screenshot.Region, 1)
 	simpleIsSelecting = false
@@ -77,7 +84,7 @@ func StartInteractiveRegionSelection() (screenshot.Region, error) {
 		Style:         win.CS_HREDRAW | win.CS_VREDRAW,
 		LpfnWndProc:   syscall.NewCallback(workingWndProc),
 		HInstance:     win.GetModuleHandle(nil),
-		HCursor:       win.LoadCursor(0, win.MAKEINTRESOURCE(win.IDC_CROSS)),
+		HCursor:       simpleCrossCursor,
 		HbrBackground: 0, // No background brush - we'll paint ourselves
 		LpszClassName: className,
 	}
@@ -305,9 +312,8 @@ func workingWndProc(hwnd win.HWND, msg uint32, wParam, lParam uintptr) uintptr {
 
 	case win.WM_SETCURSOR:
 		log.Printf("WM_SETCURSOR received, setting cross cursor")
-		crossCursor := win.LoadCursor(0, win.MAKEINTRESOURCE(win.IDC_CROSS))
-		if crossCursor != 0 {
-			win.SetCursor(crossCursor)
+		if simpleCrossCursor != 0 {
+			win.SetCursor(simpleCrossCursor)
 		}
 		return 1 // Indicate we handled it
 
