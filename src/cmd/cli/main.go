@@ -3,7 +3,6 @@ package main
 import (
 	"bytes"
 	"encoding/json"
-	"flag"
 	"fmt"
 	"io"
 	"log"
@@ -11,15 +10,23 @@ import (
 	"strings"
 	"time"
 
+	"github.com/spf13/cobra"
+
 	"screen-ocr-llm/src/config"
 	"screen-ocr-llm/src/llm"
 )
 
 const (
-	maxFileSizeMB  = 10
-	maxFileSize    = maxFileSizeMB * 1024 * 1024
-	secretFilePath = "/run/secrets/api_keys/openrouter"
+	maxFileSizeMB = 10
+	maxFileSize   = maxFileSizeMB * 1024 * 1024
 )
+
+type cliOptions struct {
+	filePath   string
+	jsonOutput bool
+	verbose    bool
+	apiKeyPath string
+}
 
 func main() {
 	if err := run(); err != nil {
@@ -29,100 +36,115 @@ func main() {
 }
 
 func run() error {
-	// Define flags
-	filePath := flag.String("file", "", "Path to PNG file (use '-' for stdin)")
-	jsonOutput := flag.Bool("json", false, "Output results as JSON")
-	verbose := flag.Bool("v", false, "Verbose output to stderr")
-	flag.Parse()
+	return runWithArgs(normalizeLegacyArgs(os.Args))
+}
 
-	// Validate required flags
-	if *filePath == "" {
-		return fmt.Errorf("required flag -file not specified\nUsage: ocr-tool -file <path|-> [-json] [-v]")
+func runWithArgs(args []string) error {
+	if len(args) == 0 {
+		args = []string{"ocr-tool"}
 	}
 
-	// Configure logging BEFORE any other operations
-	// The llm package uses Go's standard log package
-	if !*verbose {
-		// Silence all logs (including llm package) when not verbose
+	opts := &cliOptions{}
+	cmd := newRootCmd(opts)
+	cmd.SetArgs(args[1:])
+	return cmd.Execute()
+}
+
+func newRootCmd(opts *cliOptions) *cobra.Command {
+	cmd := &cobra.Command{
+		Use:           "ocr-tool",
+		Short:         "Run OCR on PNG input",
+		SilenceUsage:  true,
+		SilenceErrors: true,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			return runWithOptions(*opts)
+		},
+	}
+
+	cmd.Flags().StringVar(&opts.filePath, "file", "", "Path to PNG file (use '-' for stdin)")
+	cmd.Flags().BoolVar(&opts.jsonOutput, "json", false, "Output results as JSON")
+	cmd.Flags().BoolVarP(&opts.verbose, "verbose", "v", false, "Verbose output to stderr")
+	cmd.Flags().StringVar(&opts.apiKeyPath, "api-key-path", "", "Path to API key file (highest precedence)")
+	_ = cmd.MarkFlagRequired("file")
+
+	return cmd
+}
+
+func runWithOptions(opts cliOptions) error {
+	// Configure logging BEFORE any other operations.
+	if !opts.verbose {
 		log.SetOutput(io.Discard)
 	} else {
-		// In verbose mode, all logs go to stderr
 		log.SetOutput(os.Stderr)
 		fmt.Fprintf(os.Stderr, "[verbose] Starting OCR tool\n")
 	}
 
-	// Load configuration
-	cfg, err := config.Load()
+	loadOptions := config.LoadOptions{APIKeyPathOverride: opts.apiKeyPath}
+	cfg, err := config.LoadWithOptions(loadOptions)
 	if err != nil {
 		return fmt.Errorf("failed to load configuration: %w", err)
 	}
 
-	if *verbose {
+	if opts.verbose {
 		fmt.Fprintf(os.Stderr, "[verbose] Config loaded: Model=%s\n", cfg.Model)
+		fmt.Fprintf(os.Stderr, "[verbose] Effective API key path: %s\n", cfg.APIKeyPath)
 	}
 
-	// Load API key from multiple sources
-	apiKey, err := loadAPIKey(cfg, *verbose)
-	if err != nil {
-		return err
+	if cfg.APIKey == "" {
+		return fmt.Errorf("OPENROUTER_API_KEY not found. Checked key file %s and OPENROUTER_API_KEY env var", cfg.APIKeyPath)
 	}
 
-	// Validate model is required
 	if cfg.Model == "" {
 		return fmt.Errorf("MODEL is required in .env file")
 	}
 
-	// Initialize LLM package (will now respect log configuration)
 	llm.Init(&llm.Config{
-		APIKey:    apiKey,
+		APIKey:    cfg.APIKey,
 		Model:     cfg.Model,
 		Providers: cfg.Providers,
 	})
 
-	if *verbose {
+	if opts.verbose {
 		fmt.Fprintf(os.Stderr, "[verbose] LLM initialized\n")
 	}
 
-	return processOCR(*filePath, *jsonOutput, *verbose)
+	return processOCR(opts.filePath, opts.jsonOutput, opts.verbose)
 }
 
-// loadAPIKey attempts to load the API key from multiple sources in priority order:
-// 1. /run/secrets/api_keys/openrouter (SOPS/Kubernetes secret mount)
-// 2. OPENROUTER_API_KEY environment variable
-// 3. Config file (.env)
-func loadAPIKey(cfg *config.Config, verbose bool) (string, error) {
-	// Priority 1: Check SOPS secret file
-	if data, err := os.ReadFile(secretFilePath); err == nil {
-		apiKey := strings.TrimSpace(string(data))
-		if apiKey != "" {
-			if verbose {
-				fmt.Fprintf(os.Stderr, "[verbose] API key loaded from: %s\n", secretFilePath)
-			}
-			return apiKey, nil
+func normalizeLegacyArgs(args []string) []string {
+	if len(args) == 0 {
+		return args
+	}
+
+	normalized := make([]string, len(args))
+	copy(normalized, args)
+
+	for i := 1; i < len(normalized); i++ {
+		arg := normalized[i]
+		switch {
+		case arg == "-file":
+			normalized[i] = "--file"
+		case strings.HasPrefix(arg, "-file="):
+			normalized[i] = "--file=" + arg[len("-file="):]
+		case arg == "-json":
+			normalized[i] = "--json"
+		case strings.HasPrefix(arg, "-json="):
+			normalized[i] = "--json=" + arg[len("-json="):]
+		case arg == "-verbose":
+			normalized[i] = "--verbose"
+		case strings.HasPrefix(arg, "-verbose="):
+			normalized[i] = "--verbose=" + arg[len("-verbose="):]
+		case arg == "-api-key-path":
+			normalized[i] = "--api-key-path"
+		case strings.HasPrefix(arg, "-api-key-path="):
+			normalized[i] = "--api-key-path=" + arg[len("-api-key-path="):]
 		}
 	}
 
-	// Priority 2: Check environment variable
-	if envKey := os.Getenv("OPENROUTER_API_KEY"); envKey != "" {
-		if verbose {
-			fmt.Fprintf(os.Stderr, "[verbose] API key loaded from: OPENROUTER_API_KEY env var (value: %s)\n", truncateSecret(envKey, 10))
-		}
-		return envKey, nil
-	}
-
-	// Priority 3: Check config file (already loaded by config.Load())
-	if cfg.APIKey != "" {
-		if verbose {
-			fmt.Fprintf(os.Stderr, "[verbose] API key loaded from: config file (value: %s)\n", truncateSecret(cfg.APIKey, 10))
-		}
-		return cfg.APIKey, nil
-	}
-
-	return "", fmt.Errorf("OPENROUTER_API_KEY not found. Checked:\n  1. %s\n  2. OPENROUTER_API_KEY env var\n  3. .env config file", secretFilePath)
+	return normalized
 }
 
-// truncateSecret safely truncates a secret for display, showing only first N characters
-// If the secret is shorter than N, returns the whole secret with "..."
+// truncateSecret safely truncates a secret for display, showing only first N characters.
 func truncateSecret(secret string, maxLen int) string {
 	if len(secret) <= maxLen {
 		return secret + "..."
@@ -131,7 +153,6 @@ func truncateSecret(secret string, maxLen int) string {
 }
 
 func processOCR(filePath string, jsonOutput bool, verbose bool) error {
-	// Read image data
 	var imageData []byte
 	var err error
 
@@ -153,7 +174,6 @@ func processOCR(filePath string, jsonOutput bool, verbose bool) error {
 		}
 	}
 
-	// Validate file size
 	if len(imageData) == 0 {
 		return fmt.Errorf("input file is empty")
 	}
@@ -165,7 +185,6 @@ func processOCR(filePath string, jsonOutput bool, verbose bool) error {
 		fmt.Fprintf(os.Stderr, "[verbose] Read %d bytes\n", len(imageData))
 	}
 
-	// Validate PNG format
 	if len(imageData) < 8 || !bytes.Equal(imageData[:8], []byte{0x89, 'P', 'N', 'G', 0x0d, 0x0a, 0x1a, 0x0a}) {
 		return fmt.Errorf("input is not a valid PNG file (invalid magic number)")
 	}
@@ -182,7 +201,6 @@ func performOCR(imageData []byte, sourcePath string, jsonOutput bool, verbose bo
 		fmt.Fprintf(os.Stderr, "[verbose] Starting OCR with model via llm.QueryVision\n")
 	}
 
-	// Use existing battle-tested implementation
 	startTime := time.Now()
 	text, err := llm.QueryVision(imageData)
 	elapsed := time.Since(startTime)
@@ -225,7 +243,6 @@ func outputResult(text string, sourcePath string, elapsed time.Duration, jsonOut
 			return fmt.Errorf("failed to encode JSON output: %w", err)
 		}
 	} else {
-		// Plain text output - no trailing newline
 		fmt.Print(text)
 	}
 

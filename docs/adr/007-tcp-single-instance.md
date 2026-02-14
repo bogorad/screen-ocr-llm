@@ -36,7 +36,7 @@ Implement TCP-based single instance detection and delegation:
 **Architecture:**
 ```
 Resident:
-  1. Bind to first available port in range (54000-54050)
+  1. Bind to start port in configured range (default 49500-49550)
   2. Listen for client connections
   3. Accept delegation requests
   4. Process OCR and respond
@@ -48,30 +48,26 @@ Client (--run-once):
 ```
 
 **Protocol:**
-```json
-// Request
-{
-    "output_to_stdout": false
-}
+```text
+# discovery
+Client -> Resident: PING\n
+Resident -> Client: PONG\n
 
-// Response (success)
-{
-    "success": true,
-    "data": "extracted text"
-}
+# request
+Client -> Resident: CLIPBOARD\n | STDOUT\n
 
-// Response (error)
-{
-    "success": false,
-    "error": "error message"
-}
+# response success
+Resident -> Client: SUCCESS\n<optional payload>
+
+# response error
+Resident -> Client: ERROR\n<error message>
 ```
 
 **Configuration:**
 ```bash
 # .env
-SINGLEINSTANCE_PORT_START=54000
-SINGLEINSTANCE_PORT_END=54050
+SINGLEINSTANCE_PORT_START=49500
+SINGLEINSTANCE_PORT_END=49550
 ```
 
 **Implementation:**
@@ -108,9 +104,9 @@ listener.Close()
 
 ### Positive
 
-- **Simple protocol**: JSON over TCP, easy to debug
+- **Simple protocol**: line-based text framing over loopback TCP
 - **Loopback only**: No network exposure (127.0.0.1)
-- **Port range**: Avoids conflicts (50 ports available)
+- **Port range**: Avoids conflicts (51 ports available)
 - **Clean delegation**: Client exits after delegating
 - **Testable**: Easy to write integration tests
 - **Cross-platform compatible**: Works on Linux/Mac if needed
@@ -131,8 +127,14 @@ listener.Close()
 ## References
 
 - Package: `src/singleinstance`
-- Default range: 54000-54050 (50 ports)
+- Default range: 49500-49550 (51 ports)
 - Environment: `SINGLEINSTANCE_PORT_START`, `SINGLEINSTANCE_PORT_END`
-- Protocol: JSON request/response over TCP
+- Protocol: `PING/PONG`, then `CLIPBOARD|STDOUT`, then `SUCCESS|ERROR` response framing
 - Test: `singleinstance_test.go` - server/client roundtrip
 - Related: Pre-flight check in main.go
+
+## Implementation Notes (2026-02-14)
+
+- Resident hotkey requests and delegated `--run-once` requests now share a unified eventloop request pipeline.
+- Standalone `--run-once` fallback reuses shared OCR session execution helpers.
+- The architectural decision in this ADR is unchanged: TCP loopback delegation remains authoritative for resident coordination.

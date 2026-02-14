@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	"flag"
+	"errors"
 	"fmt"
 	"log"
 	"net"
@@ -13,104 +13,89 @@ import (
 	"syscall"
 	"time"
 
-	"screen-ocr-llm/src/clipboard"
+	"github.com/spf13/cobra"
+
 	"screen-ocr-llm/src/config"
 	"screen-ocr-llm/src/eventloop"
-	"screen-ocr-llm/src/gui"
-	"screen-ocr-llm/src/llm"
 	"screen-ocr-llm/src/logutil"
-	"screen-ocr-llm/src/notification"
-
-	"screen-ocr-llm/src/ocr"
-	"screen-ocr-llm/src/popup"
+	"screen-ocr-llm/src/overlay"
+	"screen-ocr-llm/src/runtimeinit"
 	"screen-ocr-llm/src/screenshot"
+	"screen-ocr-llm/src/session"
 	"screen-ocr-llm/src/singleinstance"
 	"screen-ocr-llm/src/tray"
 )
 
-// normalizeFlagDashes maps GNU-style --run-once[(-std)] to Go's -run-once[(-std)]
-func normalizeFlagDashes() {
-	for i := 1; i < len(os.Args); i++ {
-		arg := os.Args[i]
+type mainOptions struct {
+	runOnce    bool
+	apiKeyPath string
+}
+
+func normalizeLegacyArgs(args []string) []string {
+	if len(args) == 0 {
+		return args
+	}
+
+	normalized := make([]string, len(args))
+	copy(normalized, args)
+
+	for i := 1; i < len(normalized); i++ {
+		arg := normalized[i]
 		switch {
-		case arg == "--run-once":
-			os.Args[i] = "-run-once"
-		case strings.HasPrefix(arg, "--run-once="):
-			os.Args[i] = "-run-once" + arg[len("--run-once"):]
+		case arg == "-run-once":
+			normalized[i] = "--run-once"
+		case strings.HasPrefix(arg, "-run-once="):
+			normalized[i] = "--run-once=" + arg[len("-run-once="):]
+		case arg == "-api-key-path":
+			normalized[i] = "--api-key-path"
+		case strings.HasPrefix(arg, "-api-key-path="):
+			normalized[i] = "--api-key-path=" + arg[len("-api-key-path="):]
 		}
 	}
 
+	return normalized
 }
 
-// enableDPIAwareness attempts to set per-monitor DPI awareness on Windows to fix scaling issues
-func enableDPIAwareness() {
-	if runtime.GOOS != "windows" {
-		return
-	}
-	// Prefer per-monitor DPI awareness via Shcore.SetProcessDpiAwareness (Win 8.1+)
-	shcore := syscall.NewLazyDLL("Shcore.dll")
-	setProcessDpiAwareness := shcore.NewProc("SetProcessDpiAwareness")
-	const PROCESS_PER_MONITOR_DPI_AWARE = 2
-	if err := setProcessDpiAwareness.Find(); err == nil {
-		ret, _, _ := setProcessDpiAwareness.Call(uintptr(PROCESS_PER_MONITOR_DPI_AWARE))
-		if ret == 0 {
-			log.Printf("DPI: Successfully set per-monitor DPI awareness")
-		} else {
-			log.Printf("DPI: Failed to set per-monitor DPI awareness, error code: %d", ret)
-		}
-		return
-	}
-	log.Printf("DPI: Shcore.SetProcessDpiAwareness not available, trying fallback")
-	// Fallback: user32.SetProcessDPIAware (Vista+)
-	user32 := syscall.NewLazyDLL("user32.dll")
-	setProcessDPIAware := user32.NewProc("SetProcessDPIAware")
-	if err := setProcessDPIAware.Find(); err == nil {
-		ret, _, _ := setProcessDPIAware.Call()
-		if ret != 0 {
-			log.Printf("DPI: Successfully set system DPI awareness (fallback)")
-		} else {
-			log.Printf("DPI: Failed to set system DPI awareness (fallback)")
-		}
-	} else {
-		log.Printf("DPI: SetProcessDPIAware not available, no DPI awareness set")
-	}
+func run() error {
+	return runWithArgs(normalizeLegacyArgs(os.Args))
 }
 
-func logMonitorConfiguration() {
-	if runtime.GOOS != "windows" {
-		return
+func runWithArgs(args []string) error {
+	if len(args) == 0 {
+		args = []string{"screen-ocr-llm"}
 	}
-	user32 := syscall.NewLazyDLL("user32.dll")
-	getSystemMetrics := user32.NewProc("GetSystemMetrics")
 
-	// Get monitor count
-	smCMonitors := 80 // SM_CMONITORS
-	ret, _, _ := getSystemMetrics.Call(uintptr(smCMonitors))
-	monitorCount := int(ret)
-	log.Printf("MONITOR: Detected %d monitors", monitorCount)
+	opts := &mainOptions{}
+	cmd := newRootCmd(opts)
+	cmd.SetArgs(args[1:])
+	return cmd.Execute()
+}
 
-	// Virtual screen metrics
-	smXVirtualScreen := 76  // SM_XVIRTUALSCREEN
-	smYVirtualScreen := 77  // SM_YVIRTUALSCREEN
-	smCXVirtualScreen := 78 // SM_CXVIRTUALSCREEN
-	smCYVirtualScreen := 79 // SM_CYVIRTUALSCREEN
+func newRootCmd(opts *mainOptions) *cobra.Command {
+	cmd := &cobra.Command{
+		Use:           "screen-ocr-llm",
+		Short:         "Screen OCR LLM resident app",
+		SilenceUsage:  true,
+		SilenceErrors: true,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			return runApplication(*opts)
+		},
+	}
 
-	vx, _, _ := getSystemMetrics.Call(uintptr(smXVirtualScreen))
-	vy, _, _ := getSystemMetrics.Call(uintptr(smYVirtualScreen))
-	vw, _, _ := getSystemMetrics.Call(uintptr(smCXVirtualScreen))
-	vh, _, _ := getSystemMetrics.Call(uintptr(smCYVirtualScreen))
+	cmd.Flags().BoolVar(&opts.runOnce, "run-once", false, "Run OCR once, copy to clipboard, and exit silently")
+	cmd.Flags().StringVar(&opts.apiKeyPath, "api-key-path", "", "Path to API key file (highest precedence)")
 
-	log.Printf("MONITOR: Virtual screen - x:%d y:%d w:%d h:%d", vx, vy, vw, vh)
-
-	// Primary screen metrics
-	smCXScreen := 0 // SM_CXSCREEN
-	smCYScreen := 1 // SM_CYSCREEN
-	pw, _, _ := getSystemMetrics.Call(uintptr(smCXScreen))
-	ph, _, _ := getSystemMetrics.Call(uintptr(smCYScreen))
-	log.Printf("MONITOR: Primary screen - w:%d h:%d", pw, ph)
+	return cmd
 }
 
 func main() {
+	if err := run(); err != nil {
+		log.Printf("Application failed: %v", err)
+		os.Exit(1)
+	}
+}
+
+func runApplication(opts mainOptions) error {
 	// Ensure DPI awareness before creating any windows or querying metrics
 	enableDPIAwareness()
 	logMonitorConfiguration()
@@ -119,39 +104,16 @@ func main() {
 	// the popup thread's message queue
 	runtime.LockOSThread()
 
-	// Parse command line flags
-	runOnce := flag.Bool("run-once", false, "Run OCR once, copy to clipboard, and exit silently")
-	// Support GNU-style double-dash flags
-	normalizeFlagDashes()
-
-	flag.Parse()
-
 	// If run-once mode, prefer delegating to resident via TCP; fallback to standalone
-	if *runOnce {
-		// Load .env early so SINGLEINSTANCE_PORT_* are applied before delegation scan
-		_, _ = config.Load()
-		stdout := false
-		ctx := context.Background()
-		client := singleinstance.NewClient()
-
-		delegated, _, err := client.TryRunOnce(ctx, stdout)
-		if err != nil {
-			log.Printf("Delegation error: %v; falling back to standalone", err)
-			runOCROnce(stdout)
-			return
-		}
-		if delegated {
-			log.Printf("Delegated to resident")
-			return
-		}
-		log.Printf("No resident detected (not delegated), running standalone")
-		// Fallback to standalone
-		runOCROnce(stdout)
-		return
+	if opts.runOnce {
+		handleRunOnceWithDelegation(opts.apiKeyPath, singleinstance.NewClient(), func() {
+			runOCROnce(false, opts.apiKeyPath)
+		})
+		return nil
 	}
 
 	// Load .env early so SINGLEINSTANCE_PORT_* are available for pre-flight
-	_, _ = config.Load()
+	_, _ = config.LoadWithOptions(config.LoadOptions{APIKeyPathOverride: opts.apiKeyPath})
 	// ---------- SINGLE-INSTANCE NUKE ----------
 	startPort, _ := singleinstance.GetPortRangeForDebug()
 	addr := fmt.Sprintf("127.0.0.1:%d", startPort)
@@ -168,41 +130,13 @@ func main() {
 
 	// Named-pipe single instance enforced by event loop server; PID file removed
 
-	// Load configuration
-	cfg, err := config.Load()
-	if err != nil {
-		log.Fatalf("Failed to load configuration: %v", err)
-	}
-
-	// Setup logging
-	setupLogging(cfg.EnableFileLogging)
-
-	// Validate configuration
-	if cfg.APIKey == "" {
-		log.Fatalf("OPENROUTER_API_KEY is required. Please set it in your .env file.")
-	}
-	if cfg.Model == "" {
-		log.Fatalf("MODEL is required. Please set it in your .env file.")
-	}
-
-	// Initialize LLM first and validate immediately (blocking dialog on failure)
-	llm.Init(&llm.Config{
-		APIKey:    cfg.APIKey,
-		Model:     cfg.Model,
-		Providers: cfg.Providers,
+	cfg, err := runtimeinit.Bootstrap(runtimeinit.Options{
+		LoadOptions:          config.LoadOptions{APIKeyPathOverride: opts.apiKeyPath},
+		SetupLogging:         setupLogging,
+		ShowBlockingLLMError: true,
 	})
-	if err := llm.Ping(); err != nil {
-		notification.ShowBlockingError("LLM unavailable", fmt.Sprintf("Startup check failed: %v\n\nPlease verify your API key and network connectivity.", err))
-		os.Exit(1)
-	}
-	log.Printf("LLM ping succeeded")
-
-	// Initialize remaining packages
-	screenshot.Init()
-	ocr.Init()
-	err = clipboard.Init()
 	if err != nil {
-		log.Fatalf("Failed to initialize clipboard: %v", err)
+		return err
 	}
 
 	log.Printf("Screen OCR LLM Tool initialized")
@@ -241,6 +175,7 @@ func main() {
 		log.Printf("event loop stopped: %v", err)
 	}
 
+	return nil
 }
 
 func setupLogging(enableFileLogging bool) {
@@ -248,99 +183,93 @@ func setupLogging(enableFileLogging bool) {
 }
 
 // runOCROnce performs a single OCR capture and exits
-func runOCROnce(outputToStdout bool) {
-	// Load configuration
-	cfg, err := config.Load()
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Failed to load configuration: %v\n", err)
-		os.Exit(1)
-	}
-
-	// Set up logging per configuration (file logging may be disabled)
-	setupLogging(cfg.EnableFileLogging)
-
-	// Validate configuration
-	if cfg.APIKey == "" {
-		fmt.Fprintf(os.Stderr, "OPENROUTER_API_KEY is required. Please set it in your .env file.\n")
-		os.Exit(1)
-	}
-	if cfg.Model == "" {
-		fmt.Fprintf(os.Stderr, "MODEL is required. Please set it in your .env file.\n")
-		os.Exit(1)
-	}
-
-	// Initialize LLM first and validate immediately (blocking dialog on failure)
-	llm.Init(&llm.Config{
-		APIKey:    cfg.APIKey,
-		Model:     cfg.Model,
-		Providers: cfg.Providers,
+func runOCROnce(outputToStdout bool, apiKeyPathOverride string) {
+	cfg, err := runtimeinit.Bootstrap(runtimeinit.Options{
+		LoadOptions:          config.LoadOptions{APIKeyPathOverride: apiKeyPathOverride},
+		SetupLogging:         setupLogging,
+		ShowBlockingLLMError: true,
 	})
-	if err := llm.Ping(); err != nil {
-		notification.ShowBlockingError("LLM unavailable", fmt.Sprintf("Startup check failed: %v\n\nPlease verify your API key and network connectivity.", err))
-		os.Exit(1)
-	}
-	log.Printf("LLM ping succeeded")
-
-	// Initialize remaining packages
-	screenshot.Init()
-	ocr.Init()
-
-	// Always initialize clipboard for consistent behavior
-	// (even if we won't use it in stdout mode)
-	if err := clipboard.Init(); err != nil {
-		fmt.Fprintf(os.Stderr, "Failed to initialize clipboard: %v\n", err)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Failed to initialize runtime: %v\n", err)
 		os.Exit(1)
 	}
 
 	log.Printf("Running OCR once (--runonce mode) with OCR deadline %ds", cfg.OCRDeadlineSec)
 
-	// Start region selection
-	region, err := gui.StartRegionSelection()
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Failed to start region selection: %v\n", err)
-		os.Exit(1)
-	}
-
-	log.Printf("Processing region: %+v", region)
-
-	// Start countdown popup before OCR using configured deadline
-	_ = popup.StartCountdown(cfg.OCRDeadlineSec)
-
-	// Perform OCR on the selected region
-	text, err := ocr.Recognize(region)
-	if err != nil {
-		_ = popup.Close() // Close countdown on error
-		log.Printf("OCR failed: %v", err)
-		fmt.Fprintf(os.Stderr, "OCR failed: %v\n", err)
-		os.Exit(1)
-	}
-
-	// Log OCR result safely (prevent log injection)
-	safeText := sanitizeForLogging(text)
-	log.Printf("OCR extracted text (%d chars): %q", len(text), safeText)
-
+	selector := overlay.NewSelector()
+	var target session.ResultTarget
 	if outputToStdout {
-		// Output to stdout for --run-once-std mode
-		fmt.Print(text) // Use Print (not Println) to avoid extra newline
-		log.Printf("OCR completed successfully, text output to stdout (%d chars)", len(text))
+		target = session.StdoutTarget{Writer: os.Stdout}
 	} else {
-		// Copy result to clipboard for --run-once mode
-		if err := clipboard.Write(text); err != nil {
-			_ = popup.Close()
-			log.Printf("Failed to write to clipboard: %v", err)
-			fmt.Fprintf(os.Stderr, "Failed to write to clipboard: %v\n", err)
-			os.Exit(1)
-		}
-		log.Printf("OCR completed successfully, text copied to clipboard (%d chars)", len(text))
+		target = runOnceClipboardTarget{}
 	}
 
-	// Update countdown popup with result
-	_ = popup.UpdateText(text)
-	// Block long enough for the popup to be visible before process exit
-	time.Sleep(3 * time.Second)
+	_, err = session.Execute(context.Background(), session.Options{
+		Deadline: time.Duration(cfg.OCRDeadlineSec) * time.Second,
+		SelectRegion: func(ctx context.Context) (screenshot.Region, bool, error) {
+			region, cancelled, err := selector.Select(ctx)
+			if err != nil {
+				return screenshot.Region{}, false, fmt.Errorf("failed to start region selection: %w", err)
+			}
+			return region, cancelled, nil
+		},
+		Target:                 target,
+		SuccessVisibleDuration: 3 * time.Second,
+	})
+	if err != nil {
+		switch {
+		case errors.Is(err, session.ErrSelectionCancelled):
+			fmt.Fprintf(os.Stderr, "Selection cancelled\n")
+		case isClipboardWriteError(err):
+			fmt.Fprintf(os.Stderr, "Failed to write to clipboard: %v\n", err)
+		case isRegionSelectionError(err):
+			fmt.Fprintf(os.Stderr, "Failed to start region selection: %v\n", err)
+		default:
+			fmt.Fprintf(os.Stderr, "OCR failed: %v\n", err)
+		}
+		os.Exit(1)
+	}
 
 	log.Printf("OCR runonce completed successfully, exiting...")
 	os.Exit(0)
+}
+
+func handleRunOnceWithDelegation(apiKeyPathOverride string, client singleinstance.Client, runFallback func()) {
+	// Load .env early so SINGLEINSTANCE_PORT_* are applied before delegation scan.
+	_, _ = config.LoadWithOptions(config.LoadOptions{APIKeyPathOverride: apiKeyPathOverride})
+
+	delegated, _, err := client.TryRunOnce(context.Background(), false)
+	if err != nil {
+		log.Printf("Delegation error: %v; falling back to standalone", err)
+		runFallback()
+		return
+	}
+	if delegated {
+		log.Printf("Delegated to resident")
+		return
+	}
+
+	log.Printf("No resident detected (not delegated), running standalone")
+	runFallback()
+}
+
+type runOnceClipboardTarget struct{}
+
+func (runOnceClipboardTarget) OnSuccess(text string) error {
+	if err := (session.ClipboardTarget{}).OnSuccess(text); err != nil {
+		return fmt.Errorf("clipboard write: %w", err)
+	}
+	return nil
+}
+
+func (runOnceClipboardTarget) OnFailure(err error) error { return nil }
+
+func isClipboardWriteError(err error) bool {
+	return strings.Contains(err.Error(), "clipboard write")
+}
+
+func isRegionSelectionError(err error) bool {
+	return strings.Contains(err.Error(), "failed to start region selection")
 }
 
 // sanitizeForLogging removes potentially dangerous characters from text for safe logging

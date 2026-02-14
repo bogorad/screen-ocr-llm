@@ -7,7 +7,6 @@ import (
 	"screen-ocr-llm/src/config"
 	"screen-ocr-llm/src/gui"
 	"screen-ocr-llm/src/llm"
-	"screen-ocr-llm/src/screenshot"
 )
 
 // TestRealWorkflow tests the actual workflow with your configuration

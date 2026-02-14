@@ -1,3 +1,5 @@
+//go:build manual
+
 // Test program to validate popup countdown flow
 package main
 

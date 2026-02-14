@@ -2,6 +2,7 @@ package main
 
 import (
 	"os"
+	"path/filepath"
 	"testing"
 
 	"screen-ocr-llm/src/config"
@@ -14,11 +15,11 @@ import (
 func TestWorkflowValidation(t *testing.T) {
 	t.Run("Configuration Compatibility", func(t *testing.T) {
 		// Test environment variable loading (matching Python)
-		os.Setenv("OPENROUTER_API_KEY", "test_key")
-		os.Setenv("MODEL", "test_model")
-		os.Setenv("ENABLE_FILE_LOGGING", "true")
+		t.Setenv("OPENROUTER_API_KEY", "test_key")
+		t.Setenv("MODEL", "test_model")
+		t.Setenv("ENABLE_FILE_LOGGING", "true")
 
-		cfg, err := config.Load()
+		cfg, err := config.LoadWithOptions(config.LoadOptions{APIKeyPathOverride: filepath.Join(t.TempDir(), "missing.key")})
 		if err != nil {
 			t.Fatalf("Config loading failed: %v", err)
 		}
@@ -32,11 +33,6 @@ func TestWorkflowValidation(t *testing.T) {
 		if !cfg.EnableFileLogging {
 			t.Error("Expected file logging to be enabled")
 		}
-
-		// Cleanup
-		os.Unsetenv("OPENROUTER_API_KEY")
-		os.Unsetenv("MODEL")
-		os.Unsetenv("ENABLE_FILE_LOGGING")
 	})
 
 	t.Run("API Request Structure", func(t *testing.T) {

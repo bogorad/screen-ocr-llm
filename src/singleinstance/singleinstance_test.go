@@ -2,6 +2,7 @@ package singleinstance
 
 import (
 	"context"
+	"fmt"
 	"testing"
 	"time"
 )
@@ -17,16 +18,18 @@ func TestServerClientRoundTrip(t *testing.T) {
 
 	// client delegates stdout request
 	client := NewClient()
-	delegatedCh := make(chan struct{})
+	errCh := make(chan error, 1)
 	go func() {
-		defer close(delegatedCh)
 		delegated, _, err := client.TryRunOnce(ctx, true)
 		if err != nil {
-			t.Errorf("client: %v", err)
+			errCh <- fmt.Errorf("client: %w", err)
+			return
 		}
 		if !delegated {
-			t.Errorf("expected delegation")
+			errCh <- fmt.Errorf("expected delegation")
+			return
 		}
+		errCh <- nil
 	}()
 
 	// server accept and respond
@@ -40,5 +43,16 @@ func TestServerClientRoundTrip(t *testing.T) {
 	if err := conn.RespondSuccess("ok"); err != nil {
 		t.Fatalf("respond: %v", err)
 	}
-	<-delegatedCh
+	if err := conn.Close(); err != nil {
+		t.Fatalf("close: %v", err)
+	}
+
+	select {
+	case err := <-errCh:
+		if err != nil {
+			t.Fatal(err)
+		}
+	case <-ctx.Done():
+		t.Fatalf("client did not complete: %v", ctx.Err())
+	}
 }

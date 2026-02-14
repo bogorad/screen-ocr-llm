@@ -2,16 +2,17 @@ package eventloop
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log"
 	"time"
 
-	"screen-ocr-llm/src/clipboard"
 	"screen-ocr-llm/src/config"
 	"screen-ocr-llm/src/hotkey"
 	"screen-ocr-llm/src/overlay"
 	"screen-ocr-llm/src/popup"
 	"screen-ocr-llm/src/screenshot"
+	"screen-ocr-llm/src/session"
 	"screen-ocr-llm/src/singleinstance"
 	"screen-ocr-llm/src/tray"
 	"screen-ocr-llm/src/worker"
@@ -32,9 +33,65 @@ type Loop struct {
 type result struct {
 	text   string
 	err    error
-	conn   singleinstance.Conn
-	stdout bool
+	target resultTarget
 	cancel context.CancelFunc
+}
+
+type resultTarget interface {
+	OnSuccess(text string) error
+	OnProcessError(err error)
+	OnDeliveryError(err error)
+	Close()
+}
+
+type hotkeyResultTarget struct{}
+
+func (hotkeyResultTarget) OnSuccess(text string) error {
+	return session.ClipboardTarget{}.OnSuccess(text)
+}
+
+func (hotkeyResultTarget) OnProcessError(err error) {}
+
+func (hotkeyResultTarget) OnDeliveryError(err error) {
+	_ = popup.Show("Clipboard error")
+}
+
+func (hotkeyResultTarget) Close() {}
+
+type delegatedResultTarget struct {
+	sink session.DelegatedTarget
+	conn singleinstance.Conn
+}
+
+func newDelegatedResultTarget(conn singleinstance.Conn, outputToStdout bool) delegatedResultTarget {
+	return delegatedResultTarget{
+		sink: session.DelegatedTarget{Conn: conn, OutputToStdout: outputToStdout},
+		conn: conn,
+	}
+}
+
+func (t delegatedResultTarget) OnSuccess(text string) error {
+	return t.sink.OnSuccess(text)
+}
+
+func (t delegatedResultTarget) OnProcessError(err error) {
+	_ = t.sink.OnFailure(err)
+}
+
+func (t delegatedResultTarget) OnDeliveryError(err error) {
+	_ = t.sink.OnFailure(err)
+}
+
+func (t delegatedResultTarget) Close() {
+	if t.conn != nil {
+		_ = t.conn.Close()
+	}
+}
+
+type requestCallbacks struct {
+	onBusy        func()
+	onSelectError func(err error)
+	onCancelled   func()
 }
 
 // New creates a new event loop with defaults based on config.
@@ -125,135 +182,110 @@ func (l *Loop) Run(ctx context.Context) error {
 }
 
 func (l *Loop) handleConn(ctx context.Context, conn singleinstance.Conn) {
-	if l.busy {
-		_ = conn.RespondError("Busy, please retry")
-		_ = conn.Close()
-		return
-	}
-
-	req := conn.Request()
-	region, cancelled, err := l.selectRegion(ctx)
-	if err != nil {
-		_ = conn.RespondError("Failed to select region: " + err.Error())
-		_ = conn.Close()
-		return
-	}
-	if cancelled {
-		_ = conn.RespondError("Selection cancelled")
-		_ = conn.Close()
-		return
-	}
-
-	jobCtx, cancel := context.WithTimeout(ctx, l.deadline)
-
-	// Start countdown popup for delegated --run-once requests
-	_ = popup.StartCountdown(int(l.deadline.Seconds()))
-
-	l.setBusy(true)
-	submitted := l.pool.Submit(jobCtx, region, func(text string, err error) {
-		l.results <- result{text: text, err: err, conn: conn, stdout: req.OutputToStdout, cancel: cancel}
+	target := newDelegatedResultTarget(conn, conn.Request().OutputToStdout)
+	l.startRequest(ctx, target, requestCallbacks{
+		onBusy: func() {
+			target.OnProcessError(errors.New("Busy, please retry"))
+			target.Close()
+		},
+		onSelectError: func(err error) {
+			target.OnProcessError(fmt.Errorf("Failed to select region: %w", err))
+			target.Close()
+		},
+		onCancelled: func() {
+			target.OnProcessError(session.ErrSelectionCancelled)
+			target.Close()
+		},
 	})
-	if !submitted {
-		cancel() // Clean up context if job wasn't submitted
-		l.setBusy(false)
-		_ = popup.Close()
-		_ = conn.RespondError("Busy, please retry")
-		_ = conn.Close()
-		return
-	}
 }
 
 func (l *Loop) handleResult(res result) {
-	log.Printf("handleResult: called with text length=%d, err=%v, conn=%v", len(res.text), res.err, res.conn != nil)
+	log.Printf("handleResult: called with text length=%d, err=%v", len(res.text), res.err)
 	defer func() {
 		l.setBusy(false)
 		if res.cancel != nil {
 			res.cancel()
 		}
 	}()
-	// Pipe-client path
-	if res.conn != nil {
-		defer res.conn.Close()
-		if res.err != nil {
-			_ = popup.Close() // Close countdown popup on error
-			_ = res.conn.RespondError(res.err.Error())
-			return
-		}
-		if res.stdout {
-			_ = popup.UpdateText(res.text) // Update countdown to result
-			_ = res.conn.RespondSuccess(res.text)
-			return
-		}
-		if err := clipboard.Write(res.text); err != nil {
-			_ = popup.Close() // Close countdown popup on error
-			_ = res.conn.RespondError("Clipboard error: " + err.Error())
-			return
-		}
-		_ = popup.UpdateText(res.text) // Update countdown to result
-		_ = res.conn.RespondSuccess("")
+	if res.target == nil {
+		log.Printf("handleResult: missing target")
+		_ = popup.Close()
 		return
 	}
-	// Resident hotkey path
-	log.Printf("handleResult: resident hotkey path")
+	defer res.target.Close()
+
 	if res.err != nil {
-		// Timeout or error - just close popup silently
-		log.Printf("handleResult: error in resident path: %v", res.err)
+		log.Printf("handleResult: processing error: %v", res.err)
 		_ = popup.Close()
+		res.target.OnProcessError(res.err)
 		return
 	}
-	log.Printf("handleResult: writing %d chars to clipboard", len(res.text))
-	if err := clipboard.Write(res.text); err != nil {
-		log.Printf("handleResult: clipboard error: %v", err)
+
+	if err := res.target.OnSuccess(res.text); err != nil {
+		log.Printf("handleResult: delivery error: %v", err)
 		_ = popup.Close()
-		_ = popup.Show("Clipboard error")
+		res.target.OnDeliveryError(err)
 		return
 	}
+
 	// Update countdown popup with result text
 	log.Printf("handleResult: updating popup with result")
 	_ = popup.UpdateText(res.text)
-	log.Printf("handleResult: hotkey flow complete")
 }
 
 func (l *Loop) handleHotkey(ctx context.Context) {
 	log.Printf("handleHotkey: called")
+	l.startRequest(ctx, hotkeyResultTarget{}, requestCallbacks{
+		onBusy: func() {
+			log.Printf("handleHotkey: busy, skipping")
+			_ = popup.Show("Busy, please retry")
+		},
+		onSelectError: func(err error) {
+			log.Printf("handleHotkey: selection error: %v", err)
+			_ = popup.Show("Selection error")
+		},
+		onCancelled: func() {
+			log.Printf("handleHotkey: selection cancelled")
+		},
+	})
+}
+
+func (l *Loop) startRequest(ctx context.Context, target resultTarget, callbacks requestCallbacks) {
 	if l.busy {
-		log.Printf("handleHotkey: busy, skipping")
-		_ = popup.Show("Busy, please retry")
+		if callbacks.onBusy != nil {
+			callbacks.onBusy()
+		}
 		return
 	}
-	log.Printf("handleHotkey: selecting region")
+
 	region, cancelled, err := l.selectRegion(ctx)
 	if err != nil {
-		log.Printf("handleHotkey: selection error: %v", err)
-		_ = popup.Show("Selection error")
+		if callbacks.onSelectError != nil {
+			callbacks.onSelectError(err)
+		}
 		return
 	}
 	if cancelled {
-		log.Printf("handleHotkey: selection cancelled")
+		if callbacks.onCancelled != nil {
+			callbacks.onCancelled()
+		}
 		return
 	}
 
-	log.Printf("handleHotkey: region selected %dx%d, creating job context with deadline %v", region.Width, region.Height, l.deadline)
 	jobCtx, cancel := context.WithTimeout(ctx, l.deadline)
-
-	// Start countdown popup immediately
-	log.Printf("handleHotkey: starting countdown popup")
 	_ = popup.StartCountdown(int(l.deadline.Seconds()))
 
 	l.setBusy(true)
-	log.Printf("handleHotkey: submitting job to worker pool")
-	ok := l.pool.Submit(jobCtx, region, func(text string, err error) {
-		log.Printf("handleHotkey: callback invoked with text length=%d, err=%v", len(text), err)
-		l.results <- result{text: text, err: err, conn: nil, stdout: false, cancel: cancel}
+	submitted := l.pool.Submit(jobCtx, region, func(text string, err error) {
+		l.results <- result{text: text, err: err, target: target, cancel: cancel}
 	})
-	if !ok {
-		log.Printf("handleHotkey: submit failed, pool busy")
-		cancel() // Clean up context if job wasn't submitted
+	if !submitted {
+		cancel()
 		l.setBusy(false)
 		_ = popup.Close()
-		_ = popup.Show("Busy, please retry")
-	} else {
-		log.Printf("handleHotkey: job submitted successfully")
+		if callbacks.onBusy != nil {
+			callbacks.onBusy()
+		}
 	}
 }
 

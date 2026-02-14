@@ -3,9 +3,9 @@ package singleinstance
 import (
 	"bufio"
 	"context"
-	"fmt"
 	"log"
 	"net"
+	"strconv"
 	"time"
 )
 
@@ -30,7 +30,7 @@ func (s *tcpServer) Start(ctx context.Context) error {
 		return nil
 	}
 	start, _ := getPortRange()
-	addr := fmt.Sprintf("%s:%d", residentHost, start)
+	addr := net.JoinHostPort(residentHost, strconv.Itoa(start))
 	lis, err := net.Listen("tcp", addr)
 	if err != nil {
 		log.Printf("singleinstance: failed to bind %s: %v", addr, err)

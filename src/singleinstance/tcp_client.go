@@ -4,9 +4,9 @@ import (
 	"bufio"
 	"context"
 	"errors"
-	"fmt"
 	"io"
 	"net"
+	"strconv"
 	"time"
 )
 
@@ -24,7 +24,7 @@ func (c *tcpClient) TryRunOnce(ctx context.Context, outputToStdout bool) (bool, 
 	// scan configured range for resident using PING then request
 	start, end := getPortRange()
 	for port := start; port <= end; port++ {
-		addr := fmt.Sprintf("%s:%d", residentHost, port)
+		addr := net.JoinHostPort(residentHost, strconv.Itoa(port))
 		if !ping(addr, deadline) {
 			continue
 		}
