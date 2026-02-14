@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.6.0] - 2026-02-14
+
+### Added
+- Lasso selection mode in the Windows overlay, toggled with `Space`, with loop-completion on mouse-up near the start point.
+- Polygon-aware capture path: selected lasso polygons are preserved in region metadata and applied as a mask before OCR.
+- Embedded custom lasso cursor asset (`src/gui/lasso.cur`) used in lasso mode, with safe fallback to system hand cursor.
+- Configurable initial selection mode via `DEFAULT_MODE` and CLI `--default-mode` (`rect`, `rectangle`, `lasso`).
+
+### Changed
+- Selection now supports both rectangle and lasso flows while preserving the rectangular PNG payload contract to OCR/LLM.
+- In lasso mode, pixels outside the selected polygon are filled solid white prior to OCR.
+- Resident and run-once overlays now share the same default-mode initialization behavior.
+
+### Fixed
+- Resident hotkey flow now handles `Space` and `Escape` reliably even when overlay `WM_KEYDOWN` is not delivered.
+- Debounced and edge-detected key handling to avoid missed quick taps and accidental rapid double-toggle.
+
 ## [2.5.1] - 2026-02-14
 
 ### Added
@@ -130,6 +147,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Version History
 
+- **2.6.0** (2026-02-14) - Lasso mode + masked capture + default mode config + custom lasso cursor
 - **2.5.1** (2026-02-14) - Cobra migration + key file path support + delegation-preserving refactor
 - **2.5.0** (2025-12-14) - Multi-monitor fixes + diagnostic logging
 - **2.4.0** (2025-11-10) - Configurable timeout + codebase reorganization + ADRs
@@ -138,6 +156,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **2.1.0** - Linux CLI tool
 - **2.0.0** - Initial Go implementation
 
+[2.6.0]: https://github.com/user/screen-ocr-llm/compare/2.5.1...2.6.0
 [2.5.1]: https://github.com/user/screen-ocr-llm/compare/2.5.0...2.5.1
 [2.5.0]: https://github.com/user/screen-ocr-llm/compare/2.4...2.5.0
 [2.4.0]: https://github.com/user/screen-ocr-llm/compare/2.3...2.4.0

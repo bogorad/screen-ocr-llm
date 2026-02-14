@@ -14,6 +14,6 @@ type Selector interface {
 
 // NewSelector returns the platform implementation (Windows in this project).
 // Implementation is provided in a platform-specific file.
-func NewSelector() Selector {
-	return newWindowsSelector()
+func NewSelector(defaultMode string) Selector {
+	return newWindowsSelector(defaultMode)
 }

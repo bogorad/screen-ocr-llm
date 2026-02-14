@@ -9,13 +9,16 @@ import (
 )
 
 // windowsSelector adapts existing gui region selector to the new synchronous API.
-type windowsSelector struct{}
+type windowsSelector struct {
+	defaultMode string
+}
 
-func newWindowsSelector() Selector { return &windowsSelector{} }
+func newWindowsSelector(defaultMode string) Selector {
+	return &windowsSelector{defaultMode: defaultMode}
+}
 
 func (w *windowsSelector) Select(ctx context.Context) (screenshot.Region, bool, error) {
-	// Call gui.StartRegionSelection() directly - it now returns the region
-	region, err := gui.StartRegionSelection()
+	region, err := gui.StartRegionSelectionWithMode(w.defaultMode)
 	if err != nil {
 		return screenshot.Region{}, false, err
 	}

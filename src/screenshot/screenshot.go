@@ -4,7 +4,9 @@ import (
 	"bytes"
 	"fmt"
 	"image"
+	"image/color"
 	"image/png"
+	"math"
 
 	"github.com/kbinani/screenshot"
 )
@@ -15,6 +17,15 @@ type Region struct {
 	Y      int
 	Width  int
 	Height int
+	// Polygon is optional and, when present, is expressed in absolute
+	// virtual-screen coordinates. CaptureRegion uses it to mask pixels
+	// outside the polygon while still returning a rectangular image.
+	Polygon []Point
+}
+
+type Point struct {
+	X int
+	Y int
 }
 
 func Init() {
@@ -57,6 +68,10 @@ func CaptureRegion(region Region) ([]byte, error) {
 		return nil, fmt.Errorf("failed to capture region: %v", err)
 	}
 
+	if len(region.Polygon) >= 3 {
+		applyPolygonMask(img, region)
+	}
+
 	// Convert to PNG bytes
 	var buf bytes.Buffer
 	if err := png.Encode(&buf, img); err != nil {
@@ -76,4 +91,61 @@ func GetDisplayBounds() (image.Rectangle, error) {
 	// Get bounds of the primary display (display 0)
 	bounds := screenshot.GetDisplayBounds(0)
 	return bounds, nil
+}
+
+func applyPolygonMask(img *image.RGBA, region Region) {
+	localPolygon := make([]Point, len(region.Polygon))
+	for i, p := range region.Polygon {
+		localPolygon[i] = Point{X: p.X - region.X, Y: p.Y - region.Y}
+	}
+
+	b := img.Bounds()
+	white := color.RGBA{R: 255, G: 255, B: 255, A: 255}
+	for y := b.Min.Y; y < b.Max.Y; y++ {
+		for x := b.Min.X; x < b.Max.X; x++ {
+			if !pointInPolygon(float64(x)+0.5, float64(y)+0.5, localPolygon) {
+				img.SetRGBA(x, y, white)
+			}
+		}
+	}
+}
+
+func pointInPolygon(px, py float64, polygon []Point) bool {
+	if len(polygon) < 3 {
+		return false
+	}
+
+	inside := false
+	for i, j := 0, len(polygon)-1; i < len(polygon); j, i = i, i+1 {
+		xi := float64(polygon[i].X)
+		yi := float64(polygon[i].Y)
+		xj := float64(polygon[j].X)
+		yj := float64(polygon[j].Y)
+
+		if pointOnSegment(px, py, xi, yi, xj, yj) {
+			return true
+		}
+
+		intersects := ((yi > py) != (yj > py)) &&
+			(px < (xj-xi)*(py-yi)/(yj-yi)+xi)
+		if intersects {
+			inside = !inside
+		}
+	}
+
+	return inside
+}
+
+func pointOnSegment(px, py, x1, y1, x2, y2 float64) bool {
+	const epsilon = 0.5
+	cross := (px-x1)*(y2-y1) - (py-y1)*(x2-x1)
+	if math.Abs(cross) > epsilon {
+		return false
+	}
+
+	minX := math.Min(x1, x2) - epsilon
+	maxX := math.Max(x1, x2) + epsilon
+	minY := math.Min(y1, y2) - epsilon
+	maxY := math.Max(y1, y2) + epsilon
+	return px >= minX && px <= maxX && py >= minY && py <= maxY
 }

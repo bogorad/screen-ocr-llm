@@ -84,4 +84,4 @@ func New(cfg *config.Config) *Loop {
 - Environment variable: `OCR_DEADLINE_SEC` (integer, seconds)
 - Default value: 20 seconds
 - Verified working: OCR test extracted 2,363 characters from test-image.png
-- Related: Removed retry logic (ADR-009, implied but not created)
+- Related: Removed retry logic remains a single-attempt behavior in the OCR request flow

@@ -12,10 +12,14 @@ import (
 const (
 	DefaultAPIKeyPath = "/run/secrets/api_keys/openrouter"
 	APIKeyPathEnvVar  = "OPENROUTER_API_KEY_FILE"
+	DefaultModeEnvVar = "DEFAULT_MODE"
+	DefaultModeRect   = "rectangle"
+	DefaultModeLasso  = "lasso"
 )
 
 type LoadOptions struct {
-	APIKeyPathOverride string
+	APIKeyPathOverride  string
+	DefaultModeOverride string
 }
 
 type Config struct {
@@ -24,6 +28,7 @@ type Config struct {
 	Model             string
 	EnableFileLogging bool
 	Hotkey            string
+	DefaultMode       string
 	Providers         []string
 	OCRDeadlineSec    int
 }
@@ -69,6 +74,7 @@ func LoadWithOptions(opts LoadOptions) (*Config, error) {
 		Model:             os.Getenv("MODEL"),
 		EnableFileLogging: strings.ToLower(os.Getenv("ENABLE_FILE_LOGGING")) == "true",
 		Hotkey:            getEnvWithDefault("HOTKEY", "Ctrl+Alt+Q"),
+		DefaultMode:       resolveDefaultModeValue(opts),
 		Providers:         providers,
 		OCRDeadlineSec:    ocrDeadlineSec,
 	}
@@ -143,4 +149,22 @@ func getEnvWithDefault(key, defaultValue string) string {
 		return value
 	}
 	return defaultValue
+}
+
+func resolveDefaultMode(value string) string {
+	switch strings.ToLower(strings.TrimSpace(value)) {
+	case "rect", DefaultModeRect:
+		return DefaultModeRect
+	case DefaultModeLasso:
+		return DefaultModeLasso
+	default:
+		return DefaultModeRect
+	}
+}
+
+func resolveDefaultModeValue(opts LoadOptions) string {
+	if override := strings.TrimSpace(opts.DefaultModeOverride); override != "" {
+		return resolveDefaultMode(override)
+	}
+	return resolveDefaultMode(os.Getenv(DefaultModeEnvVar))
 }

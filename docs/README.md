@@ -16,6 +16,7 @@ docs/
 ├── README.md                      # This file
 ├── AGENTS.md                      # Guidelines for AI coding agents
 ├── BUILD_INSTRUCTIONS.md          # How to build the project
+├── RUN_ONCE_REFACTOR_GUARDRAILS.md # Run-once delegation guardrails
 ├── DOCUMENTATION_REVIEW.md        # Documentation status review
 ├── REORGANIZATION_SUMMARY.md      # Codebase reorganization details
 ├── TEST_COVERAGE_ANALYSIS.md      # Test coverage report
@@ -29,7 +30,9 @@ docs/
     ├── 005-windows-gui-subsystem.md
     ├── 006-dpi-awareness.md
     ├── 007-tcp-single-instance.md
-    └── 008-provider-routing.md
+    ├── 008-provider-routing.md
+    ├── 009-multi-monitor-support.md
+    └── 010-lasso-selection-and-masked-capture.md
 ```
 
 ## For Developers
@@ -58,16 +61,18 @@ Read these ADRs in order:
 2. [ADR-001: Callback to Direct Return](adr/001-callback-to-direct-return.md) - Region selection flow
 3. [ADR-004: Popup Thread Isolation](adr/004-popup-thread-isolation.md) - UI reliability
 4. [ADR-006: DPI Awareness](adr/006-dpi-awareness.md) - Multi-monitor support
-5. [ADR-002: Configurable Timeout](adr/002-configurable-timeout.md) - User configuration
+5. [ADR-009: Multi-Monitor Support](adr/009-multi-monitor-support.md) - Virtual-screen coordinate correctness
+6. [ADR-010: Lasso Selection and Masked Capture](adr/010-lasso-selection-and-masked-capture.md) - Free-form selection with rectangular payload contract
+7. [ADR-002: Configurable Timeout](adr/002-configurable-timeout.md) - User configuration
 
 ## Project Status
 
-### Latest Updates (2025-11-10)
+### Latest Updates (2026-02-14)
 
-- ✅ Configurable timeout implemented (ADR-002)
-- ✅ Codebase reorganized to src/tests structure (ADR-003)
-- ✅ All documentation updated and moved to docs/
-- ✅ ADRs created for major architectural decisions
+- ✅ Lasso selection mode added with polygon-masked capture for OCR
+- ✅ Configurable initial selection mode (`DEFAULT_MODE`, `--default-mode`)
+- ✅ Embedded custom lasso cursor integrated into overlay mode switching
+- ✅ ADR-010 added for lasso mode and masked capture contract
 
 ### Test Coverage
 
@@ -135,4 +140,4 @@ For issues, questions, or contributions:
 
 ---
 
-**Last Updated**: 2025-11-10
+**Last Updated**: 2026-02-14

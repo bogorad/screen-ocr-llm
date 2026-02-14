@@ -15,10 +15,15 @@ func Init() {
 
 // StartRegionSelection starts the region selection process and returns the selected region
 func StartRegionSelection() (screenshot.Region, error) {
+	return StartRegionSelectionWithMode("rectangle")
+}
+
+// StartRegionSelectionWithMode starts region selection with an initial mode.
+func StartRegionSelectionWithMode(defaultMode string) (screenshot.Region, error) {
 	log.Printf("Starting interactive region selection...")
 
 	// Use platform-specific region selection
-	region, err := StartInteractiveRegionSelection()
+	region, err := StartInteractiveRegionSelectionWithMode(defaultMode)
 	if err != nil {
 		log.Printf("Interactive region selection failed: %v", err)
 		return screenshot.Region{}, err
