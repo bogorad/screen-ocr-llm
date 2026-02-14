@@ -107,43 +107,7 @@ See [src/cmd/cli/README.md](src/cmd/cli/README.md) for details.
 
 ## Configuration and Precedence
 
-### Config source resolution
-
-The app loads exactly one dotenv file source in this order:
-
-1. `.env` in the executable directory
-2. `SCREEN_OCR_LLM` path (only if executable-local `.env` is missing)
-
-### API key path precedence (`OPENROUTER_API_KEY_FILE` / `--api-key-path`)
-
-From lowest to highest precedence:
-
-1. Built-in default: `/run/secrets/api_keys/openrouter`
-2. Process environment variable `OPENROUTER_API_KEY_FILE`
-3. Loaded dotenv value `OPENROUTER_API_KEY_FILE`
-4. CLI argument `--api-key-path`
-
-### API key value precedence
-
-From highest to fallback:
-
-1. Content of the resolved API key file path (if file exists and is non-empty)
-2. `OPENROUTER_API_KEY` environment variable
-
-### Selection mode precedence (`DEFAULT_MODE` / `--default-mode`)
-
-From highest to fallback:
-
-1. CLI argument `--default-mode`
-2. `DEFAULT_MODE` in environment/dotenv
-3. Default: `rectangle`
-
-Accepted values for both env and CLI: `rect`, `rectangle`, `lasso`.
-
-### Delegation precedence in `--run-once`
-
-If `--run-once` delegates to an already-running resident instance, resident config remains authoritative.
-Client-side `--api-key-path` and `--default-mode` do not override the resident process.
+Detailed source resolution and precedence rules are documented in `docs/README.md` under `Runtime Configuration Sources and Precedence`.
 
 ## Build
 

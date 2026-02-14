@@ -21,9 +21,6 @@ docs/
 ├── releases/                      # Detailed release notes
 │   ├── README.md                  # Release notes index
 │   └── 2.6.0.md                   # Release 2.6.0 details
-├── DOCUMENTATION_REVIEW.md        # Documentation status review
-├── REORGANIZATION_SUMMARY.md      # Codebase reorganization details
-├── TEST_COVERAGE_ANALYSIS.md      # Test coverage report
 └── adr/                          # Architecture Decision Records
     ├── README.md                  # ADR index
     ├── adr-template.md           # Template for new ADRs
@@ -38,6 +35,48 @@ docs/
     ├── 009-multi-monitor-support.md
     └── 010-lasso-selection-and-masked-capture.md
 ```
+
+## Runtime Configuration Sources and Precedence
+
+This section is the canonical reference for config source loading and precedence behavior.
+
+### Dotenv source resolution
+
+At startup, the app loads one dotenv source in this order:
+
+1. `.env` in the executable directory
+2. `SCREEN_OCR_LLM` path (only if executable-local `.env` is missing)
+
+### API key file path precedence (`OPENROUTER_API_KEY_FILE` / `--api-key-path`)
+
+From lowest to highest precedence:
+
+1. Built-in default: `/run/secrets/api_keys/openrouter`
+2. Process environment variable `OPENROUTER_API_KEY_FILE`
+3. Loaded dotenv value `OPENROUTER_API_KEY_FILE`
+4. CLI argument `--api-key-path`
+
+### API key value precedence
+
+From highest to fallback:
+
+1. Content of the resolved API key file path (if the file exists and is non-empty)
+2. `OPENROUTER_API_KEY` environment variable
+
+### Default selection mode precedence (`DEFAULT_MODE` / `--default-mode`)
+
+From highest to fallback:
+
+1. CLI argument `--default-mode`
+2. `DEFAULT_MODE` in environment/dotenv
+3. Default: `rectangle`
+
+Accepted values for env/CLI mode selection: `rect`, `rectangle`, `lasso`.
+
+### Delegation precedence in `--run-once`
+
+If `--run-once` delegates to an already-running resident instance, resident configuration remains authoritative.
+Client-side `--api-key-path` and `--default-mode` do not override the resident process.
 
 ## For Developers
 
@@ -78,23 +117,12 @@ Read these ADRs in order:
 - ✅ Embedded custom lasso cursor integrated into overlay mode switching
 - ✅ ADR-010 added for lasso mode and masked capture contract
 
-### Test Coverage
-
-**55% of packages have tests** (11/20)
-- Well tested: config, hotkey, worker, singleinstance, cmd/cli
-- Partially tested: clipboard, gui, llm, ocr, screenshot
-- **Critical gaps**: eventloop, notification, overlay, popup, main
-
-See [TEST_COVERAGE_ANALYSIS.md](TEST_COVERAGE_ANALYSIS.md) for details.
-
 ### Documentation Health
 
 **100% current** (as of 2025-11-10)
-- All documentation reflects src/tests structure
+- Core docs reflect current src/tests structure and active release behavior
 - All build commands updated
 - ADRs capture major decisions
-
-See [DOCUMENTATION_REVIEW.md](DOCUMENTATION_REVIEW.md) for review details.
 
 ## Contributing
 
@@ -139,7 +167,7 @@ When making changes:
 For issues, questions, or contributions:
 1. Check existing documentation first
 2. Review ADRs for architectural context
-3. Check test coverage analysis for tested areas
+3. Check release notes for tested and changed areas
 4. Create an issue with relevant details
 
 ---
