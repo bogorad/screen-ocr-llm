@@ -68,5 +68,4 @@ Implement comprehensive multi-monitor support with the following changes:
 - **ADR-006**: DPI Awareness Implementation (related multi-monitor foundation)
 - **ADR-005**: Windows GUI Subsystem (GUI architecture)
 - **Issue**: Multi-monitor cursor focus and coordinate offset problems
-- **Fixes**: Window focus management, virtual screen coordinate handling, cursor caching</content>
-<parameter name="filePath">docs/adr/009-multi-monitor-support.md
+- **Fixes**: Window focus management, virtual screen coordinate handling, cursor caching

@@ -14,13 +14,13 @@ func TestNormalizeLegacyArgs(t *testing.T) {
 	}{
 		{
 			name: "Normalizes long single dash flags",
-			in:   []string{"screen-ocr-llm", "-run-once", "-api-key-path", "/tmp/key"},
-			out:  []string{"screen-ocr-llm", "--run-once", "--api-key-path", "/tmp/key"},
+			in:   []string{"screen-ocr-llm", "-run-once", "-api-key-path", "/tmp/key", "-default-mode", "lasso"},
+			out:  []string{"screen-ocr-llm", "--run-once", "--api-key-path", "/tmp/key", "--default-mode", "lasso"},
 		},
 		{
 			name: "Normalizes equals form",
-			in:   []string{"screen-ocr-llm", "-run-once=true", "-api-key-path=/tmp/key"},
-			out:  []string{"screen-ocr-llm", "--run-once=true", "--api-key-path=/tmp/key"},
+			in:   []string{"screen-ocr-llm", "-run-once=true", "-api-key-path=/tmp/key", "-default-mode=rect"},
+			out:  []string{"screen-ocr-llm", "--run-once=true", "--api-key-path=/tmp/key", "--default-mode=rect"},
 		},
 		{
 			name: "Leaves other flags unchanged",
@@ -47,7 +47,7 @@ func TestNormalizeLegacyArgs(t *testing.T) {
 func TestNewRootCmdParsesFlags(t *testing.T) {
 	opts := &mainOptions{}
 	cmd := newRootCmd(opts)
-	if err := cmd.ParseFlags([]string{"--run-once", "--api-key-path", "/tmp/key"}); err != nil {
+	if err := cmd.ParseFlags([]string{"--run-once", "--api-key-path", "/tmp/key", "--default-mode", "lasso"}); err != nil {
 		t.Fatalf("ParseFlags failed: %v", err)
 	}
 	if !opts.runOnce {
@@ -55,6 +55,9 @@ func TestNewRootCmdParsesFlags(t *testing.T) {
 	}
 	if opts.apiKeyPath != "/tmp/key" {
 		t.Fatalf("Expected apiKeyPath=/tmp/key, got %q", opts.apiKeyPath)
+	}
+	if opts.defaultMode != "lasso" {
+		t.Fatalf("Expected defaultMode=lasso, got %q", opts.defaultMode)
 	}
 }
 
@@ -73,7 +76,7 @@ func TestHandleRunOnceWithDelegation_Delegated(t *testing.T) {
 	client := &fakeClient{delegated: true}
 	fallbackCalled := false
 
-	handleRunOnceWithDelegation("", client, func() {
+	handleRunOnceWithDelegation("", "", client, func() {
 		fallbackCalled = true
 	})
 
@@ -89,7 +92,7 @@ func TestHandleRunOnceWithDelegation_NoResidentFallback(t *testing.T) {
 	client := &fakeClient{delegated: false}
 	fallbackCalled := false
 
-	handleRunOnceWithDelegation("", client, func() {
+	handleRunOnceWithDelegation("", "", client, func() {
 		fallbackCalled = true
 	})
 
@@ -105,7 +108,7 @@ func TestHandleRunOnceWithDelegation_DelegationErrorFallback(t *testing.T) {
 	client := &fakeClient{err: errors.New("busy")}
 	fallbackCalled := false
 
-	handleRunOnceWithDelegation("", client, func() {
+	handleRunOnceWithDelegation("", "", client, func() {
 		fallbackCalled = true
 	})
 

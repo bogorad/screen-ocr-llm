@@ -98,12 +98,16 @@ type requestCallbacks struct {
 // If cfg is nil or cfg.OCRDeadlineSec <= 0, a 20s deadline is used.
 func New(cfg *config.Config) *Loop {
 	deadlineSec := 20
+	defaultMode := config.DefaultModeRect
 	if cfg != nil && cfg.OCRDeadlineSec > 0 {
 		deadlineSec = cfg.OCRDeadlineSec
 	}
+	if cfg != nil && cfg.DefaultMode != "" {
+		defaultMode = cfg.DefaultMode
+	}
 
 	return &Loop{
-		selector:       overlay.NewSelector(),
+		selector:       overlay.NewSelector(defaultMode),
 		pool:           worker.New(0),
 		results:        make(chan result, 1),
 		hotkeyCh:       make(chan struct{}, 4),

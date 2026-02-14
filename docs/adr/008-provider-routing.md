@@ -119,4 +119,4 @@ LLM: API response status: 200 200 OK
 - OpenRouter docs: https://openrouter.ai/docs#provider-routing
 - Log prefix: `LLM:` for all LLM-related messages
 - Test files updated: All test files now pass `Providers` field
-- Related: No retry logic (ADR-009 implied) - single attempt with chosen providers
+- Related: No retry logic - single attempt with chosen providers

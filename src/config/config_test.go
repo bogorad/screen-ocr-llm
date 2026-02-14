@@ -11,6 +11,7 @@ func TestLoad(t *testing.T) {
 	t.Setenv("MODEL", "test_model")
 	t.Setenv("ENABLE_FILE_LOGGING", "true")
 	t.Setenv("HOTKEY", "Ctrl+Shift+T")
+	t.Setenv("DEFAULT_MODE", "lasso")
 
 	// Load the configuration
 	cfg, err := LoadWithOptions(LoadOptions{APIKeyPathOverride: filepath.Join(t.TempDir(), "missing.key")})
@@ -31,6 +32,57 @@ func TestLoad(t *testing.T) {
 	if cfg.Hotkey != "Ctrl+Shift+T" {
 		t.Errorf("Expected Hotkey to be 'Ctrl+Shift+T', got '%s'", cfg.Hotkey)
 	}
+	if cfg.DefaultMode != DefaultModeLasso {
+		t.Errorf("Expected DefaultMode to be '%s', got '%s'", DefaultModeLasso, cfg.DefaultMode)
+	}
+}
+
+func TestResolveDefaultMode(t *testing.T) {
+	tests := []struct {
+		name  string
+		input string
+		want  string
+	}{
+		{name: "empty defaults to rectangle", input: "", want: DefaultModeRect},
+		{name: "rect accepted", input: "rect", want: DefaultModeRect},
+		{name: "lasso accepted", input: "lasso", want: DefaultModeLasso},
+		{name: "lasso case insensitive", input: " LASSO ", want: DefaultModeLasso},
+		{name: "invalid defaults to rectangle", input: "triangle", want: DefaultModeRect},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := resolveDefaultMode(tt.input); got != tt.want {
+				t.Fatalf("resolveDefaultMode(%q) = %q, want %q", tt.input, got, tt.want)
+			}
+		})
+	}
+}
+
+func TestLoadWithOptionsDefaultModeOverride(t *testing.T) {
+	t.Setenv("OPENROUTER_API_KEY", "env-key")
+	t.Setenv("MODEL", "test-model")
+	t.Setenv("DEFAULT_MODE", "lasso")
+
+	t.Run("CLI override wins and normalizes rect", func(t *testing.T) {
+		cfg, err := LoadWithOptions(LoadOptions{DefaultModeOverride: "rect"})
+		if err != nil {
+			t.Fatalf("LoadWithOptions failed: %v", err)
+		}
+		if cfg.DefaultMode != DefaultModeRect {
+			t.Fatalf("Expected DefaultMode=%q, got %q", DefaultModeRect, cfg.DefaultMode)
+		}
+	})
+
+	t.Run("Invalid CLI override falls back to rectangle", func(t *testing.T) {
+		cfg, err := LoadWithOptions(LoadOptions{DefaultModeOverride: "blob"})
+		if err != nil {
+			t.Fatalf("LoadWithOptions failed: %v", err)
+		}
+		if cfg.DefaultMode != DefaultModeRect {
+			t.Fatalf("Expected DefaultMode=%q, got %q", DefaultModeRect, cfg.DefaultMode)
+		}
+	})
 }
 
 func TestLoadWithOptionsAPIKeyPathPrecedence(t *testing.T) {

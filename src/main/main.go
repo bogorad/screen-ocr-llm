@@ -27,8 +27,9 @@ import (
 )
 
 type mainOptions struct {
-	runOnce    bool
-	apiKeyPath string
+	runOnce     bool
+	apiKeyPath  string
+	defaultMode string
 }
 
 func normalizeLegacyArgs(args []string) []string {
@@ -50,6 +51,10 @@ func normalizeLegacyArgs(args []string) []string {
 			normalized[i] = "--api-key-path"
 		case strings.HasPrefix(arg, "-api-key-path="):
 			normalized[i] = "--api-key-path=" + arg[len("-api-key-path="):]
+		case arg == "-default-mode":
+			normalized[i] = "--default-mode"
+		case strings.HasPrefix(arg, "-default-mode="):
+			normalized[i] = "--default-mode=" + arg[len("-default-mode="):]
 		}
 	}
 
@@ -84,6 +89,7 @@ func newRootCmd(opts *mainOptions) *cobra.Command {
 
 	cmd.Flags().BoolVar(&opts.runOnce, "run-once", false, "Run OCR once, copy to clipboard, and exit silently")
 	cmd.Flags().StringVar(&opts.apiKeyPath, "api-key-path", "", "Path to API key file (highest precedence)")
+	cmd.Flags().StringVar(&opts.defaultMode, "default-mode", "", "Initial selection mode: rect|rectangle|lasso")
 
 	return cmd
 }
@@ -106,14 +112,14 @@ func runApplication(opts mainOptions) error {
 
 	// If run-once mode, prefer delegating to resident via TCP; fallback to standalone
 	if opts.runOnce {
-		handleRunOnceWithDelegation(opts.apiKeyPath, singleinstance.NewClient(), func() {
-			runOCROnce(false, opts.apiKeyPath)
+		handleRunOnceWithDelegation(opts.apiKeyPath, opts.defaultMode, singleinstance.NewClient(), func() {
+			runOCROnce(false, opts.apiKeyPath, opts.defaultMode)
 		})
 		return nil
 	}
 
 	// Load .env early so SINGLEINSTANCE_PORT_* are available for pre-flight
-	_, _ = config.LoadWithOptions(config.LoadOptions{APIKeyPathOverride: opts.apiKeyPath})
+	_, _ = config.LoadWithOptions(config.LoadOptions{APIKeyPathOverride: opts.apiKeyPath, DefaultModeOverride: opts.defaultMode})
 	// ---------- SINGLE-INSTANCE NUKE ----------
 	startPort, _ := singleinstance.GetPortRangeForDebug()
 	addr := fmt.Sprintf("127.0.0.1:%d", startPort)
@@ -131,7 +137,7 @@ func runApplication(opts mainOptions) error {
 	// Named-pipe single instance enforced by event loop server; PID file removed
 
 	cfg, err := runtimeinit.Bootstrap(runtimeinit.Options{
-		LoadOptions:          config.LoadOptions{APIKeyPathOverride: opts.apiKeyPath},
+		LoadOptions:          config.LoadOptions{APIKeyPathOverride: opts.apiKeyPath, DefaultModeOverride: opts.defaultMode},
 		SetupLogging:         setupLogging,
 		ShowBlockingLLMError: true,
 	})
@@ -142,6 +148,7 @@ func runApplication(opts mainOptions) error {
 	log.Printf("Screen OCR LLM Tool initialized")
 	log.Printf("Using model: %s", cfg.Model)
 	log.Printf("Hotkey: %s", cfg.Hotkey)
+	log.Printf("Default selection mode: %s", cfg.DefaultMode)
 	log.Printf("OCR deadline: %ds", cfg.OCRDeadlineSec)
 
 	// Propagate hotkey to About dialog
@@ -183,9 +190,9 @@ func setupLogging(enableFileLogging bool) {
 }
 
 // runOCROnce performs a single OCR capture and exits
-func runOCROnce(outputToStdout bool, apiKeyPathOverride string) {
+func runOCROnce(outputToStdout bool, apiKeyPathOverride, defaultModeOverride string) {
 	cfg, err := runtimeinit.Bootstrap(runtimeinit.Options{
-		LoadOptions:          config.LoadOptions{APIKeyPathOverride: apiKeyPathOverride},
+		LoadOptions:          config.LoadOptions{APIKeyPathOverride: apiKeyPathOverride, DefaultModeOverride: defaultModeOverride},
 		SetupLogging:         setupLogging,
 		ShowBlockingLLMError: true,
 	})
@@ -196,7 +203,7 @@ func runOCROnce(outputToStdout bool, apiKeyPathOverride string) {
 
 	log.Printf("Running OCR once (--runonce mode) with OCR deadline %ds", cfg.OCRDeadlineSec)
 
-	selector := overlay.NewSelector()
+	selector := overlay.NewSelector(cfg.DefaultMode)
 	var target session.ResultTarget
 	if outputToStdout {
 		target = session.StdoutTarget{Writer: os.Stdout}
@@ -234,9 +241,9 @@ func runOCROnce(outputToStdout bool, apiKeyPathOverride string) {
 	os.Exit(0)
 }
 
-func handleRunOnceWithDelegation(apiKeyPathOverride string, client singleinstance.Client, runFallback func()) {
+func handleRunOnceWithDelegation(apiKeyPathOverride, defaultModeOverride string, client singleinstance.Client, runFallback func()) {
 	// Load .env early so SINGLEINSTANCE_PORT_* are applied before delegation scan.
-	_, _ = config.LoadWithOptions(config.LoadOptions{APIKeyPathOverride: apiKeyPathOverride})
+	_, _ = config.LoadWithOptions(config.LoadOptions{APIKeyPathOverride: apiKeyPathOverride, DefaultModeOverride: defaultModeOverride})
 
 	delegated, _, err := client.TryRunOnce(context.Background(), false)
 	if err != nil {
