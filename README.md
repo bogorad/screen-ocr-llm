@@ -15,10 +15,10 @@ A small desktop utility to select a region of the screen, run OCR via OpenRouter
 At a high level, the Windows app is structured as:
 
 - `src/main`:
-  - Parses flags and normalizes `--run-once`.
+  - Parses Cobra flags (`--run-once`, `--api-key-path`) and keeps compatibility with legacy single-dash forms.
   - Ensures single resident instance via a TCP preflight on the configured port.
-  - Loads configuration (`src/config`), enables DPI awareness, and configures logging (`src/logutil`).
-  - Initializes the LLM client (`src/llm`) and performs a 1-token startup ping (blocking dialog on failure).
+  - Uses shared runtime bootstrap (`src/runtimeinit`) to load config, set logging, initialize OCR/LLM/clipboard dependencies, and perform startup ping checks.
+  - Enables DPI awareness and monitor diagnostics via Windows-specific helpers.
   - In resident mode:
     - Starts the central event loop (`src/eventloop`), the system tray (`src/tray`), and global hotkey listener (`src/hotkey`).
   - In `--run-once` mode:
@@ -33,8 +33,12 @@ At a high level, the Windows app is structured as:
   - For each request:
     - Uses `src/overlay.Selector`/`src/gui` to run the interactive region selector.
     - Submits OCR work to a bounded worker pool (`src/worker` + `src/ocr` + `src/llm`).
-    - Updates UI via `src/popup` and writes results via `src/clipboard`.
+    - Routes completion through shared result-target behavior (clipboard/stdout/delegated response), updates UI via `src/popup`, and preserves busy semantics.
   - Enforces that only one OCR job runs at a time ("busy" behavior).
+
+- `src/session`:
+  - Provides a shared OCR session executor for region selection, countdown popup lifecycle, OCR with deadline, and pluggable output targets.
+  - Used by standalone run-once fallback and shared with resident-related result target logic.
 
 - `src/overlay` + `src/gui` + `src/screenshot`:
   - Implement the Windows overlay window and mouse-driven region selection.
@@ -69,7 +73,7 @@ cd src/cmd/cli
 go build -o ocr-tool .
 
 # Usage
-./ocr-tool -file screenshot.png
+./ocr-tool --file screenshot.png
 ```
 
 See [src/cmd/cli/README.md](src/cmd/cli/README.md) for details.
@@ -79,6 +83,7 @@ See [src/cmd/cli/README.md](src/cmd/cli/README.md) for details.
 1.  Create a `.env` file in the same directory as the executable with the following required keys:
     - `OPENROUTER_API_KEY=`
     - `MODEL=` (e.g., `google/gemma-2-9b-it`)
+    - Optional: `OPENROUTER_API_KEY_FILE=` (default key-file path is `/run/secrets/api_keys/openrouter`)
 
     Alternatively, you can set each of these as an environment variable.
 
@@ -87,6 +92,9 @@ See [src/cmd/cli/README.md](src/cmd/cli/README.md) for details.
 
 3.  You can also add these optional keys to your `.env` file to customize behavior:
     - `HOTKEY=Ctrl+Alt+q`
+      - Supported modifiers: `Ctrl`, `Alt`, `Shift`, `Win/Cmd/Super`
+      - Supported keys: `A-Z`, `0-9`, `F1-F24`, and common special keys
+      - Example: `HOTKEY=F13`
     - `ENABLE_FILE_LOGGING=true`
     - `PROVIDERS=providerA,providerB`
     - `OCR_DEADLINE_SEC=20` (default is 20 seconds if unset)
@@ -137,6 +145,10 @@ This mode is intended for single, on-demand captures initiated from the command 
   ```sh
   ./screen-ocr-llm.exe --run-once
   ```
+- **Optional key path override**:
+  ```sh
+  ./screen-ocr-llm.exe --run-once --api-key-path /run/secrets/api_keys/openrouter_key
+  ```
 - **Functionality**:
   - Bypasses the system tray and immediately prompts you to select a region on the screen.
   - Copies the resulting text to the clipboard.
@@ -148,6 +160,7 @@ The two modes are designed to work together intelligently to prevent conflicts a
 
 - When you start a new capture with `--run-once`, the application first checks if a **resident** instance is already running.
 - **If a resident instance is found**, the `--run-once` process delegates the capture request to the running instance and exits. The resident application then takes over, presenting the screen selection UI.
+- If `--api-key-path` is provided on a delegated `--run-once` client, the client still delegates and the resident instance configuration remains authoritative.
 - **If no resident instance is active**, the `--run-once` process will handle the capture itself in a temporary standalone mode before exiting.
 - **Startup validation**: On launch, the app performs a minimal LLM connectivity check (1-token ping). If it fails, a blocking error dialog is shown and the app exits. In `--run-once`, if a resident is detected and the request is delegated, the client does not ping.
 - **High-DPI**: The app enables DPI awareness and uses the full virtual screen for overlays and screenshots to work correctly on scaled multi-monitor setups.
@@ -159,3 +172,6 @@ This delegation mechanism ensures a stable and predictable user experience by gu
 
 - **Logging**: Controlled by `ENABLE_FILE_LOGGING`. When `false`, logs are suppressed; when `true`, logs are written to `screen_ocr_debug.log` with size-based rotation. In GUI builds, stdout/stderr are hidden, so enable file logging for diagnostics.
 - **Single Instance**: The tool uses a loopback TCP port to enforce a single resident instance and to manage delegation from `--run-once` clients.
+- **API key resolution**:
+  - Key file path precedence: default `/run/secrets/api_keys/openrouter` -> `OPENROUTER_API_KEY_FILE` env -> `.env` `OPENROUTER_API_KEY_FILE` -> CLI `--api-key-path`.
+  - API key value precedence: effective key file content -> `OPENROUTER_API_KEY`.

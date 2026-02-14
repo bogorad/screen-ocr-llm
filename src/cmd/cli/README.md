@@ -32,10 +32,23 @@ make build-cli-linux
 
 ## Configuration
 
-The CLI tool loads the OpenRouter API key from multiple sources in this priority order:
+The CLI resolves API credentials in two stages:
 
-### 1. Secret File (Production/Kubernetes)
-Path: `/run/secrets/api_keys/openrouter`
+### 1. Key File Path Resolution (lowest -> highest)
+
+1. Default path: `/run/secrets/api_keys/openrouter`
+2. Environment override: `OPENROUTER_API_KEY_FILE`
+3. `.env` override: `OPENROUTER_API_KEY_FILE`
+4. CLI override: `--api-key-path`
+
+### 2. API Key Value Resolution
+
+1. Read key from the effective key file path
+2. Fallback to `OPENROUTER_API_KEY`
+
+If neither source yields a key, the command exits with an error.
+
+### Secret File (Production/Kubernetes)
 
 For containerized deployments with SOPS or Kubernetes secrets:
 ```
@@ -43,51 +56,53 @@ For containerized deployments with SOPS or Kubernetes secrets:
 # No manual configuration needed - mounted by deployment
 ```
 
-### 2. Environment Variable (Development)
+### Environment Variable (Development)
 ```
 export OPENROUTER_API_KEY=sk-or-v1-your-key-here
-./ocr-tool -file image.png
+./ocr-tool --file image.png
 ```
 
-### 3. Config File (Local Development)
+### Config File (Local Development)
 Create a `.env` file in the same directory as the binary:
 ```
 OPENROUTER_API_KEY=your_key_here
+OPENROUTER_API_KEY_FILE=/run/secrets/api_keys/openrouter
 MODEL=google/gemini-2.0-flash-exp:free
-OCRDEADLINESEC=15
+OCR_DEADLINE_SEC=15
 PROVIDERS=
 ```
 
-Or set `SCREENOCRLLM` environment variable to point to your config file:
+Or set `SCREEN_OCR_LLM` environment variable to point to your config file:
 ```
-export SCREENOCRLLM=/path/to/your/.env
+export SCREEN_OCR_LLM=/path/to/your/.env
 ```
 
 ### Configuration Hierarchy
-The API key search stops at the first successful match:
-- ✓ Found in `/run/secrets/api_keys/openrouter` → Use this
-- ✗ Not found → Check `OPENROUTER_API_KEY` env var
-- ✗ Not found → Check `.env` file
-- ✗ Not found → Exit with error
+- Effective key path precedence: default -> env -> `.env` -> `--api-key-path`
+- API key value precedence: effective key file -> `OPENROUTER_API_KEY`
 
 ## Usage
 
 ```
 # Basic OCR
 
-./ocr-tool -file image.png
+./ocr-tool --file image.png
 
 # JSON output
 
-./ocr-tool -file image.png -json
+./ocr-tool --file image.png --json
 
 # From stdin
 
-cat image.png | ./ocr-tool -file -
+cat image.png | ./ocr-tool --file -
 
 # Verbose mode for debugging
 
-./ocr-tool -file image.png -v 2> debug.log
+./ocr-tool --file image.png -v 2> debug.log
+
+# Override key file path for this invocation
+
+./ocr-tool --file image.png --api-key-path /run/secrets/api_keys/openrouter_key
 
 ```
 
@@ -100,7 +115,7 @@ go test -v
 
 # Test with existing test-image.png
 
-./ocr-tool -file ../../../test-image.png
+./ocr-tool --file ../../../test-image.png
 
 ```
 
@@ -113,8 +128,9 @@ Expected output: ~2,198 characters (validated from existing codebase).
 - PNG validation
 - Stdin support for pipeline integration
 - JSON output for automation
-- Configurable timeout via `OCRDEADLINESEC`
+- Configurable timeout via `OCR_DEADLINE_SEC`
 - Multiple LLM provider support via `PROVIDERS`
+- Configurable key file path via `--api-key-path` and `OPENROUTER_API_KEY_FILE`
 - Cross-platform config package (no Linux-specific dependencies)
 
 ## Architecture
@@ -134,22 +150,22 @@ Does NOT depend on Windows-specific packages:
 ```
 # Save OCR output to file
 
-./ocr-tool -file scan.png > output.txt
+./ocr-tool --file scan.png > output.txt
 
 # Process multiple images with JSON output
 
 for img in *.png; do
 echo "Processing $img..."
-  ./ocr-tool -file "$img" -json >> results.jsonl
+  ./ocr-tool --file "$img" --json >> results.jsonl
 done
 
 # Pipeline with image conversion
 
-convert document.pdf page.png && ./ocr-tool -file page.png
+convert document.pdf page.png && ./ocr-tool --file page.png
 
 # Error handling
 
-if ! ./ocr-tool -file scan.png > result.txt 2> error.log; then
+if ! ./ocr-tool --file scan.png > result.txt 2> error.log; then
 echo "OCR failed, check error.log"
 fi
 
@@ -168,7 +184,7 @@ spec:
   containers:
   - name: ocr-tool
     image: your-registry/ocr-tool:latest
-    command: ["/ocr-tool", "-file", "/input/image.png"]
+    command: ["/ocr-tool", "--file", "/input/image.png"]
     env:
     - name: MODEL
       value: "google/gemini-2.0-flash-exp:free"
@@ -205,10 +221,11 @@ kubectl create secret generic openrouter-api-key \
 ## Environment Variables
 
 - `OPENROUTER_API_KEY` - Optional. Your OpenRouter API key (checked after secret file)
+- `OPENROUTER_API_KEY_FILE` - Optional. Path override for key file (default: `/run/secrets/api_keys/openrouter`)
 - `MODEL` - Required. Model identifier (e.g., `google/gemini-2.0-flash-exp:free`)
-- `OCRDEADLINESEC` - Optional. Timeout in seconds (default: 15)
+- `OCR_DEADLINE_SEC` - Optional. Timeout in seconds (default: 20)
 - `PROVIDERS` - Optional. Comma-separated provider list for routing
-- `SCREENOCRLLM` - Optional. Path to config file (overrides `.env` search)
+- `SCREEN_OCR_LLM` - Optional. Path to config file (overrides `.env` search)
 
 ## Comparison with Windows GUI
 

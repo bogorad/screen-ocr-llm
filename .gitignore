@@ -4,3 +4,6 @@
 repomix-output.xml
 cmd/cli/ocr-tool
 ocr-tool
+
+# bv (beads viewer) local config and caches
+.bv/

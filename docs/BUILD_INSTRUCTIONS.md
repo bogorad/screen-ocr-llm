@@ -87,7 +87,8 @@ After building:
 ```
 
 The application will:
-1. Load configuration from `.env`
+1. Load configuration from executable-local `.env` (or `SCREEN_OCR_LLM` fallback path)
+2. Resolve API key from `OPENROUTER_API_KEY_FILE` (default `/run/secrets/api_keys/openrouter`) with `OPENROUTER_API_KEY` fallback
 2. Start as a system tray application
 3. Listen for the configured hotkey (default: Ctrl+Alt+Q, or Ctrl+Win+E from your .env)
 4. Show a system tray icon
@@ -112,7 +113,9 @@ The application will:
 **Problem:** Missing dependencies or API key
 
 **Solution:**
-1. Ensure `.env` file exists with valid `OPENROUTER_API_KEY`
+1. Ensure API key is available via either:
+   - `OPENROUTER_API_KEY_FILE` (default `/run/secrets/api_keys/openrouter`), or
+   - `OPENROUTER_API_KEY`
 2. Run `go mod tidy` to install dependencies
 3. Check `screen_ocr_debug.log` for error messages
 
@@ -146,12 +149,14 @@ make check
 ## Configuration
 
 Edit `.env` to configure:
-- `OPENROUTER_API_KEY` - Your OpenRouter API key
+- `OPENROUTER_API_KEY_FILE` - Optional key file path (default: `/run/secrets/api_keys/openrouter`)
+- `OPENROUTER_API_KEY` - Optional fallback API key if key file is unavailable
 - `MODEL` - The LLM model to use
 - `HOTKEY` - Custom hotkey combination (e.g., `Ctrl+Win+E`, `Ctrl+Alt+Q`)
+- `SCREEN_OCR_LLM` - Optional fallback path to a `.env`-style config file
 
 Supported hotkey modifiers: Ctrl, Alt, Shift, Win/Cmd/Super
-Supported keys: A-Z, 0-9, F1-F12, and common special keys
+Supported keys: A-Z, 0-9, F1-F24, and common special keys
 
 ## Logging
 

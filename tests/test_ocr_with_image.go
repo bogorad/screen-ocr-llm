@@ -1,3 +1,5 @@
+//go:build manual
+
 // Test program to validate OCR functionality with test-image.png
 // This bypasses interactive region selection and directly tests the OCR pipeline
 package main

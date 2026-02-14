@@ -1,6 +1,8 @@
 package gui
 
 import (
+	"os"
+	"runtime"
 	"testing"
 )
 
@@ -10,9 +12,13 @@ func TestInit(t *testing.T) {
 }
 
 func TestStartRegionSelection(t *testing.T) {
-	// Test region selection
-	// Note: This will open an interactive overlay window
-	// In a real test environment, you would mock StartInteractiveRegionSelection
+	if runtime.GOOS != "windows" {
+		t.Skip("interactive region selection test is Windows-only")
+	}
+	if os.Getenv("SCREEN_OCR_INTERACTIVE_TESTS") != "1" {
+		t.Skip("set SCREEN_OCR_INTERACTIVE_TESTS=1 to run interactive region selection test")
+	}
+
 	region, err := StartRegionSelection()
 	if err != nil {
 		t.Errorf("StartRegionSelection failed: %v", err)

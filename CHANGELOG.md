@@ -5,6 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.5.1] - 2026-02-14
+
+### Added
+- Cobra-based flag parsing for resident app, Linux CLI, and stress tool.
+- Configurable API key file path resolution via `--api-key-path` and `OPENROUTER_API_KEY_FILE` with documented precedence.
+- Hotkey keycode mapping for `F13` through `F24`.
+- Shared runtime bootstrap and shared OCR session execution pipeline to reduce duplicated resident/run-once logic.
+- Run-once refactor guardrails document in `docs/RUN_ONCE_REFACTOR_GUARDRAILS.md`.
+- `.justfile` for chooser default, Windows app build, Linux CLI build, and test recipes.
+
+### Changed
+- Eventloop hotkey and delegated request paths now share the same internal request/result handling flow.
+- Standalone `--run-once` fallback now uses shared session execution while preserving delegation behavior.
+- Linux build target guidance aligned to CLI-only binary expectations.
+
+### Fixed
+- Full test suite reliability issues in `tests/`, `src/gui`, and `src/singleinstance`.
+- Platform compile coverage by moving Windows-only behavior behind `*_windows.go` and `*_stub.go` boundaries.
+- TCP address composition updated to use `net.JoinHostPort`, eliminating IPv6 formatting vet warnings.
+
 ## [2.5.0] - 2025-12-14
 
 ### Added
@@ -110,6 +130,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Version History
 
+- **2.5.1** (2026-02-14) - Cobra migration + key file path support + delegation-preserving refactor
 - **2.5.0** (2025-12-14) - Multi-monitor fixes + diagnostic logging
 - **2.4.0** (2025-11-10) - Configurable timeout + codebase reorganization + ADRs
 - **2.3.0** (2025-10-01) - DPI awareness + thread isolation + provider routing
@@ -117,6 +138,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **2.1.0** - Linux CLI tool
 - **2.0.0** - Initial Go implementation
 
+[2.5.1]: https://github.com/user/screen-ocr-llm/compare/2.5.0...2.5.1
 [2.5.0]: https://github.com/user/screen-ocr-llm/compare/2.4...2.5.0
 [2.4.0]: https://github.com/user/screen-ocr-llm/compare/2.3...2.4.0
 [2.3.0]: https://github.com/user/screen-ocr-llm/compare/2.2...2.3.0

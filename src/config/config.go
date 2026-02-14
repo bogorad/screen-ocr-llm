@@ -9,8 +9,18 @@ import (
 	"github.com/joho/godotenv"
 )
 
+const (
+	DefaultAPIKeyPath = "/run/secrets/api_keys/openrouter"
+	APIKeyPathEnvVar  = "OPENROUTER_API_KEY_FILE"
+)
+
+type LoadOptions struct {
+	APIKeyPathOverride string
+}
+
 type Config struct {
 	APIKey            string
+	APIKeyPath        string
 	Model             string
 	EnableFileLogging bool
 	Hotkey            string
@@ -19,21 +29,17 @@ type Config struct {
 }
 
 func Load() (*Config, error) {
+	return LoadWithOptions(LoadOptions{})
+}
+
+func LoadWithOptions(opts LoadOptions) (*Config, error) {
 	// Load configuration from sources in priority order:
 	// 1) .env in the application (executable) directory
 	// 2) If not found, use SCREEN_OCR_LLM env var as a path to a config file
-	if execPath, err := os.Executable(); err == nil {
-		execDir := filepath.Dir(execPath)
-		exeEnv := filepath.Join(execDir, ".env")
-		if _, err := os.Stat(exeEnv); err == nil {
-			_ = godotenv.Load(exeEnv)
-		} else {
-			if alt := os.Getenv("SCREEN_OCR_LLM"); alt != "" {
-				if _, err := os.Stat(alt); err == nil {
-					_ = godotenv.Load(alt)
-				}
-			}
-		}
+	envPath := resolveEnvPath()
+	dotenvValues := readDotenvValues(envPath)
+	if envPath != "" {
+		_ = godotenv.Load(envPath)
 	}
 
 	// Parse providers from comma-separated string
@@ -55,8 +61,11 @@ func Load() (*Config, error) {
 		}
 	}
 
+	apiKeyPath := resolveAPIKeyPath(opts, dotenvValues)
+
 	cfg := &Config{
-		APIKey:            os.Getenv("OPENROUTER_API_KEY"),
+		APIKey:            resolveAPIKey(apiKeyPath),
+		APIKeyPath:        apiKeyPath,
 		Model:             os.Getenv("MODEL"),
 		EnableFileLogging: strings.ToLower(os.Getenv("ENABLE_FILE_LOGGING")) == "true",
 		Hotkey:            getEnvWithDefault("HOTKEY", "Ctrl+Alt+Q"),
@@ -65,6 +74,68 @@ func Load() (*Config, error) {
 	}
 
 	return cfg, nil
+}
+
+func resolveEnvPath() string {
+	execPath, err := os.Executable()
+	if err != nil {
+		return ""
+	}
+
+	execDir := filepath.Dir(execPath)
+	exeEnv := filepath.Join(execDir, ".env")
+	if _, err := os.Stat(exeEnv); err == nil {
+		return exeEnv
+	}
+
+	if alt := os.Getenv("SCREEN_OCR_LLM"); alt != "" {
+		if _, err := os.Stat(alt); err == nil {
+			return alt
+		}
+	}
+
+	return ""
+}
+
+func readDotenvValues(envPath string) map[string]string {
+	if envPath == "" {
+		return map[string]string{}
+	}
+
+	values, err := godotenv.Read(envPath)
+	if err != nil {
+		return map[string]string{}
+	}
+
+	return values
+}
+
+func resolveAPIKeyPath(opts LoadOptions, dotenvValues map[string]string) string {
+	keyPath := DefaultAPIKeyPath
+
+	if envPath := strings.TrimSpace(os.Getenv(APIKeyPathEnvVar)); envPath != "" {
+		keyPath = envPath
+	}
+
+	if dotenvPath := strings.TrimSpace(dotenvValues[APIKeyPathEnvVar]); dotenvPath != "" {
+		keyPath = dotenvPath
+	}
+
+	if overridePath := strings.TrimSpace(opts.APIKeyPathOverride); overridePath != "" {
+		keyPath = overridePath
+	}
+
+	return keyPath
+}
+
+func resolveAPIKey(keyPath string) string {
+	if data, err := os.ReadFile(keyPath); err == nil {
+		if fileKey := strings.TrimSpace(string(data)); fileKey != "" {
+			return fileKey
+		}
+	}
+
+	return os.Getenv("OPENROUTER_API_KEY")
 }
 
 func getEnvWithDefault(key, defaultValue string) string {

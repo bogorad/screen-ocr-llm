@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"testing"
 
@@ -21,21 +22,21 @@ func TestCLIWithTestImage(t *testing.T) {
 	}
 
 	// Build the CLI tool
-	binaryPath := filepath.Join(t.TempDir(), "ocr-tool")
+	binaryPath := tempBinaryPath(t)
 	buildCmd := exec.Command("go", "build", "-o", binaryPath, ".")
 	if output, err := buildCmd.CombinedOutput(); err != nil {
 		t.Fatalf("Failed to build CLI tool: %v\n%s", err, output)
 	}
 
-	// Path to existing test-image.png (2 directories up from cmd/cli)
-	testImagePath := "../../test-image.png"
+	// Path to existing test-image.png (3 directories up from src/cmd/cli)
+	testImagePath := "../../../test-image.png"
 	if _, err := os.Stat(testImagePath); err != nil {
 		t.Fatalf("test-image.png not found: %v", err)
 	}
 
 	// Test 1: Plain text output
 	t.Run("PlainTextOutput", func(t *testing.T) {
-		cmd := exec.Command(binaryPath, "-file", testImagePath)
+		cmd := exec.Command(binaryPath, "--file", testImagePath)
 		var stdout, stderr bytes.Buffer
 		cmd.Stdout = &stdout
 		cmd.Stderr = &stderr
@@ -59,7 +60,7 @@ func TestCLIWithTestImage(t *testing.T) {
 
 	// Test 2: JSON output
 	t.Run("JSONOutput", func(t *testing.T) {
-		cmd := exec.Command(binaryPath, "-file", testImagePath, "-json")
+		cmd := exec.Command(binaryPath, "--file", testImagePath, "--json")
 		output, err := cmd.Output()
 		if err != nil {
 			t.Errorf("Command failed: %v", err)
@@ -85,7 +86,7 @@ func TestCLIWithTestImage(t *testing.T) {
 
 	// Test 3: Verbose mode
 	t.Run("VerboseMode", func(t *testing.T) {
-		cmd := exec.Command(binaryPath, "-file", testImagePath, "-v")
+		cmd := exec.Command(binaryPath, "--file", testImagePath, "-v")
 		var stdout, stderr bytes.Buffer
 		cmd.Stdout = &stdout
 		cmd.Stderr = &stderr
@@ -100,7 +101,7 @@ func TestCLIWithTestImage(t *testing.T) {
 	// Test 4: Stdin input
 	t.Run("StdinInput", func(t *testing.T) {
 		imageData, _ := os.ReadFile(testImagePath)
-		cmd := exec.Command(binaryPath, "-file", "-")
+		cmd := exec.Command(binaryPath, "--file", "-")
 		cmd.Stdin = bytes.NewReader(imageData)
 
 		output, err := cmd.Output()
@@ -151,81 +152,28 @@ func TestPNGValidation(t *testing.T) {
 	}
 }
 
-// TestAPIKeyLoadOrder tests the API key loading priority.
-// Note: This test may be affected by real secret files in /run/secrets/
-// In a real deployment, the secret file takes priority as expected.
-func TestAPIKeyLoadOrder(t *testing.T) {
-	// This test verifies that when no secret file exists,
-	// the environment variable and config file priorities work correctly.
-
-	// Save original environment
-	originalEnv := os.Getenv("OPENROUTER_API_KEY")
-	defer func() {
-		if originalEnv != "" {
-			os.Setenv("OPENROUTER_API_KEY", originalEnv)
-		} else {
-			os.Unsetenv("OPENROUTER_API_KEY")
-		}
-	}()
-
-	// Test priority when secret file doesn't exist
-	// (We'll temporarily rename the real secret file if it exists)
-	secretExists := false
-	backupPath := ""
-	if _, err := os.Stat(secretFilePath); err == nil {
-		secretExists = true
-		backupPath = secretFilePath + ".backup"
-		err := os.Rename(secretFilePath, backupPath)
-		if err != nil {
-			t.Skipf("Cannot test without secret file backup: %v", err)
-		}
-		defer func() {
-			if backupPath != "" {
-				os.Rename(backupPath, secretFilePath)
-			}
-		}()
+func TestNormalizeLegacyArgs(t *testing.T) {
+	args := []string{"ocr-tool", "-file", "in.png", "-json", "-api-key-path", "/tmp/key"}
+	norm := normalizeLegacyArgs(args)
+	joined := strings.Join(norm, " ")
+	if !strings.Contains(joined, "--file") {
+		t.Fatalf("Expected normalized args to contain --file, got %v", norm)
 	}
-
-	// Now test without secret file
-	os.Unsetenv("OPENROUTER_API_KEY")
-
-	// Test 1: Environment variable takes priority over config
-	os.Setenv("OPENROUTER_API_KEY", "test-key-from-env")
-	cfg := &config.Config{APIKey: "test-key-from-config"}
-	key, err := loadAPIKey(cfg, false)
-	if err != nil {
-		t.Errorf("Expected to load from env, got error: %v", err)
+	if !strings.Contains(joined, "--json") {
+		t.Fatalf("Expected normalized args to contain --json, got %v", norm)
 	}
-	if key != "test-key-from-env" {
-		t.Errorf("Expected 'test-key-from-env', got '%s'", key)
+	if !strings.Contains(joined, "--api-key-path") {
+		t.Fatalf("Expected normalized args to contain --api-key-path, got %v", norm)
 	}
+}
 
-	// Test 2: Config file used when env var is missing
-	os.Unsetenv("OPENROUTER_API_KEY")
-	cfg = &config.Config{APIKey: "test-key-from-config"}
-	key, err = loadAPIKey(cfg, false)
-	if err != nil {
-		t.Errorf("Expected to load from config, got error: %v", err)
-	}
-	if key != "test-key-from-config" {
-		t.Errorf("Expected 'test-key-from-config', got '%s'", key)
-	}
-
-	// Test 3: No API key found
-	os.Unsetenv("OPENROUTER_API_KEY")
-	cfg = &config.Config{}
-	_, err = loadAPIKey(cfg, false)
+func TestRunWithArgsRequiresFileFlag(t *testing.T) {
+	err := runWithArgs([]string{"ocr-tool"})
 	if err == nil {
-		t.Error("Expected error when no API key found")
+		t.Fatal("Expected error when --file is missing")
 	}
-	expectedError := "OPENROUTER_API_KEY not found"
-	if !strings.Contains(err.Error(), expectedError) {
-		t.Errorf("Expected error containing '%s', got '%s'", expectedError, err.Error())
-	}
-
-	// Restore secret file if it existed
-	if secretExists && backupPath != "" {
-		os.Rename(backupPath, secretFilePath)
+	if !strings.Contains(err.Error(), "required flag(s) \"file\" not set") {
+		t.Fatalf("Unexpected error: %v", err)
 	}
 }
 
@@ -286,20 +234,20 @@ func TestStdoutStderrSeparation(t *testing.T) {
 		t.Skip("Skipping integration test: no API key configured")
 	}
 
-	binaryPath := filepath.Join(t.TempDir(), "ocr-tool")
+	binaryPath := tempBinaryPath(t)
 	buildCmd := exec.Command("go", "build", "-o", binaryPath, ".")
 	if output, err := buildCmd.CombinedOutput(); err != nil {
 		t.Fatalf("Failed to build CLI tool: %v\n%s", err, output)
 	}
 
-	testImagePath := "../../test-image.png"
+	testImagePath := "../../../test-image.png"
 	if _, err := os.Stat(testImagePath); err != nil {
 		t.Fatalf("test-image.png not found: %v", err)
 	}
 
 	// Test 1: Without -v flag, stderr should be empty (no verbose output)
 	t.Run("NoVerboseNoStderr", func(t *testing.T) {
-		cmd := exec.Command(binaryPath, "-file", testImagePath)
+		cmd := exec.Command(binaryPath, "--file", testImagePath)
 		var stdout, stderr bytes.Buffer
 		cmd.Stdout = &stdout
 		cmd.Stderr = &stderr
@@ -321,7 +269,7 @@ func TestStdoutStderrSeparation(t *testing.T) {
 
 	// Test 2: With -v flag, stderr should have verbose logs, stdout only OCR result
 	t.Run("VerboseToStderrOnly", func(t *testing.T) {
-		cmd := exec.Command(binaryPath, "-file", testImagePath, "-v")
+		cmd := exec.Command(binaryPath, "--file", testImagePath, "-v")
 		var stdout, stderr bytes.Buffer
 		cmd.Stdout = &stdout
 		cmd.Stderr = &stderr
@@ -344,7 +292,7 @@ func TestStdoutStderrSeparation(t *testing.T) {
 	// Test 3: Error should go to stderr, not stdout
 	t.Run("ErrorToStderr", func(t *testing.T) {
 		// Try to read non-existent file
-		cmd := exec.Command(binaryPath, "-file", "/nonexistent/file.png")
+		cmd := exec.Command(binaryPath, "--file", "/nonexistent/file.png")
 		var stdout, stderr bytes.Buffer
 		cmd.Stdout = &stdout
 		cmd.Stderr = &stderr
@@ -371,4 +319,13 @@ func validatePNG(data []byte) error {
 		return fmt.Errorf("invalid PNG")
 	}
 	return nil
+}
+
+func tempBinaryPath(t *testing.T) string {
+	t.Helper()
+	name := "ocr-tool"
+	if runtime.GOOS == "windows" {
+		name += ".exe"
+	}
+	return filepath.Join(t.TempDir(), name)
 }

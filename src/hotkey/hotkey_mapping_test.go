@@ -31,6 +31,8 @@ func TestKeyNameToRawcodes(t *testing.T) {
 		// Function keys
 		{"f1", []uint16{112}},
 		{"f12", []uint16{123}},
+		{"f13", []uint16{124}},
+		{"f24", []uint16{135}},
 
 		// Special keys
 		{"space", []uint16{32}},
@@ -68,6 +70,8 @@ func TestParseHotkey(t *testing.T) {
 		{"Ctrl+Shift+O", []string{"ctrl", "shift", "o"}},
 		{"Ctrl+alt+e", []string{"ctrl", "alt", "e"}},
 		{"Alt+F4", []string{"alt", "f4"}},
+		{"Ctrl+Shift+F13", []string{"ctrl", "shift", "f13"}},
+		{"Alt+F24", []string{"alt", "f24"}},
 		{"Ctrl+Shift+T", []string{"ctrl", "shift", "t"}},
 		{"Ctrl+Win+E", []string{"ctrl", "cmd", "e"}},
 		{"Win+Shift+S", []string{"cmd", "shift", "s"}},

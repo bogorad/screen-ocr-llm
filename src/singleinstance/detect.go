@@ -3,8 +3,8 @@ package singleinstance
 import (
 	"bufio"
 	"context"
-	"fmt"
 	"net"
+	"strconv"
 	"time"
 )
 
@@ -18,7 +18,7 @@ func DetectResidentPort(ctx context.Context) (int, bool) {
 	}
 	start, end := getPortRange()
 	for port := start; port <= end; port++ {
-		addr := fmt.Sprintf("%s:%d", residentHost, port)
+		addr := net.JoinHostPort(residentHost, strconv.Itoa(port))
 		if ping(addr, deadline) {
 			return port, true
 		}

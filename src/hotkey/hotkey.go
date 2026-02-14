@@ -256,7 +256,7 @@ func keyNameToRawcodes(keyName string) []uint16 {
 	case "9":
 		return []uint16{57}
 
-	// Function keys (F1-F12)
+	// Function keys (F1-F24)
 	case "f1":
 		return []uint16{112} // VK_F1
 	case "f2":
@@ -281,6 +281,30 @@ func keyNameToRawcodes(keyName string) []uint16 {
 		return []uint16{122} // VK_F11
 	case "f12":
 		return []uint16{123} // VK_F12
+	case "f13":
+		return []uint16{124} // VK_F13
+	case "f14":
+		return []uint16{125} // VK_F14
+	case "f15":
+		return []uint16{126} // VK_F15
+	case "f16":
+		return []uint16{127} // VK_F16
+	case "f17":
+		return []uint16{128} // VK_F17
+	case "f18":
+		return []uint16{129} // VK_F18
+	case "f19":
+		return []uint16{130} // VK_F19
+	case "f20":
+		return []uint16{131} // VK_F20
+	case "f21":
+		return []uint16{132} // VK_F21
+	case "f22":
+		return []uint16{133} // VK_F22
+	case "f23":
+		return []uint16{134} // VK_F23
+	case "f24":
+		return []uint16{135} // VK_F24
 
 	// Common special keys
 	case "space":
