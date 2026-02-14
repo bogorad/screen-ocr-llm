@@ -6,6 +6,7 @@ This directory contains all project documentation for Screen OCR LLM.
 
 - **Project Overview**: [../README.md](../README.md) (at repository root)
 - **Build Instructions**: [BUILD_INSTRUCTIONS.md](BUILD_INSTRUCTIONS.md)
+- **Release Notes**: [releases/](releases/) (detailed per-version docs)
 - **Contributing**: [AGENTS.md](AGENTS.md) (for AI agents and developers)
 - **Architecture Decisions**: [adr/](adr/) (Architecture Decision Records)
 
@@ -17,6 +18,9 @@ docs/
 ├── AGENTS.md                      # Guidelines for AI coding agents
 ├── BUILD_INSTRUCTIONS.md          # How to build the project
 ├── RUN_ONCE_REFACTOR_GUARDRAILS.md # Run-once delegation guardrails
+├── releases/                      # Detailed release notes
+│   ├── README.md                  # Release notes index
+│   └── 2.6.0.md                   # Release 2.6.0 details
 ├── DOCUMENTATION_REVIEW.md        # Documentation status review
 ├── REORGANIZATION_SUMMARY.md      # Codebase reorganization details
 ├── TEST_COVERAGE_ANALYSIS.md      # Test coverage report

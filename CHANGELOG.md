@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Polygon-aware capture path: selected lasso polygons are preserved in region metadata and applied as a mask before OCR.
 - Embedded custom lasso cursor asset (`src/gui/lasso.cur`) used in lasso mode, with safe fallback to system hand cursor.
 - Configurable initial selection mode via `DEFAULT_MODE` and CLI `--default-mode` (`rect`, `rectangle`, `lasso`).
+- Detailed release guide for this version in `docs/releases/2.6.0.md`.
 
 ### Changed
 - Selection now supports both rectangle and lasso flows while preserving the rectangular PNG payload contract to OCR/LLM.

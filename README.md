@@ -4,6 +4,8 @@ Inspired by [the original code](https://github.com/cherjr/screen-ocr-llm)
 
 A small desktop utility to select a region of the screen, run OCR via OpenRouter vision models, and copy the result to the clipboard.
 
+For the latest release details, see `docs/releases/2.6.0.md`.
+
 ## Architecture Overview
 
 ### Directory Structure
@@ -83,7 +85,7 @@ See [src/cmd/cli/README.md](src/cmd/cli/README.md) for details.
 
 1.  Create a `.env` file in the same directory as the executable with the following required keys:
     - `OPENROUTER_API_KEY=`
-    - `MODEL=` (e.g., `google/gemma-2-9b-it`)
+    - `MODEL=` (vision-capable model, e.g., `qwen/qwen3-vl-235b-a22b-instruct`)
     - Optional: `OPENROUTER_API_KEY_FILE=` (default key-file path is `/run/secrets/api_keys/openrouter`)
 
     Alternatively, you can set each of these as an environment variable.
@@ -102,6 +104,46 @@ See [src/cmd/cli/README.md](src/cmd/cli/README.md) for details.
     - `DEFAULT_MODE=rectangle` (accepted: `rect`, `rectangle`, `lasso`; default is rectangle)
     - `SINGLEINSTANCE_PORT_START=49500`
     - `SINGLEINSTANCE_PORT_END=49550`
+
+## Configuration and Precedence
+
+### Config source resolution
+
+The app loads exactly one dotenv file source in this order:
+
+1. `.env` in the executable directory
+2. `SCREEN_OCR_LLM` path (only if executable-local `.env` is missing)
+
+### API key path precedence (`OPENROUTER_API_KEY_FILE` / `--api-key-path`)
+
+From lowest to highest precedence:
+
+1. Built-in default: `/run/secrets/api_keys/openrouter`
+2. Process environment variable `OPENROUTER_API_KEY_FILE`
+3. Loaded dotenv value `OPENROUTER_API_KEY_FILE`
+4. CLI argument `--api-key-path`
+
+### API key value precedence
+
+From highest to fallback:
+
+1. Content of the resolved API key file path (if file exists and is non-empty)
+2. `OPENROUTER_API_KEY` environment variable
+
+### Selection mode precedence (`DEFAULT_MODE` / `--default-mode`)
+
+From highest to fallback:
+
+1. CLI argument `--default-mode`
+2. `DEFAULT_MODE` in environment/dotenv
+3. Default: `rectangle`
+
+Accepted values for both env and CLI: `rect`, `rectangle`, `lasso`.
+
+### Delegation precedence in `--run-once`
+
+If `--run-once` delegates to an already-running resident instance, resident config remains authoritative.
+Client-side `--api-key-path` and `--default-mode` do not override the resident process.
 
 ## Build
 
@@ -149,6 +191,11 @@ This mode is intended for single, on-demand captures initiated from the command 
   ```sh
   ./screen-ocr-llm.exe --run-once
   ```
+- **Supported arguments**:
+  - `--run-once`
+  - `--api-key-path <path>`
+  - `--default-mode <rect|rectangle|lasso>`
+  - Legacy compatibility: single-dash long forms (`-run-once`, `-api-key-path`, `-default-mode`)
 - **Optional key path override**:
   ```sh
   ./screen-ocr-llm.exe --run-once --api-key-path /run/secrets/api_keys/openrouter_key
@@ -181,6 +228,4 @@ This delegation mechanism ensures a stable and predictable user experience by gu
 
 - **Logging**: Controlled by `ENABLE_FILE_LOGGING`. When `false`, logs are suppressed; when `true`, logs are written to `screen_ocr_debug.log` with size-based rotation. In GUI builds, stdout/stderr are hidden, so enable file logging for diagnostics.
 - **Single Instance**: The tool uses a loopback TCP port to enforce a single resident instance and to manage delegation from `--run-once` clients.
-- **API key resolution**:
-  - Key file path precedence: default `/run/secrets/api_keys/openrouter` -> `OPENROUTER_API_KEY_FILE` env -> `.env` `OPENROUTER_API_KEY_FILE` -> CLI `--api-key-path`.
-  - API key value precedence: effective key file content -> `OPENROUTER_API_KEY`.
+- **Configuration precedence**: See `Configuration and Precedence` above for `.env`, CLI, and delegation behavior.
