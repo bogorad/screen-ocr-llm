@@ -10,6 +10,8 @@ This file adds project-specific rules on top of the global agent instructions. I
 
 ## 2) Build, lint, and test
 
+Use beads (`bd` command) for issue tracking and history, read /home/chuck/.dotfiles/opencode/BEADS.md
+
 Use the current `src/` layout.
 
 - Primary app build on Windows: `go build -ldflags "-H=windowsgui" -o screen-ocr-llm.exe ./src/main`, `build.cmd`, or `make build-windows`.
