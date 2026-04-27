@@ -13,3 +13,4 @@ ocr-tool
 .dolt/
 *.db
 .beads-credential-key
+.direnv/
