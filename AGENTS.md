@@ -1,98 +1,127 @@
-# AGENTS
+# AGENTS.md
 
-This document defines how automated coding agents should operate in this repository. Follow it strictly.
+## 1) Status of this file
 
-## Build, Lint, Test
+All directives in this file are mandatory for this repository.
 
-- Primary app build (Windows GUI): `go build -ldflags "-H=windowsgui" -o screen-ocr-llm.exe ./main` or `build.cmd` or `make build-windows`.
-- Cross-platform builds: use `make build-{windows,macos,macos-arm,linux}`; always target `./main` (never plain `go build` in repo root).
-- In this Linux environment, do not attempt Windows GUI builds. Leave Windows build verification to a Windows environment unless the user explicitly overrides this.
-- Linux CLI tool: from `cmd/cli`, `go build -o ocr-tool .` (or `make build-cli-linux`).
-- Lint: `go vet ./...`; if configured, `golangci-lint run ./...`.
-- Tests (all): `go test ./...`.
-- Single test: `go test ./path -run TestName` (use full package path when scripting).
-- Preferred dev loop: `go fmt ./...`, `go vet ./...`, `go test ./...`, then platform-specific build.
+This file adds project-specific rules on top of the global agent instructions. If this file conflicts with the global instructions, follow this file inside this repository.
 
-## Code Style & Architecture
+---
 
-- Formatting/imports: run `gofmt`; keep `goimports`-style groups (stdlib, external, then internal `screen-ocr-llm/...`).
-- Types: favor concrete types; use small interfaces only at boundaries; avoid stuttered names.
-- Naming: idiomatic Go `MixedCaps`; export only when needed across packages or tests.
-- Errors: use `error` returns (no panics for control flow); wrap with context; compare via `errors.Is/As`.
-- Logging: use existing logging utilities; add structured, concise logs (especially around OCR, LLM, providers, and timeouts) consistent with current patterns.
-- Concurrency: use `context.Context` and channels; avoid data races; respect existing eventloop/worker designs.
-- Platform-specific: keep OS-specific code in `*_windows.go` / `*_stub.go`; do not introduce Windows-only deps into shared packages.
-- Configuration: use the `config` package and documented `.env`/`SCREEN_OCR_LLM`/secret file conventions; never ad-hoc env parsing scattered in other packages.
-- Layout: keep related logic in existing packages (gui, overlay, screenshot, llm, worker, etc.); avoid bloated `main` packages.
-- Public contracts: treat `messages/` and `router/` (and CLI flags in `cmd/cli`) as stable API surfaces; change them carefully and update docs/tests.
+## 2) Build, lint, and test
 
-## Product & Behavior Expectations
+Use the current `src/` layout.
 
-- Preserve the two execution modes: resident tray app and `--run-once` delegating mode; maintain single-instance behavior via TCP and delegation, not duplication.
-- For CLI (`cmd/cli`), keep it GUI-independent, file/stdin driven, and aligned with documented config precedence.
-- Primary app build (Windows GUI): `go build -ldflags "-H=windowsgui" -o screen-ocr-llm.exe ./src/main` or `build.cmd` or `make build-windows`.
-- Cross-platform builds: use `make build-{windows,macos,macos-arm,linux}`; always target `./src/main`.
-- In this Linux environment, do not attempt Windows GUI builds. Leave Windows build verification to a Windows environment unless the user explicitly overrides this.
-- Linux CLI tool: from `src/cmd/cli`, `go build -o ocr-tool .` (or `make build-cli-linux`).
-- Lint: `go vet ./...`; if configured, `golangci-lint run ./...`.
-- Tests (all): `go test ./...`.
-- Single test: `go test ./path -run TestName` (use full package path when scripting).
-- Preferred dev loop: `go fmt ./...`, `go vet ./...`, `go test ./...`, then platform-specific build.
+- Primary app build on Windows: `go build -ldflags "-H=windowsgui" -o screen-ocr-llm.exe ./src/main`, `build.cmd`, or `make build-windows`.
+- Do not attempt Windows GUI builds in this Linux environment. Leave Windows build verification to a Windows environment unless the user explicitly overrides this.
+- Cross-platform builds: use `make build-{windows,macos,macos-arm,linux}` and always target `./src/main`.
+- Linux CLI build: from `src/cmd/cli`, run `go build -o ocr-tool .`, or use `make build-cli-linux`.
+- Lint: run `go vet ./...`.
+- If `golangci-lint` is configured, run `golangci-lint run ./...`.
+- All tests: run `go test ./...`.
+- Single test: run `go test ./path -run TestName` with the full package path when scripting.
 
-## Code Style & Architecture
+Preferred development loop:
 
-- Formatting/imports: run `gofmt`; keep `goimports`-style groups (stdlib, external, then internal `screen-ocr-llm/src/...`).
-- Types: favor concrete types; use small interfaces only at boundaries; avoid stuttered names.
-- Naming: idiomatic Go `MixedCaps`; export only when needed across packages or tests.
-- Errors: use `error` returns (no panics for control flow); wrap with context; compare via `errors.Is/As`.
-- Logging: use existing logging utilities; add structured, concise logs (especially around OCR, LLM, providers, and timeouts) consistent with current patterns.
-- Concurrency: use `context.Context` and channels; avoid data races; respect existing eventloop/worker designs.
-- Platform-specific: keep OS-specific code in `*_windows.go` / `*_stub.go`; do not introduce Windows-only deps into shared packages.
-- Configuration: use the `config` package and documented `.env`/`SCREEN_OCR_LLM`/secret file conventions; never ad-hoc env parsing scattered in other packages.
-- Layout: Sources in `src/` directory; keep related logic in existing packages (gui, overlay, screenshot, llm, worker, etc.); avoid bloated `main` packages; integration tests in `tests/` directory.
-- Public contracts: treat `src/messages/` and `src/router/` (and CLI flags in `src/cmd/cli`) as stable API surfaces; change them carefully and update docs/tests.
+```bash
+go fmt ./...
+go vet ./...
+go test ./...
+```
 
-## Product & Behavior Expectations
+Run platform-specific builds only when they are relevant and supported by the current environment.
 
-- Preserve the two execution modes: resident tray app and `--run-once` delegating mode; maintain single-instance behavior via TCP and delegation, not duplication.
-- For CLI (`src/cmd/cli`), keep it GUI-independent, file/stdin driven, and aligned with documented config precedence.
-- Respect logging and diagnostics conventions used to debug OCR/LLM/PROVIDERS/timeouts; do not silently weaken them.
-- When STATUS.md or related design docs describe an architecture or recent fixes (callbacks, countdown popup, timeouts), treat them as ground truth unless intentionally updating them.
+---
 
-## Tooling & Meta Rules
+## 3) Code style and architecture
 
-- If Cursor/Copilot rules appear (`.cursor/rules`, `.cursorrules`, `.github/copilot-instructions.md`), treat them as authoritative and update this file to match.
-- Before commits/PRs: run build + tests for relevant targets; ensure no stray `fmt.Printf`/debug code or unused imports.
-- Do not add heavy dependencies without strong justification; prefer stdlib and existing libraries.
-- Use beads (`bd`) for all issue/task tracking in this repository; do not use OpenCode's default task mechanism.
-- Testing protocol: run incremental tests for changed packages during implementation; do not repeatedly rerun unchanged suites per issue. Run full `go test ./...` once near handoff, or when changes are cross-cutting, or when explicitly requested.
+- Format Go code with `gofmt`.
+- Keep import groups in this order: standard library, external packages, then internal `screen-ocr-llm/src/...` packages.
+- Prefer concrete types.
+- Use small interfaces only at package boundaries.
+- Use idiomatic Go `MixedCaps` names.
+- Export names only when they are needed across packages or tests.
+- Return errors instead of panicking for control flow.
+- Wrap errors with useful context.
+- Compare errors with `errors.Is` and `errors.As`.
+- Use existing logging utilities.
+- Keep logs structured and concise, especially around OCR, LLM providers, and timeouts.
+- Use `context.Context` and channels for concurrency.
+- Avoid data races.
+- Respect the existing event loop and worker designs.
+- Keep OS-specific code in `*_windows.go` or matching stub files.
+- Do not add Windows-only dependencies to shared packages.
+- Use the `config` package for configuration.
+- Follow the documented `.env`, `SCREEN_OCR_LLM`, and secret file conventions.
+- Do not scatter ad hoc environment parsing across packages.
+- Keep related logic in existing packages such as `gui`, `overlay`, `screenshot`, `llm`, and `worker`.
+- Do not bloat `main` packages.
+- Keep integration tests in `tests/`.
 
-## Deep Analysis Requirement
+---
 
-- Before substantial or cross-cutting changes, ingest `AUGSTER.xml` and current `STATUS.md` fully and follow their rules and task guidance precisely.
+## 4) Stable contracts
 
-## Landing the Plane (Session Completion)
+Treat these surfaces as stable APIs:
 
-**When ending a work session**, you MUST complete ALL steps below. Work is NOT complete until `git push` succeeds.
+- `src/messages/`
+- `src/router/`
+- CLI flags in `src/cmd/cli`
 
-**MANDATORY WORKFLOW:**
+Change them carefully. Update docs and tests when their behavior changes.
 
-1. **File issues for remaining work** - Create issues for anything that needs follow-up
-2. **Run quality gates** (if code changed) - Tests, linters, builds
-3. **Update issue status** - Close finished work, update in-progress items
-4. **PUSH TO REMOTE** - This is MANDATORY:
-   ```bash
-   git pull --rebase
-   git push
-   git status  # MUST show "up to date with origin"
-   ```
-5. **Clean up** - Clear stashes, prune remote branches
-6. **Verify** - All changes committed AND pushed
-7. **Hand off** - Provide context for next session
+---
 
-**CRITICAL RULES:**
+## 5) Product behavior
 
-- Work is NOT complete until `git push` succeeds
-- NEVER stop before pushing - that leaves work stranded locally
-- NEVER say "ready to push when you are" - YOU must push
-- If push fails, resolve and retry until it succeeds
+- Preserve both execution modes: resident tray app and `--run-once` delegating mode.
+- Preserve single-instance behavior through TCP and delegation.
+- Do not create duplicate resident instances.
+- Keep `src/cmd/cli` GUI-independent.
+- Keep CLI behavior file/stdin driven.
+- Keep CLI configuration precedence aligned with the documented behavior.
+- Respect logging and diagnostics used to debug OCR, LLM providers, and timeouts.
+- Do not weaken diagnostics silently.
+- Treat `STATUS.md` and related design docs as ground truth for documented architecture and recent fixes unless intentionally updating them.
+
+---
+
+## 6) Repository tooling
+
+- If `.cursor/rules`, `.cursorrules`, or `.github/copilot-instructions.md` appears, treat those rules as authoritative project instructions and update this file to match.
+- Before commits or pull requests, run the relevant tests, linters, and builds for the changed area.
+- Do not leave stray `fmt.Printf` debug code.
+- Do not leave unused imports.
+- Do not add heavy dependencies without strong justification.
+- Prefer the standard library and existing dependencies.
+- During implementation, run incremental tests for changed packages.
+- Do not repeatedly rerun unchanged suites for the same issue.
+- Run full `go test ./...` once near handoff when changes are cross-cutting or when the user explicitly requests it.
+
+---
+
+## 7) Deep analysis
+
+Before substantial or cross-cutting changes:
+
+1. Read `AUGSTER.xml` fully.
+2. Read current `STATUS.md` fully.
+3. Follow their rules and task guidance precisely.
+
+---
+
+## 8) Session completion
+
+When ending a work session, complete these steps:
+
+1. Record any remaining follow-up work in the repository's normal tracking system.
+2. If code changed, run the relevant quality gates.
+3. Update the status of any tracked work.
+4. Pull with rebase.
+5. Push to remote.
+6. Verify `git status` shows the branch is up to date with `origin`.
+7. Hand off concise context for the next session.
+
+Work is not complete until `git push` succeeds.
+
+Do not stop with unpushed local commits unless the user explicitly instructs you not to push.
