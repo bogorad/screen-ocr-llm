@@ -4,7 +4,7 @@ default:
 
 # Build the Windows GUI app binary.
 build-windows:
-    go build -ldflags "-H=windowsgui" -o screen-ocr-llm.exe ./src/main
+    GOOS=windows GOARCH=amd64 go build -ldflags "-H=windowsgui" -o screen-ocr-llm.exe ./src/main
 
 # Build the Linux CLI-only binary.
 build-linux:
