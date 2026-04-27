@@ -6,6 +6,7 @@ This document defines how automated coding agents should operate in this reposit
 
 - Primary app build (Windows GUI): `go build -ldflags "-H=windowsgui" -o screen-ocr-llm.exe ./main` or `build.cmd` or `make build-windows`.
 - Cross-platform builds: use `make build-{windows,macos,macos-arm,linux}`; always target `./main` (never plain `go build` in repo root).
+- In this Linux environment, do not attempt Windows GUI builds. Leave Windows build verification to a Windows environment unless the user explicitly overrides this.
 - Linux CLI tool: from `cmd/cli`, `go build -o ocr-tool .` (or `make build-cli-linux`).
 - Lint: `go vet ./...`; if configured, `golangci-lint run ./...`.
 - Tests (all): `go test ./...`.
@@ -31,6 +32,7 @@ This document defines how automated coding agents should operate in this reposit
 - For CLI (`cmd/cli`), keep it GUI-independent, file/stdin driven, and aligned with documented config precedence.
 - Primary app build (Windows GUI): `go build -ldflags "-H=windowsgui" -o screen-ocr-llm.exe ./src/main` or `build.cmd` or `make build-windows`.
 - Cross-platform builds: use `make build-{windows,macos,macos-arm,linux}`; always target `./src/main`.
+- In this Linux environment, do not attempt Windows GUI builds. Leave Windows build verification to a Windows environment unless the user explicitly overrides this.
 - Linux CLI tool: from `src/cmd/cli`, `go build -o ocr-tool .` (or `make build-cli-linux`).
 - Lint: `go vet ./...`; if configured, `golangci-lint run ./...`.
 - Tests (all): `go test ./...`.
