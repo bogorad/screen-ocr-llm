@@ -1,3 +1,1 @@
-dolt.database: "artwalls"
-
-export.auto: false
+dolt.database: "screen_ocr_llm"

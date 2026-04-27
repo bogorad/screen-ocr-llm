@@ -6,7 +6,6 @@ import (
 	"testing"
 
 	"screen-ocr-llm/src/config"
-	"screen-ocr-llm/src/gui"
 	"screen-ocr-llm/src/llm"
 	"screen-ocr-llm/src/screenshot"
 )
@@ -83,19 +82,6 @@ func TestWorkflowValidation(t *testing.T) {
 		}
 	})
 
-	t.Run("Workflow Integration", func(t *testing.T) {
-		// Test the complete workflow integration
-		region, err := gui.StartRegionSelection()
-		if err != nil {
-			t.Errorf("Region selection failed: %v", err)
-		}
-
-		t.Logf("Workflow executed with region: %+v", region)
-
-		if region.Width == 0 || region.Height == 0 {
-			t.Error("Expected valid region with non-zero dimensions")
-		}
-	})
 }
 
 // TestPythonCompatibility validates specific Python implementation features

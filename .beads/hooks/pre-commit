@@ -22,3 +22,12 @@ if command -v bd >/dev/null 2>&1; then
   if [ $_bd_exit -ne 0 ]; then exit $_bd_exit; fi
 fi
 # --- END BEADS INTEGRATION v1.0.3 ---
+
+# Project policy: keep the tracked JSONL snapshot complete, including notes
+# and infrastructure records, whenever a commit is made.
+if command -v bd >/dev/null 2>&1; then
+  bd export --all -o .beads/issues.jsonl
+  _bd_export_exit=$?
+  if [ $_bd_export_exit -ne 0 ]; then exit $_bd_export_exit; fi
+  git add .beads/issues.jsonl
+fi
