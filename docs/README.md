@@ -49,7 +49,7 @@ At a high level, the Windows app is structured as:
 - `src/main`:
   - Parses Cobra flags (`--run-once`, `--api-key-path`, `--default-mode`) and keeps compatibility with legacy single-dash forms.
   - Ensures single resident instance via a TCP preflight on the configured port.
-  - Uses shared runtime bootstrap (`src/runtimeinit`) to load config, set logging, initialize OCR/LLM/clipboard dependencies, and perform startup ping checks.
+  - Loads configuration and sets logging before startup checks, then uses shared runtime bootstrap (`src/runtimeinit`) to initialize OCR/LLM/clipboard dependencies and perform startup ping checks.
   - Enables DPI awareness and monitor diagnostics via Windows-specific helpers.
   - In resident mode:
     - Starts the central event loop (`src/eventloop`), the system tray (`src/tray`), and global hotkey listener (`src/hotkey`).
@@ -151,6 +151,22 @@ Accepted values for env/CLI mode selection: `rect`, `rectangle`, `lasso`.
 If `--run-once` delegates to an already-running resident instance, resident configuration remains authoritative.
 Client-side `--api-key-path` and `--default-mode` do not override the resident process.
 
+## Diagnostics
+
+Windows GUI builds do not show a console. Fatal startup, resident event-loop,
+and standalone capture failures show a blocking error dialog. This includes
+configuration errors and failures to bind the resident port. Startup LLM
+failures use the same dialog. Cancelling a selection does not show an error.
+
+The dialog includes the error, executable path, working directory, and logging
+status. Press `Ctrl+C` in the dialog to copy its details when reporting a fault.
+
+Set `ENABLE_FILE_LOGGING=true` to record diagnostics in `screen_ocr_debug.log`
+in the process working directory. Logging starts before DPI and port checks.
+Startup records use `event=startup`; fatal records use
+`event=application_failed` and include the process ID and execution paths.
+Routine file logging remains optional; the error dialog works when it is off.
+
 ## For Developers
 
 ### Getting Started
@@ -245,4 +261,4 @@ For issues, questions, or contributions:
 
 ---
 
-**Last Updated**: 2026-02-14
+**Last Updated**: 2026-09-22

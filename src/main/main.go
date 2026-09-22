@@ -18,6 +18,7 @@ import (
 	"screen-ocr-llm/src/config"
 	"screen-ocr-llm/src/eventloop"
 	"screen-ocr-llm/src/logutil"
+	"screen-ocr-llm/src/notification"
 	"screen-ocr-llm/src/overlay"
 	"screen-ocr-llm/src/runtimeinit"
 	"screen-ocr-llm/src/screenshot"
@@ -96,12 +97,20 @@ func newRootCmd(opts *mainOptions) *cobra.Command {
 
 func main() {
 	if err := run(); err != nil {
-		log.Printf("Application failed: %v", err)
+		reportApplicationError(err, notification.ShowBlockingError)
 		os.Exit(1)
 	}
 }
 
 func runApplication(opts mainOptions) error {
+	// Load configuration and enable diagnostics before any startup checks.
+	cfg, err := config.LoadWithOptions(config.LoadOptions{APIKeyPathOverride: opts.apiKeyPath, DefaultModeOverride: opts.defaultMode})
+	if err != nil {
+		return fmt.Errorf("load configuration: %w", err)
+	}
+	setupLogging(cfg.EnableFileLogging)
+	log.Printf("event=startup pid=%d run_once=%t", os.Getpid(), opts.runOnce)
+
 	// Ensure DPI awareness before creating any windows or querying metrics
 	enableDPIAwareness()
 	logMonitorConfiguration()
@@ -118,16 +127,12 @@ func runApplication(opts mainOptions) error {
 		return nil
 	}
 
-	// Load .env early so SINGLEINSTANCE_PORT_* are available for pre-flight
-	_, _ = config.LoadWithOptions(config.LoadOptions{APIKeyPathOverride: opts.apiKeyPath, DefaultModeOverride: opts.defaultMode})
 	// ---------- SINGLE-INSTANCE NUKE ----------
 	startPort, _ := singleinstance.GetPortRangeForDebug()
 	addr := fmt.Sprintf("127.0.0.1:%d", startPort)
 	listener, err := net.Listen("tcp", addr)
 	if err != nil {
-		log.Printf("Pre-flight: port %d busy → resident already exists", startPort)
-		fmt.Printf("one is already running on port %d\n", startPort)
-		os.Exit(1)
+		return fmt.Errorf("cannot start resident on %s (another instance may be running): %w", addr, err)
 	}
 	// We claimed the port; release it so the event loop can re-bind.
 	_ = listener.Close()
@@ -136,10 +141,8 @@ func runApplication(opts mainOptions) error {
 
 	// Named-pipe single instance enforced by event loop server; PID file removed
 
-	cfg, err := runtimeinit.Bootstrap(runtimeinit.Options{
-		LoadOptions:          config.LoadOptions{APIKeyPathOverride: opts.apiKeyPath, DefaultModeOverride: opts.defaultMode},
-		SetupLogging:         setupLogging,
-		ShowBlockingLLMError: true,
+	cfg, err = runtimeinit.Bootstrap(runtimeinit.Options{
+		LoadOptions: config.LoadOptions{APIKeyPathOverride: opts.apiKeyPath, DefaultModeOverride: opts.defaultMode},
 	})
 	if err != nil {
 		return err
@@ -179,7 +182,7 @@ func runApplication(opts mainOptions) error {
 	}()
 
 	if err := loop.Run(ctx); err != nil {
-		log.Printf("event loop stopped: %v", err)
+		return fmt.Errorf("event loop stopped: %w", err)
 	}
 
 	return nil
@@ -192,12 +195,10 @@ func setupLogging(enableFileLogging bool) {
 // runOCROnce performs a single OCR capture and exits
 func runOCROnce(outputToStdout bool, apiKeyPathOverride, defaultModeOverride string) {
 	cfg, err := runtimeinit.Bootstrap(runtimeinit.Options{
-		LoadOptions:          config.LoadOptions{APIKeyPathOverride: apiKeyPathOverride, DefaultModeOverride: defaultModeOverride},
-		SetupLogging:         setupLogging,
-		ShowBlockingLLMError: true,
+		LoadOptions: config.LoadOptions{APIKeyPathOverride: apiKeyPathOverride, DefaultModeOverride: defaultModeOverride},
 	})
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Failed to initialize runtime: %v\n", err)
+		reportApplicationError(fmt.Errorf("initialize capture: %w", err), notification.ShowBlockingError)
 		os.Exit(1)
 	}
 
@@ -224,6 +225,9 @@ func runOCROnce(outputToStdout bool, apiKeyPathOverride, defaultModeOverride str
 		SuccessVisibleDuration: 3 * time.Second,
 	})
 	if err != nil {
+		if !errors.Is(err, session.ErrSelectionCancelled) {
+			reportApplicationError(fmt.Errorf("capture failed: %w", err), notification.ShowBlockingError)
+		}
 		switch {
 		case errors.Is(err, session.ErrSelectionCancelled):
 			fmt.Fprintf(os.Stderr, "Selection cancelled\n")

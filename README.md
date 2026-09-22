@@ -112,6 +112,7 @@ The two modes are designed to work together intelligently to prevent conflicts a
 - **Startup validation**: On launch, the app performs a minimal LLM connectivity check (1-token ping). If it fails, a blocking error dialog is shown and the app exits. In `--run-once`, if a resident is detected and the request is delegated, the client does not ping.
 - **High-DPI**: The app enables DPI awareness and uses the full virtual screen for overlays and screenshots to work correctly on scaled multi-monitor setups.
 - **Logging**: Controlled by `ENABLE_FILE_LOGGING`. When `false`, logs are suppressed; when `true`, logs are written to `screen_ocr_debug.log` (size-rotated). In GUI builds, stdout/stderr are hidden, so enable file logging for diagnostics.
+- **Fatal errors**: Startup and standalone capture failures show a blocking error dialog even when file logging is disabled. The dialog includes the error, executable path, working directory, and configured log location or instructions to enable logging. Press `Ctrl+C` while the dialog is active to copy its details. With file logging enabled, startup checks and fatal errors are recorded in `screen_ocr_debug.log` in the working directory. Cancelling a selection remains silent.
 
 This delegation mechanism ensures a stable and predictable user experience by guaranteeing that only one screen selection process can be active at a time.
 
