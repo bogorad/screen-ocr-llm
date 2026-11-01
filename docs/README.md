@@ -20,6 +20,7 @@ docs/
 ├── RUN_ONCE_REFACTOR_GUARDRAILS.md # Run-once delegation guardrails
 ├── releases/                      # Detailed release notes
 │   ├── README.md                  # Release notes index
+│   ├── 2.6.2.md                   # Release 2.6.2 details
 │   └── 2.6.0.md                   # Release 2.6.0 details
 └── adr/                          # Architecture Decision Records
     ├── README.md                  # ADR index

@@ -4,7 +4,7 @@ Inspired by [the original code](https://github.com/cherjr/screen-ocr-llm)
 
 A small desktop utility to select a region of the screen, run OCR via OpenRouter vision models, and copy the result to the clipboard.
 
-For the latest release details, see `docs/releases/2.6.0.md`.
+For the latest release details, see `docs/releases/2.6.2.md`.
 
 Architecture overview, directory structure, prerequisites, and Linux CLI details are documented in `docs/README.md`.
 

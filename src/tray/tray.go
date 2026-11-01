@@ -230,7 +230,7 @@ func effectiveHotkey() string {
 
 // showAboutDialog displays an about dialog
 func showAboutDialog() {
-	message := fmt.Sprintf(`Screen OCR Tool v2.6.1
+	message := fmt.Sprintf(`Screen OCR Tool v2.6.2
 
 A powerful screen text extraction tool using AI vision models.
 
