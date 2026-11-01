@@ -5,7 +5,8 @@ import (
 	"log"
 	"os"
 	"path/filepath"
-	"strings"
+
+	"screen-ocr-llm/src/config"
 )
 
 // reportApplicationError makes fatal errors visible in GUI builds, where
@@ -17,7 +18,7 @@ func reportApplicationError(err error, showError func(string, string)) {
 	fmt.Fprintf(os.Stderr, "Screen OCR LLM failed: %v\n", err)
 
 	logging := "File logging is disabled. Set ENABLE_FILE_LOGGING=true in your configuration to record diagnostics."
-	if strings.EqualFold(os.Getenv("ENABLE_FILE_LOGGING"), "true") {
+	if config.FileLoggingRequested() {
 		logging = "Configured diagnostic log: " + filepath.Join(workingDir, "screen_ocr_debug.log")
 	}
 	message := fmt.Sprintf("%v\n\nExecutable: %s\nWorking directory: %s\n\n%s\n\nPress Ctrl+C in this dialog to copy its details.", err, executable, workingDir, logging)

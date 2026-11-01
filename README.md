@@ -29,12 +29,15 @@ Architecture overview, directory structure, prerequisites, and Linux CLI details
     - `PROVIDERS=providerA,providerB`
     - `OCR_DEADLINE_SEC=20` (default is 20 seconds if unset)
     - `DEFAULT_MODE=rectangle` (accepted: `rect`, `rectangle`, `lasso`; default is rectangle)
+    - `RELOAD_CONFIG_ON_GRAB=true` (default; reload the selected config while the resident runs)
     - `SINGLEINSTANCE_PORT_START=49500`
     - `SINGLEINSTANCE_PORT_END=49550`
 
 ## Configuration and Precedence
 
 Detailed source resolution and precedence rules are documented in `docs/README.md` under `Runtime Configuration Sources and Precedence`.
+
+The resident watches its selected config directory for changes and checks again every 30 seconds and before each capture. It applies valid model, provider order, API key, OCR deadline, default selection mode, and file logging changes without a restart. Hotkey and TCP port changes require a restart. A failed reload keeps the last valid settings and records an error when file logging is enabled.
 
 ## Build
 

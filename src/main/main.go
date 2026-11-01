@@ -106,9 +106,13 @@ func runApplication(opts mainOptions) error {
 	// Load configuration and enable diagnostics before any startup checks.
 	cfg, err := config.LoadWithOptions(config.LoadOptions{APIKeyPathOverride: opts.apiKeyPath, DefaultModeOverride: opts.defaultMode})
 	if err != nil {
+		setupLogging(config.FileLoggingRequested())
+		log.Printf("event=config_load_failed error=%q", err)
 		return fmt.Errorf("load configuration: %w", err)
 	}
 	setupLogging(cfg.EnableFileLogging)
+	log.Printf("event=config_loaded source=%q model=%q provider_order=%q api_key_present=%t key_file=%q logging=%t reload_on_grab=%t hotkey=%q default_mode=%q deadline_seconds=%d",
+		cfg.SourcePath, cfg.Model, cfg.Providers, cfg.APIKey != "", cfg.APIKeyPath, cfg.EnableFileLogging, cfg.ReloadConfigOnGrab, cfg.Hotkey, cfg.DefaultMode, cfg.OCRDeadlineSec)
 	log.Printf("event=startup pid=%d run_once=%t", os.Getpid(), opts.runOnce)
 
 	// Ensure DPI awareness before creating any windows or querying metrics
@@ -159,6 +163,7 @@ func runApplication(opts mainOptions) error {
 
 	// Event loop + tray + hotkey
 	loop := eventloop.New(cfg)
+	loop.SetLoadOptions(config.LoadOptions{APIKeyPathOverride: opts.apiKeyPath, DefaultModeOverride: opts.defaultMode})
 	loop.SetDefaultTooltip(fmt.Sprintf("Screen OCR Tool - Press %s to capture", cfg.Hotkey))
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
@@ -189,7 +194,7 @@ func runApplication(opts mainOptions) error {
 }
 
 func setupLogging(enableFileLogging bool) {
-	logutil.Setup(enableFileLogging)
+	_ = logutil.Setup(enableFileLogging)
 }
 
 // runOCROnce performs a single OCR capture and exits

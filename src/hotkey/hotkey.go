@@ -69,10 +69,7 @@ func Listen(hotkeyConfig string, callback func()) {
 
 		// Process events from the channel
 		for ev := range evChan {
-			// Only log key events, not mouse events to reduce spam
 			if ev.Kind == gohook.KeyDown || ev.Kind == gohook.KeyUp {
-				log.Printf("Key event: Kind=%v, Rawcode=%d, Keychar=%v", ev.Kind, ev.Rawcode, ev.Keychar)
-
 				// Track key states with mutex protection
 				if ev.Kind == gohook.KeyDown {
 					mu.Lock()

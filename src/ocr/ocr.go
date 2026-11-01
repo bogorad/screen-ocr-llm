@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
-	"os"
 
+	"screen-ocr-llm/src/config"
 	"screen-ocr-llm/src/llm"
 	"screen-ocr-llm/src/screenshot"
 )
@@ -25,7 +25,7 @@ func Recognize(region screenshot.Region) (string, error) {
 	}
 
 	// DEBUG: Save the captured image only if debug mode is enabled
-	if os.Getenv("OCR_DEBUG_SAVE_IMAGES") == "true" {
+	if config.Value("OCR_DEBUG_SAVE_IMAGES") == "true" {
 		debugFilename := fmt.Sprintf("debug_captured_region_%dx%d.png", region.Width, region.Height)
 		if err := ioutil.WriteFile(debugFilename, imageData, 0600); err != nil { // More restrictive permissions
 			log.Printf("Warning: Could not save debug image: %v", err)

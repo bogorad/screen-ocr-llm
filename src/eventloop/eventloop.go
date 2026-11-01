@@ -7,8 +7,11 @@ import (
 	"log"
 	"time"
 
+	"github.com/fsnotify/fsnotify"
+
 	"screen-ocr-llm/src/config"
 	"screen-ocr-llm/src/hotkey"
+	"screen-ocr-llm/src/llm"
 	"screen-ocr-llm/src/overlay"
 	"screen-ocr-llm/src/popup"
 	"screen-ocr-llm/src/screenshot"
@@ -20,14 +23,24 @@ import (
 
 // Loop is the single-threaded coordinator for IPC-based run-once and hotkey flows.
 type Loop struct {
-	selector       overlay.Selector
-	pool           *worker.Pool
-	srv            singleinstance.Server
-	busy           bool
-	results        chan result
-	hotkeyCh       chan struct{}
-	defaultTooltip string
-	deadline       time.Duration
+	selector           overlay.Selector
+	pool               *worker.Pool
+	srv                singleinstance.Server
+	busy               bool
+	results            chan result
+	hotkeyCh           chan struct{}
+	defaultTooltip     string
+	deadline           time.Duration
+	defaultMode        string
+	reloadConfigOnGrab bool
+	loadOptions        config.LoadOptions
+	loadConfig         func(config.LoadOptions) (*config.Config, error)
+	llmInit            func(*llm.Config)
+	configState        configSourceState
+	currentConfig      *config.Config
+	lastReloadError    string
+	configWatcher      *fsnotify.Watcher
+	watchedDirs        map[string]bool
 }
 
 type result struct {
@@ -106,15 +119,24 @@ func New(cfg *config.Config) *Loop {
 		defaultMode = cfg.DefaultMode
 	}
 
-	return &Loop{
+	l := &Loop{
 		selector:       overlay.NewSelector(defaultMode),
 		pool:           worker.New(0),
 		results:        make(chan result, 1),
 		hotkeyCh:       make(chan struct{}, 4),
 		defaultTooltip: "Screen OCR Tool",
 		deadline:       time.Duration(deadlineSec) * time.Second,
+		defaultMode:    defaultMode,
+		currentConfig:  cfg,
 	}
+	if cfg != nil {
+		l.reloadConfigOnGrab = cfg.ReloadConfigOnGrab
+	}
+	return l
 }
+
+// SetLoadOptions retains startup CLI overrides during runtime config reloads.
+func (l *Loop) SetLoadOptions(opts config.LoadOptions) { l.loadOptions = opts }
 
 // SetDefaultTooltip optionally sets the tray tooltip base text.
 func (l *Loop) SetDefaultTooltip(tt string) { l.defaultTooltip = tt }
@@ -154,6 +176,20 @@ func (l *Loop) Run(ctx context.Context) error {
 		tray.SetAboutExtra(fmt.Sprintf("Resident TCP port: %d", p))
 	}
 	defer l.pool.Close()
+	ticker := time.NewTicker(30 * time.Second)
+	defer ticker.Stop()
+	l.startConfigWatcher()
+	defer func() {
+		if l.configWatcher != nil {
+			_ = l.configWatcher.Close()
+		}
+	}()
+	var watchEvents <-chan fsnotify.Event
+	var watchErrors <-chan error
+	if l.configWatcher != nil {
+		watchEvents = l.configWatcher.Events
+		watchErrors = l.configWatcher.Errors
+	}
 
 	// Accept loop in background to avoid blocking result handling
 	reqCh := make(chan singleinstance.Conn, 4)
@@ -172,6 +208,24 @@ func (l *Loop) Run(ctx context.Context) error {
 		select {
 		case <-ctx.Done():
 			return ctx.Err()
+		case <-ticker.C:
+			if !l.busy {
+				l.checkRuntimeConfig()
+			}
+		case event, ok := <-watchEvents:
+			if !ok {
+				watchEvents = nil
+				continue
+			}
+			if event.Has(fsnotify.Write|fsnotify.Create|fsnotify.Rename|fsnotify.Remove) && !l.busy {
+				l.checkRuntimeConfig()
+			}
+		case err, ok := <-watchErrors:
+			if !ok {
+				watchErrors = nil
+				continue
+			}
+			log.Printf("event=config_watch_error error=%q", err)
 		case <-l.hotkeyCh:
 			l.handleHotkey(ctx)
 		case conn, ok := <-reqCh:
@@ -261,6 +315,7 @@ func (l *Loop) startRequest(ctx context.Context, target resultTarget, callbacks 
 		}
 		return
 	}
+	l.checkRuntimeConfig()
 
 	region, cancelled, err := l.selectRegion(ctx)
 	if err != nil {

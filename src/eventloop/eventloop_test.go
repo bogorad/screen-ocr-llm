@@ -214,6 +214,27 @@ func TestLoadConfigSourceStateDetectsConfigFileChange(t *testing.T) {
 	}
 }
 
+func TestLoadConfigSourceStateDetectsKeyFileChange(t *testing.T) {
+	keyPath := filepath.Join(t.TempDir(), "key")
+	if err := os.WriteFile(keyPath, []byte("first"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	first, err := loadConfigSourceState(configSourceState{}, "", keyPath)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(keyPath, []byte("second"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	second, err := loadConfigSourceState(first, "", keyPath)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if configSourceStateEqual(first, second) {
+		t.Fatal("key-file change was not detected")
+	}
+}
+
 func TestRefreshRuntimeConfigValidatesRequiredFields(t *testing.T) {
 	tests := []struct {
 		name string

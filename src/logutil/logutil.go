@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"sync"
 )
 
 const (
@@ -14,22 +15,37 @@ const (
 	maxArchives  = 3
 )
 
+var setupMu sync.Mutex
+var activeWriter *rotatingWriter
+
 // Setup enables file logging with basic size-based rotation (10MB, max 3 files).
 // When disabled, logs are discarded (keeps stdout clean) to match prior behavior.
-func Setup(enableFileLogging bool) {
+func Setup(enableFileLogging bool) error {
+	setupMu.Lock()
+	defer setupMu.Unlock()
 	if !enableFileLogging {
 		log.SetOutput(io.Discard)
+		if activeWriter != nil {
+			_ = activeWriter.f.Close()
+			activeWriter = nil
+		}
 		log.SetFlags(log.LstdFlags | log.Lshortfile)
-		return
+		return nil
 	}
 	rotateIfNeeded()
 	f, err := os.OpenFile(logFileName, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Failed to open log file: %v\n", err)
-		return
+		return err
 	}
-	log.SetOutput(&rotatingWriter{f: f})
+	previous := activeWriter
+	activeWriter = &rotatingWriter{f: f}
+	log.SetOutput(activeWriter)
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
+	if previous != nil {
+		_ = previous.f.Close()
+	}
+	return nil
 }
 
 type rotatingWriter struct{ f *os.File }

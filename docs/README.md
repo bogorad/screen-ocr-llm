@@ -151,6 +151,12 @@ Accepted values for env/CLI mode selection: `rect`, `rectangle`, `lasso`.
 If `--run-once` delegates to an already-running resident instance, resident configuration remains authoritative.
 Client-side `--api-key-path` and `--default-mode` do not override the resident process.
 
+### Resident config reload
+
+The resident watches the selected config file's directory (executable-local `.env`, otherwise `SCREEN_OCR_LLM`) for file changes and checks again every 30 seconds and before each capture. On Windows, fsnotify uses `ReadDirectoryChangesW`; the config file is opened only for a short read. The app reads a fresh snapshot, so removing or changing `MODEL`, `PROVIDERS`, or other file values takes effect. It applies API key, model, provider order, OCR deadline, default selection mode, and file logging changes. It keeps the last valid snapshot if a file read, parse, or validation fails. `RELOAD_CONFIG_ON_GRAB=false` disables reload until the next restart.
+
+The global hotkey and resident TCP listener are registered at startup; changes to `HOTKEY` or `SINGLEINSTANCE_PORT_*` require a restart. A delegated `--run-once` request continues to use resident settings.
+
 ## Diagnostics
 
 Windows GUI builds do not show a console. Fatal startup, resident event-loop,
@@ -166,6 +172,8 @@ in the process working directory. Logging starts before DPI and port checks.
 Startup records use `event=startup`; fatal records use
 `event=application_failed` and include the process ID and execution paths.
 Routine file logging remains optional; the error dialog works when it is off.
+
+Config and LLM records include the selected file, model, provider order, request ID, HTTP status, response timing, finish reason, and token counts. API keys, captured images, and extracted text are not logged.
 
 ## For Developers
 

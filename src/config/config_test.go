@@ -3,6 +3,7 @@ package config
 import (
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 )
 
@@ -34,6 +35,21 @@ func TestLoad(t *testing.T) {
 	}
 	if cfg.DefaultMode != DefaultModeLasso {
 		t.Errorf("Expected DefaultMode to be '%s', got '%s'", DefaultModeLasso, cfg.DefaultMode)
+	}
+}
+
+func TestMalformedDotenvErrorDoesNotExposeKey(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "config")
+	if err := os.WriteFile(path, []byte("INVALID LINE\nOPENROUTER_API_KEY=secret-test-value\n"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	t.Setenv("SCREEN_OCR_LLM", path)
+	_, err := Load()
+	if err == nil {
+		t.Fatal("expected parse error")
+	}
+	if strings.Contains(err.Error(), "secret-test-value") {
+		t.Fatalf("parse error exposed key: %v", err)
 	}
 }
 
@@ -167,4 +183,51 @@ func TestLoadWithOptionsAPIKeyResolution(t *testing.T) {
 			t.Fatalf("Expected env API key, got %q", cfg.APIKey)
 		}
 	})
+}
+
+func TestLoadWithOptionsReadsChangedDotenvWithoutMutatingEnvironment(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "config")
+	t.Setenv("SCREEN_OCR_LLM", path)
+	for _, key := range []string{"MODEL", "PROVIDERS", "OCR_DEADLINE_SEC", "DEFAULT_MODE", "ENABLE_FILE_LOGGING"} {
+		old, present := os.LookupEnv(key)
+		if err := os.Unsetenv(key); err != nil {
+			t.Fatal(err)
+		}
+		t.Cleanup(func() {
+			if present {
+				_ = os.Setenv(key, old)
+			} else {
+				_ = os.Unsetenv(key)
+			}
+		})
+	}
+	first := "MODEL=first\nPROVIDERS=deepinfra/fp4\nOCR_DEADLINE_SEC=10\nDEFAULT_MODE=rectangle\nENABLE_FILE_LOGGING=false\n"
+	if err := os.WriteFile(path, []byte(first), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	options := LoadOptions{APIKeyPathOverride: filepath.Join(t.TempDir(), "missing.key")}
+	initial, err := LoadWithOptions(options)
+	if err != nil {
+		t.Fatal(err)
+	}
+	second := "MODEL=second:nitro\nPROVIDERS=coreweave/nvfp4,together\nOCR_DEADLINE_SEC=15\nDEFAULT_MODE=lasso\nENABLE_FILE_LOGGING=true\n"
+	if err := os.WriteFile(path, []byte(second), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	updated, err := LoadWithOptions(options)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if initial.Model != "first" || updated.Model != "second:nitro" {
+		t.Fatalf("model did not reload: first=%q second=%q", initial.Model, updated.Model)
+	}
+	if len(updated.Providers) != 2 || updated.Providers[0] != "coreweave/nvfp4" || updated.Providers[1] != "together" {
+		t.Fatalf("providers did not reload: %q", updated.Providers)
+	}
+	if updated.OCRDeadlineSec != 15 || updated.DefaultMode != DefaultModeLasso || !updated.EnableFileLogging {
+		t.Fatalf("other settings did not reload: %+v", updated)
+	}
+	if _, present := os.LookupEnv("MODEL"); present {
+		t.Fatal("config load changed the process environment")
+	}
 }

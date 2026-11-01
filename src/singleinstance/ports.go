@@ -1,8 +1,9 @@
 package singleinstance
 
 import (
-	"os"
 	"strconv"
+
+	"screen-ocr-llm/src/config"
 )
 
 const (
@@ -16,12 +17,12 @@ const (
 func getPortRange() (int, int) {
 	start := defaultPortStart
 	end := defaultPortEnd
-	if v := os.Getenv("SINGLEINSTANCE_PORT_START"); v != "" {
+	if v := config.Value("SINGLEINSTANCE_PORT_START"); v != "" {
 		if n, err := strconv.Atoi(v); err == nil {
 			start = n
 		}
 	}
-	if v := os.Getenv("SINGLEINSTANCE_PORT_END"); v != "" {
+	if v := config.Value("SINGLEINSTANCE_PORT_END"); v != "" {
 		if n, err := strconv.Atoi(v); err == nil {
 			end = n
 		}
