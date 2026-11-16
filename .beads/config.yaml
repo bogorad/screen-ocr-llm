@@ -1,1 +1,4 @@
 dolt.database: "screen_ocr_llm"
+backup.enabled: false
+dolt.auto-push: false
+export.auto: false
